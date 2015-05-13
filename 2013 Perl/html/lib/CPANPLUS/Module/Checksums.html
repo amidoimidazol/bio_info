@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#mod-checksums">$mod-&gt;checksums</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Module::Checksums - checking the checksum of a distribution</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="variable">$file</span>   <span class="operator">=</span> <span class="variable">$modobj</span><span class="operator">-&gt;</span><span class="variable">checksums</span><span class="operator">;</span>
+    <span class="variable">$bool</span>   <span class="operator">=</span> <span class="variable">$mobobj</span><span class="operator">-&gt;</span><span class="variable">_validate_checksum</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This is a class that provides functions for checking the checksum of a distribution. Should not be loaded directly, but used via the interface provided via <code><code>CPANPLUS::Module</code></code>.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="mod-checksums">$mod-&gt;checksums</h2>
+
+<p>Fetches the checksums file for this module object. For the options it can take, see <code><code>CPANPLUS::Module::fetch()</code></code>.</p>
+
+<p>Returns the location of the checksums file on success and false on error.</p>
+
+<p>The location of the checksums file is also stored as</p>
+
+<pre><code><code>    $mod-&gt;status-&gt;checksums</code></code></pre>
+
+
+</body>
+
+</html>
+
+

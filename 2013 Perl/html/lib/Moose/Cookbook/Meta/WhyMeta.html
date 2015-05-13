@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SUMMARY">SUMMARY</a>
+    <ul>
+      <li><a href="#Examples">Examples</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Moose::Cookbook::Meta::WhyMeta - Welcome to the meta world (Why Go Meta?)</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>version 2.0604</p>
+
+<h1 id="SUMMARY">SUMMARY</h1>
+
+<p>You might want to read <a href="../../../../lib/Moose/Manual/MOP.html">Moose::Manual::MOP</a> if you haven&#39;t done so yet.</p>
+
+<p>If you&#39;ve ever thought &quot;Moose is great, but I wish it did X differently&quot;, then you&#39;ve gone meta. The meta recipes demonstrate how to change and extend the way Moose works by extending and overriding how the meta classes (<a href="../../../../lib/Moose/Meta/Class.html">Moose::Meta::Class</a>, <a href="../../../../lib/Moose/Meta/Attribute.html">Moose::Meta::Attribute</a>, etc) work.</p>
+
+<p>The metaclass API is a set of classes that describe classes, roles, attributes, etc. The metaclass API lets you ask questions about a class, like &quot;what attributes does it have?&quot;, or &quot;what roles does the class do?&quot;</p>
+
+<p>The metaclass system also lets you make changes to a class, for example by adding new methods or attributes.</p>
+
+<p>The interface presented by <a href="../../../../lib/Moose.html">Moose.pm</a> (<code><code>has</code></code>, <code><code>with</code></code>, <code><code>extends</code></code>) is just a thin layer of syntactic sugar over the underlying metaclass system.</p>
+
+<p>By extending and changing how this metaclass system works, you can create your own Moose variant.</p>
+
+<h2 id="Examples">Examples</h2>
+
+<p>Let&#39;s say that you want to add additional properties to attributes. Specifically, we want to add a &quot;label&quot; property to each attribute, so we can write <code><code>My::Class-&gt;meta()-&gt;get_attribute(&#39;size&#39;)-&gt;label()</code></code>. The first recipe shows how to do this using an attribute trait.</p>
+
+<p>You might also want to add additional properties to your metaclass. For example, if you were writing an ORM based on Moose, you could associate a table name with each class via the class&#39;s metaclass object, letting you write <code><code>My::Class-&gt;meta()-&gt;table_name()</code></code>.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>Many of the MooseX modules on CPAN implement metaclass extensions. A couple good examples include <a>MooseX::Aliases</a> and <a>MooseX::UndefTolerant</a>. For a more complex example see <a>Fey::ORM</a> or <a>Bread::Board::Declare</a>.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Moose is maintained by the Moose Cabal, along with the help of many contributors. See <a href="../../../../lib/Moose.html#CABAL">&quot;CABAL&quot; in Moose</a> and <a href="../../../../lib/Moose.html#CONTRIBUTORS">&quot;CONTRIBUTORS&quot; in Moose</a> for details.</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>This software is copyright (c) 2012 by Infinity Interactive, Inc..</p>
+
+<p>This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+	$genefilename = 'gene1.pep';
+		open ( PROTEINFILE, $genefilename);
+			@gene1 = <PROTEINFILE>;
+print "Egyes szekvencia:";
+print "@gene1\n\n";
+
+	$genefilename2 = 'gene2.pep';
+		open ( PROTEINFILE, $genefilename2);
+			@gene2 = <PROTEINFILE>;
+print "Kettes szekvencia:";
+print "@gene2\n\n";
+
+			@gene3= "@gene1@gene2";
+print @gene3;
+
+exit;

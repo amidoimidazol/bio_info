@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+$DNA = "AGTCCCGGTTTAAAGAT";
+$Kisbetu = $DNA;
+	$Kisbetu =~ tr/AGTC/agtc/;
+$Nagybetu = $DNA;
+	$Nagybetu =~ tr/agtcAGTC/AGTCAGTC/;
+print "Kisbetu:";
+print "$Kisbetu\n\n";
+print "Nagybetu:";
+print "$Nagybetu\n\n";
+# "\U$VARiable" = mind nagybetu , "\L$VARiable" = mind kisbetu 
+print "\L$DNA";
+print "\U$DNA";
+exit;

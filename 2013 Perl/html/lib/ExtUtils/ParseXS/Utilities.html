@@ -1,0 +1,527 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#SUBROUTINES">SUBROUTINES</a>
+    <ul>
+      <li><a href="#"></a></li>
+      <li><a href="#1"></a></li>
+      <li><a href="#2"></a></li>
+      <li><a href="#3"></a></li>
+      <li><a href="#4"></a></li>
+      <li><a href="#5"></a></li>
+      <li><a href="#6"></a></li>
+      <li><a href="#7"></a></li>
+      <li><a href="#8"></a></li>
+      <li><a href="#9"></a></li>
+      <li><a href="#10"></a></li>
+      <li><a href="#11"></a></li>
+      <li><a href="#12"></a></li>
+      <li><a href="#13"></a></li>
+      <li><a href="#14"></a></li>
+      <li><a href="#15"></a></li>
+      <li><a href="#16"></a></li>
+      <li><a href="#17"></a></li>
+      <li><a href="#18"></a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>ExtUtils::ParseXS::Utilities - Subroutines used with ExtUtils::ParseXS</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">ExtUtils::ParseXS::Utilities</span> <span class="string">qw(
+    standard_typemap_locations
+    trim_whitespace
+    tidy_type
+    C_string
+    valid_proto_string
+    process_typemaps
+    make_targetable
+    map_type
+    standard_XS_defs
+    assign_func_args
+    analyze_preprocessor_statements
+    set_cond
+    Warn
+    blurt
+    death
+    check_conditional_preprocessor_statements
+    escape_file_for_line_directive
+    report_typemap_failure
+  )</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="SUBROUTINES">SUBROUTINES</h1>
+
+<p>The following functions are not considered to be part of the public interface. They are documented here for the benefit of future maintainers of this module.</p>
+
+<h2 id=""><code><code>standard_typemap_locations()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Provide a list of filepaths where <i>typemap</i> files may be found. The filepaths -- relative paths to files (not just directory paths) -- appear in this list in lowest-to-highest priority.</p>
+
+<p>The highest priority is to look in the current directory.</p>
+
+<pre><code><code>  &#39;typemap&#39;</code></code></pre>
+
+<p>The second and third highest priorities are to look in the parent of the current directory and a directory called <i>lib/ExtUtils</i> underneath the parent directory.</p>
+
+<pre><code><code>  &#39;../typemap&#39;,
+  &#39;../lib/ExtUtils/typemap&#39;,</code></code></pre>
+
+<p>The fourth through ninth highest priorities are to look in the corresponding grandparent, great-grandparent and great-great-grandparent directories.</p>
+
+<pre><code><code>  &#39;../../typemap&#39;,
+  &#39;../../lib/ExtUtils/typemap&#39;,
+  &#39;../../../typemap&#39;,
+  &#39;../../../lib/ExtUtils/typemap&#39;,
+  &#39;../../../../typemap&#39;,
+  &#39;../../../../lib/ExtUtils/typemap&#39;,</code></code></pre>
+
+<p>The tenth and subsequent priorities are to look in directories named <i>ExtUtils</i> which are subdirectories of directories found in <code><code>@INC</code></code> -- <i>provided</i> a file named <i>typemap</i> actually exists in such a directory. Example:</p>
+
+<pre><code><code>  &#39;/usr/local/lib/perl5/5.10.1/ExtUtils/typemap&#39;,</code></code></pre>
+
+<p>However, these filepaths appear in the list returned by <code><code>standard_typemap_locations()</code></code> in reverse order, <i>i.e.</i>, lowest-to-highest.</p>
+
+<pre><code><code>  &#39;/usr/local/lib/perl5/5.10.1/ExtUtils/typemap&#39;,
+  &#39;../../../../lib/ExtUtils/typemap&#39;,
+  &#39;../../../../typemap&#39;,
+  &#39;../../../lib/ExtUtils/typemap&#39;,
+  &#39;../../../typemap&#39;,
+  &#39;../../lib/ExtUtils/typemap&#39;,
+  &#39;../../typemap&#39;,
+  &#39;../lib/ExtUtils/typemap&#39;,
+  &#39;../typemap&#39;,
+  &#39;typemap&#39;</code></code></pre>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>  <span class="keyword">my</span> <span class="variable">@stl</span> <span class="operator">=</span> <span class="variable">standard_typemap_locations</span><span class="operator">(</span> <span class="operator">\</span><span class="variable">@INC</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>Reference to <code><code>@INC</code></code>.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Array holding list of directories to be searched for <i>typemap</i> files.</p>
+
+</li>
+</ul>
+
+<h2 id="1"><code><code>trim_whitespace()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Perform an in-place trimming of leading and trailing whitespace from the first argument provided to the function.</p>
+
+</li>
+<li><p>Argument</p>
+
+<pre><code><code>  <span class="variable">trim_whitespace</span><span class="operator">(</span><span class="variable">$arg</span><span class="operator">);</span>
+</code></code></pre>
+
+</li>
+<li><p>Return Value</p>
+
+<p>None. Remember: this is an <i>in-place</i> modification of the argument.</p>
+
+</li>
+</ul>
+
+<h2 id="2"><code><code>tidy_type()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Rationalize any asterisks (<code><code>*</code></code>) by joining them into bunches, removing interior whitespace, then trimming leading and trailing whitespace.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>    <span class="operator">(</span><span class="variable">$ret_type</span><span class="operator">)</span> <span class="operator">=</span> <span class="variable">tidy_type</span><span class="operator">(</span><span class="variable">$_</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>String to be cleaned up.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>String cleaned up.</p>
+
+</li>
+</ul>
+
+<h2 id="3"><code><code>C_string()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Escape backslashes (<code><code>\</code></code>) in prototype strings.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>      <span class="variable">$ProtoThisXSUB</span> <span class="operator">=</span> <span class="variable">C_string</span><span class="operator">(</span><span class="variable">$_</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>String needing escaping.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Properly escaped string.</p>
+
+</li>
+</ul>
+
+<h2 id="4"><code><code>valid_proto_string()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Validate prototype string.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<p>String needing checking.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Upon success, returns the same string passed as argument.</p>
+
+<p>Upon failure, returns <code><code>0</code></code>.</p>
+
+</li>
+</ul>
+
+<h2 id="5"><code><code>process_typemaps()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Process all typemap files.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>  <span class="keyword">my</span> <span class="variable">$typemaps_object</span> <span class="operator">=</span> <span class="variable">process_typemaps</span><span class="operator">(</span> <span class="variable">$args</span><span class="operator">{</span><span class="string">typemap</span><span class="operator">}</span><span class="operator">,</span> <span class="variable">$pwd</span> <span class="operator">);</span>
+      
+</code></code></pre>
+
+<p>List of two elements: <code><code>typemap</code></code> element from <code><code>%args</code></code>; current working directory.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Upon success, returns an <a href="../../../lib/ExtUtils/Typemaps.html">ExtUtils::Typemaps</a> object.</p>
+
+</li>
+</ul>
+
+<h2 id="6"><code><code>make_targetable()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Populate <code><code>%targetable</code></code>. This constitutes a refinement of the output of <code><code>process_typemaps()</code></code> with respect to its fourth output, <code><code>$output_expr_ref</code></code>.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>  <span class="variable">%targetable</span> <span class="operator">=</span> <span class="variable">make_targetable</span><span class="operator">(</span><span class="variable">$output_expr_ref</span><span class="operator">);</span>
+      
+</code></code></pre>
+
+<p>Single hash reference: the fourth such ref returned by <code><code>process_typemaps()</code></code>.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Hash.</p>
+
+</li>
+</ul>
+
+<h2 id="7"><code><code>map_type()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Performs a mapping at several places inside <code><code>PARAGRAPH</code></code> loop.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>  <span class="variable">$type</span> <span class="operator">=</span> <span class="variable">map_type</span><span class="operator">(</span><span class="variable">$self</span><span class="operator">,</span> <span class="variable">$type</span><span class="operator">,</span> <span class="variable">$varname</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>List of three arguments.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>String holding augmented version of second argument.</p>
+
+</li>
+</ul>
+
+<h2 id="8"><code><code>standard_XS_defs()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Writes to the <code><code>.c</code></code> output file certain preprocessor directives and function headers needed in all such files.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<p>None.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Returns true.</p>
+
+</li>
+</ul>
+
+<h2 id="9"><code><code>assign_func_args()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Perform assignment to the <code><code>func_args</code></code> attribute.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>  <span class="variable">$string</span> <span class="operator">=</span> <span class="variable">assign_func_args</span><span class="operator">(</span><span class="variable">$self</span><span class="operator">,</span> <span class="variable">$argsref</span><span class="operator">,</span> <span class="variable">$class</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>List of three elements. Second is an array reference; third is a string.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>String.</p>
+
+</li>
+</ul>
+
+<h2 id="10"><code><code>analyze_preprocessor_statements()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Within each function inside each Xsub, print to the <i>.c</i> output file certain preprocessor statements.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<pre><code><code>      <span class="operator">(</span> <span class="variable">$self</span><span class="operator">,</span> <span class="variable">$XSS_work_idx</span><span class="operator">,</span> <span class="variable">$BootCode_ref</span> <span class="operator">)</span> <span class="operator">=</span>
+        <span class="variable">analyze_preprocessor_statements</span><span class="operator">(</span>
+          <span class="variable">$self</span><span class="operator">,</span> <span class="variable">$statement</span><span class="operator">,</span> <span class="variable">$XSS_work_idx</span><span class="operator">,</span> <span class="variable">$BootCode_ref</span>
+        <span class="operator">);</span>
+</code></code></pre>
+
+<p>List of four elements.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Modifed values of three of the arguments passed to the function. In particular, the <code><code>XSStack</code></code> and <code><code>InitFileCode</code></code> attributes are modified.</p>
+
+</li>
+</ul>
+
+<h2 id="11"><code><code>set_cond()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+</li>
+<li><p>Arguments</p>
+
+</li>
+<li><p>Return Value</p>
+
+</li>
+</ul>
+
+<h2 id="12"><code><code>current_line_number()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Figures out the current line number in the XS file.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<p><code><code>$self</code></code></p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>The current line number.</p>
+
+</li>
+</ul>
+
+<h2 id="13"><code><code>Warn()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+</li>
+<li><p>Arguments</p>
+
+</li>
+<li><p>Return Value</p>
+
+</li>
+</ul>
+
+<h2 id="14"><code><code>blurt()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+</li>
+<li><p>Arguments</p>
+
+</li>
+<li><p>Return Value</p>
+
+</li>
+</ul>
+
+<h2 id="15"><code><code>death()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+</li>
+<li><p>Arguments</p>
+
+</li>
+<li><p>Return Value</p>
+
+</li>
+</ul>
+
+<h2 id="16"><code><code>check_conditional_preprocessor_statements()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+</li>
+<li><p>Arguments</p>
+
+</li>
+<li><p>Return Value</p>
+
+</li>
+</ul>
+
+<h2 id="17"><code><code>escape_file_for_line_directive()</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Escapes a given code source name (typically a file name but can also be a command that was read from) so that double-quotes and backslashes are escaped.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<p>A string.</p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>A string with escapes for double-quotes and backslashes.</p>
+
+</li>
+</ul>
+
+<h2 id="18"><code><code>report_typemap_failure</code></code></h2>
+
+<ul>
+
+<li><p>Purpose</p>
+
+<p>Do error reporting for missing typemaps.</p>
+
+</li>
+<li><p>Arguments</p>
+
+<p>The <code><code>ExtUtils::ParseXS</code></code> object.</p>
+
+<p>An <code><code>ExtUtils::Typemaps</code></code> object.</p>
+
+<p>The string that represents the C type that was not found in the typemap.</p>
+
+<p>Optionally, the string <code><code>death</code></code> or <code><code>blurt</code></code> to choose whether the error is immediately fatal or not. Default: <code><code>blurt</code></code></p>
+
+</li>
+<li><p>Return Value</p>
+
+<p>Returns nothing. Depending on the arguments, this may call <code><code>death</code></code> or <code><code>blurt</code></code>, the former of which is fatal.</p>
+
+</li>
+</ul>
+
+
+</body>
+
+</html>
+
+

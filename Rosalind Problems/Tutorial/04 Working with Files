@@ -1,0 +1,24 @@
+#Open input file
+f = open ('input.txt' , 'r')
+#Open output file
+o = open ('output.txt' , 'w')
+#Line number variable
+current_line_number = 1
+#Read in all the lines to a  list
+all_line = f.readlines()
+#Get the legnth of the list
+all_line_number = len(all_line)
+
+#Loop
+while current_line_number < all_line_number :
+    #Set s to an item in the list with the current_line_number variable
+    s = str (all_line[current_line_number])
+    #Write it to the output file
+    o.write (s)
+    #Incrise current line number
+    current_line_number = current_line_number + 2
+#Close input
+f.close()
+#Close output
+o.close()
+

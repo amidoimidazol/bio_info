@@ -1,0 +1,51 @@
+#!/usr/bin/perl -w
+
+#Beolvas egy megadott file-t az user inputja alapjan --> ha nem akkor kilep, kiszedi a szokozoket, a user inputja alapjan keres egyezést, uresen kilep 
+
+print "Irja be a feherjeszekvencia file nevet (.pep) :\n";
+	#<STDIN> user input
+	$proteinfilename = <STDIN>;
+		#chomp a megnyitas  hozzaad egy extra karaktert a file nevehez amit le kell szedni erre szolgal a chomp ha nem megy az open ez lehet a gond
+		chomp $proteinfilename;
+			#megnyitja a filet ha nem megy kilep
+			unless ( open ( PROTEINFILE, $proteinfilename) )
+				{
+				print "A \"$proteinfilename\ file nem talalhato!Ellenorizze a nevet.\n";
+				
+				exit;
+				}
+		
+		
+		@protein = <PROTEINFILE>;
+				close PROTEINFILE;
+		#array atrakasa variable-be '' közötti reszt rakja az array eggyes sorai koze, jelen esetben semmit, szegmentalt adatok $nev scalar variable-ben linearissak
+		$protein = join ( '', @protein);
+		#a variable-ben levo szokozok kiszedese s/ = szubsztitucio / \= ures hely \s/= meta szubsztituico !mindent kiszed / / = semmi tehat az ures helyet semmire csereli
+		#\t for tab, \n for newline, \f for formfeed, and \r for carriage return \s az osszes egyutt 
+		$protein =~ s/ \s/ /g;
+
+
+do { 
+	print "A keresett szekvencia:";
+	#user input
+	$motif = <STDIN>;
+	chomp $motif;
+			#ha a data megegyezik a keresett file -al akkor ok ha nem akkor nem ok, / / közötti resz regular expression erre keres tehat // kereses
+			if ( $protein =~ /$motif/ )
+				# $& egy meghatarozas nelkul is mukodo scalar, a matchaket tarolja
+				{print " A szekvencia megtalalhato!:$&\n\n";}
+					else
+				{print " A szekvencia nem talalhato meg!\n\n";}
+	}
+						#mig ures parancs nem jon --> kilep 
+						#match a string that, from the beginning (indicated by the ^), is zero
+						#or more (indicated by the *) whitespace characters (indicated by the \s) until the end of
+						#the string (indicated by the $).
+						until ( $motif =~ /^\s*$/ );
+						
+	exit;
+	
+	# cmd line-ban kereseskor A[DS]V A amit egy D VAGY egy S követ
+	# KND*E{2,} Search for K, N, zero or more D's, and two or more E's (note that {2,} means
+	#"two or more"):
+	#EE.*EE Search for two E's, followed by anything, followed by another two E's

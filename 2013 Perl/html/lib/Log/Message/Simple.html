@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a>
+    <ul>
+      <li><a href="#msg-message-string-VERBOSE-">msg(&quot;message string&quot; [,VERBOSE])</a></li>
+      <li><a href="#debug-message-string-VERBOSE-">debug(&quot;message string&quot; [,VERBOSE])</a></li>
+      <li><a href="#error-error-string-VERBOSE-">error(&quot;error string&quot; [,VERBOSE])</a></li>
+      <li><a href="#carp-">carp();</a></li>
+      <li><a href="#croak-">croak();</a></li>
+      <li><a href="#confess-">confess();</a></li>
+      <li><a href="#cluck-">cluck();</a></li>
+    </ul>
+  </li>
+  <li><a href="#CLASS-METHODS">CLASS METHODS</a>
+    <ul>
+      <li><a href="#Log::Message::Simple-stack-">Log::Message::Simple-&gt;stack()</a></li>
+      <li><a href="#Log::Message::Simple-stack_as_string-TRACE-">Log::Message::Simple-&gt;stack_as_string([TRACE])</a></li>
+      <li><a href="#Log::Message::Simple-flush-">Log::Message::Simple-&gt;flush()</a></li>
+    </ul>
+  </li>
+  <li><a href="#GLOBAL-VARIABLES">GLOBAL VARIABLES</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Log::Message::Simple - Simplified interface to Log::Message</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Log::Message::Simple</span> <span class="string">qw[msg error debug
+                                carp croak cluck confess]</span><span class="operator">;</span>
+    
+    <span class="keyword">use</span> <span class="variable">Log::Message::Simple</span> <span class="string">qw[:STD :CARP]</span><span class="operator">;</span>
+    
+    <span class="comment">### standard reporting functionality</span>
+    <span class="variable">msg</span><span class="operator">(</span>    <span class="string">"Connecting to database"</span><span class="operator">,</span>           <span class="variable">$verbose</span> <span class="operator">);</span>
+    <span class="variable">error</span><span class="operator">(</span>  <span class="string">"Database connection failed: $@"</span><span class="operator">,</span>   <span class="variable">$verbose</span> <span class="operator">);</span>
+    <span class="variable">debug</span><span class="operator">(</span>  <span class="string">"Connection arguments were: </span><span class="variable">$args</span><span class="string">"</span><span class="operator">,</span> <span class="variable">$debug</span> <span class="operator">);</span>
+    
+    <span class="comment">### standard carp functionality</span>
+    <span class="variable">carp</span><span class="operator">(</span>   <span class="string">"Wrong arguments passed: </span><span class="variable">@_</span><span class="string">"</span> <span class="operator">);</span>
+    <span class="variable">croak</span><span class="operator">(</span>  <span class="string">"Fatal: wrong arguments passed: </span><span class="variable">@_</span><span class="string">"</span> <span class="operator">);</span>
+    <span class="variable">cluck</span><span class="operator">(</span>  <span class="string">"Wrong arguments passed -- including stacktrace: </span><span class="variable">@_</span><span class="string">"</span> <span class="operator">);</span>
+    <span class="variable">confess</span><span class="operator">(</span><span class="string">"Fatal: wrong arguments passed -- including stacktrace: </span><span class="variable">@_</span><span class="string">"</span> <span class="operator">);</span>
+    
+    <span class="comment">### retrieve individual message</span>
+    <span class="keyword">my</span> <span class="variable">@stack</span> <span class="operator">=</span> <span class="variable">Log::Message::Simple</span><span class="operator">-&gt;</span><span class="variable">stack</span><span class="operator">;</span>
+    <span class="keyword">my</span> <span class="variable">@stack</span> <span class="operator">=</span> <span class="variable">Log::Message::Simple</span><span class="operator">-&gt;</span><span class="variable">flush</span><span class="operator">;</span>
+    
+    <span class="comment">### retrieve the entire stack in printable form</span>
+    <span class="keyword">my</span> <span class="variable">$msgs</span>  <span class="operator">=</span> <span class="variable">Log::Message::Simple</span><span class="operator">-&gt;</span><span class="variable">stack_as_string</span><span class="operator">;</span>
+    <span class="keyword">my</span> <span class="variable">$trace</span> <span class="operator">=</span> <span class="variable">Log::Message::Simple</span><span class="operator">-&gt;</span><span class="variable">stack_as_string</span><span class="operator">(</span><span class="number">1</span><span class="operator">);</span>
+    
+    <span class="comment">### redirect output</span>
+    <span class="keyword">local</span> <span class="variable">$Log::Message::Simple::MSG_FH</span>     <span class="operator">=</span> <span class="operator">\</span><span class="variable">*STDERR</span><span class="operator">;</span>
+    <span class="keyword">local</span> <span class="variable">$Log::Message::Simple::ERROR_FH</span>   <span class="operator">=</span> <span class="operator">\</span><span class="variable">*STDERR</span><span class="operator">;</span>
+    <span class="keyword">local</span> <span class="variable">$Log::Message::Simple::DEBUG_FH</span>   <span class="operator">=</span> <span class="operator">\</span><span class="variable">*STDERR</span><span class="operator">;</span>
+    
+    <span class="comment">### force a stacktrace on error</span>
+    <span class="keyword">local</span> <span class="variable">$Log::Message::Simple::STACKTRACE_ON_ERROR</span> <span class="operator">=</span> <span class="number">1</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module provides standardized logging facilities using the <code><code>Log::Message</code></code> module.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<h2 id="msg-message-string-VERBOSE-">msg(&quot;message string&quot; [,VERBOSE])</h2>
+
+<p>Records a message on the stack, and prints it to <code><code>STDOUT</code></code> (or actually <code><code>$MSG_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> section below), if the <code><code>VERBOSE</code></code> option is true. The <code><code>VERBOSE</code></code> option defaults to false.</p>
+
+<p>Exported by default, or using the <code><code>:STD</code></code> tag.</p>
+
+<h2 id="debug-message-string-VERBOSE-">debug(&quot;message string&quot; [,VERBOSE])</h2>
+
+<p>Records a debug message on the stack, and prints it to <code><code>STDOUT</code></code> (or actually <code><code>$DEBUG_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> section below), if the <code><code>VERBOSE</code></code> option is true. The <code><code>VERBOSE</code></code> option defaults to false.</p>
+
+<p>Exported by default, or using the <code><code>:STD</code></code> tag.</p>
+
+<h2 id="error-error-string-VERBOSE-">error(&quot;error string&quot; [,VERBOSE])</h2>
+
+<p>Records an error on the stack, and prints it to <code><code>STDERR</code></code> (or actually <code><code>$ERROR_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> sections below), if the <code><code>VERBOSE</code></code> option is true. The <code><code>VERBOSE</code></code> options defaults to true.</p>
+
+<p>Exported by default, or using the <code><code>:STD</code></code> tag.</p>
+
+<h2 id="carp-">carp();</h2>
+
+<p>Provides functionality equal to <code><code>Carp::carp()</code></code> while still logging to the stack.</p>
+
+<p>Exported by using the <code><code>:CARP</code></code> tag.</p>
+
+<h2 id="croak-">croak();</h2>
+
+<p>Provides functionality equal to <code><code>Carp::croak()</code></code> while still logging to the stack.</p>
+
+<p>Exported by using the <code><code>:CARP</code></code> tag.</p>
+
+<h2 id="confess-">confess();</h2>
+
+<p>Provides functionality equal to <code><code>Carp::confess()</code></code> while still logging to the stack.</p>
+
+<p>Exported by using the <code><code>:CARP</code></code> tag.</p>
+
+<h2 id="cluck-">cluck();</h2>
+
+<p>Provides functionality equal to <code><code>Carp::cluck()</code></code> while still logging to the stack.</p>
+
+<p>Exported by using the <code><code>:CARP</code></code> tag.</p>
+
+<h1 id="CLASS-METHODS">CLASS METHODS</h1>
+
+<h2 id="Log::Message::Simple-stack-">Log::Message::Simple-&gt;stack()</h2>
+
+<p>Retrieves all the items on the stack. Since <code><code>Log::Message::Simple</code></code> is implemented using <code><code>Log::Message</code></code>, consult its manpage for the function <code><code>retrieve</code></code> to see what is returned and how to use the items.</p>
+
+<h2 id="Log::Message::Simple-stack_as_string-TRACE-">Log::Message::Simple-&gt;stack_as_string([TRACE])</h2>
+
+<p>Returns the whole stack as a printable string. If the <code><code>TRACE</code></code> option is true all items are returned with <code><code>Carp::longmess</code></code> output, rather than just the message. <code><code>TRACE</code></code> defaults to false.</p>
+
+<h2 id="Log::Message::Simple-flush-">Log::Message::Simple-&gt;flush()</h2>
+
+<p>Removes all the items from the stack and returns them. Since <code><code>Log::Message::Simple</code></code> is implemented using <code><code>Log::Message</code></code>, consult its manpage for the function <code><code>retrieve</code></code> to see what is returned and how to use the items.</p>
+
+<h1 id="GLOBAL-VARIABLES">GLOBAL VARIABLES</h1>
+
+<dl>
+
+<dt id="ERROR_FH">$ERROR_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>error()</code></code> are being printed. This defaults to <code><code>*STDERR</code></code>.</p>
+
+</dd>
+<dt id="MSG_FH">$MSG_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>msg()</code></code> are being printed. This default to <code><code>*STDOUT</code></code>.</p>
+
+</dd>
+<dt id="DEBUG_FH">$DEBUG_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>debug()</code></code> are being printed. This default to <code><code>*STDOUT</code></code>.</p>
+
+</dd>
+<dt id="STACKTRACE_ON_ERROR">$STACKTRACE_ON_ERROR</dt>
+<dd>
+
+<p>If this option is set to <code><code>true</code></code>, every call to <code><code>error()</code></code> will generate a stacktrace using <code><code>Carp::shortmess()</code></code>. Defaults to <code><code>false</code></code></p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

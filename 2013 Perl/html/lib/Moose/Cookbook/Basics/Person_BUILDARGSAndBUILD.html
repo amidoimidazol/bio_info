@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#MORE-CONSIDERATIONS">MORE CONSIDERATIONS</a></li>
+  <li><a href="#CONCLUSION">CONCLUSION</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Moose::Cookbook::Basics::Person_BUILDARGSAndBUILD - Using BUILDARGS and BUILD to hook into object construction</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>version 2.0604</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">package</span> <span class="variable">Person</span><span class="operator">;</span>
+  
+  <span class="variable">has</span> <span class="string">'ssn'</span> <span class="operator">=&gt;</span> <span class="operator">(</span>
+      <span class="string">is</span>        <span class="operator">=&gt;</span> <span class="string">'ro'</span><span class="operator">,</span>
+      <span class="string">isa</span>       <span class="operator">=&gt;</span> <span class="string">'Str'</span><span class="operator">,</span>
+      <span class="string">predicate</span> <span class="operator">=&gt;</span> <span class="string">'has_ssn'</span><span class="operator">,</span>
+  <span class="operator">);</span>
+  
+  <span class="variable">has</span> <span class="string">'country_of_residence'</span> <span class="operator">=&gt;</span> <span class="operator">(</span>
+      <span class="string">is</span>      <span class="operator">=&gt;</span> <span class="string">'ro'</span><span class="operator">,</span>
+      <span class="string">isa</span>     <span class="operator">=&gt;</span> <span class="string">'Str'</span><span class="operator">,</span>
+      <span class="string">default</span> <span class="operator">=&gt;</span> <span class="string">'usa'</span>
+  <span class="operator">);</span>
+  
+  <span class="variable">has</span> <span class="string">'first_name'</span> <span class="operator">=&gt;</span> <span class="operator">(</span>
+      <span class="string">is</span>  <span class="operator">=&gt;</span> <span class="string">'ro'</span><span class="operator">,</span>
+      <span class="string">isa</span> <span class="operator">=&gt;</span> <span class="string">'Str'</span><span class="operator">,</span>
+  <span class="operator">);</span>
+  
+  <span class="variable">has</span> <span class="string">'last_name'</span> <span class="operator">=&gt;</span> <span class="operator">(</span>
+      <span class="string">is</span>  <span class="operator">=&gt;</span> <span class="string">'ro'</span><span class="operator">,</span>
+      <span class="string">isa</span> <span class="operator">=&gt;</span> <span class="string">'Str'</span><span class="operator">,</span>
+  <span class="operator">);</span>
+  
+  <span class="variable">around</span> <span class="string">BUILDARGS</span> <span class="operator">=&gt;</span> <span class="keyword">sub</span><span class="variable"> </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$orig</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+      <span class="keyword">my</span> <span class="variable">$class</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">@_</span> <span class="operator">==</span> <span class="number">1</span> <span class="operator">&amp;&amp;</span> <span class="operator">!</span> <span class="keyword">ref</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">)</span> <span class="operator">{</span>
+          <span class="keyword">return</span> <span class="variable">$class</span><span class="operator">-&gt;</span><span class="variable">$orig</span><span class="operator">(</span><span class="string">ssn</span> <span class="operator">=&gt;</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">);</span>
+      <span class="operator">}</span>
+      <span class="keyword">else</span> <span class="operator">{</span>
+          <span class="keyword">return</span> <span class="variable">$class</span><span class="operator">-&gt;</span><span class="variable">$orig</span><span class="operator">(</span><span class="variable">@_</span><span class="operator">);</span>
+      <span class="operator">}</span>
+  <span class="operator">};</span>
+  
+  <span class="keyword">sub</span><span class="variable"> BUILD </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$self</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">country_of_residence</span> <span class="keyword">eq</span> <span class="string">'usa'</span> <span class="operator">)</span> <span class="operator">{</span>
+          <span class="keyword">die</span> <span class="string">'Cannot create a Person who lives in the USA without an ssn.'</span>
+              <span class="keyword">unless</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">has_ssn</span><span class="operator">;</span>
+      <span class="operator">}</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This recipe demonstrates the use of <code><code>BUILDARGS</code></code> and <code><code>BUILD</code></code>. By defining these methods, we can hook into the object construction process without overriding <code><code>new</code></code>.</p>
+
+<p>The <code><code>BUILDARGS</code></code> method is called <i>before</i> an object has been created. It is called as a class method, and receives all of the parameters passed to the <code><code>new</code></code> method. It is expected to do something with these arguments and return a hash reference. The keys of the hash must be attribute <code><code>init_arg</code></code>s.</p>
+
+<p>The primary purpose of <code><code>BUILDARGS</code></code> is to allow a class to accept something other than named arguments. In the case of our <code><code>Person</code></code> class, we are allowing it to be called with a single argument, a social security number:</p>
+
+<pre><code><code>  <span class="keyword">my</span> <span class="variable">$person</span> <span class="operator">=</span> <span class="variable">Person</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span><span class="string">'123-45-6789'</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>The key part of our <code><code>BUILDARGS</code></code> is this conditional:</p>
+
+<pre><code><code>      <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">@_</span> <span class="operator">==</span> <span class="number">1</span> <span class="operator">&amp;&amp;</span> <span class="operator">!</span> <span class="keyword">ref</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">)</span> <span class="operator">{</span>
+          <span class="keyword">return</span> <span class="variable">$class</span><span class="operator">-&gt;</span><span class="variable">$orig</span><span class="operator">(</span><span class="string">ssn</span> <span class="operator">=&gt;</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">);</span>
+      <span class="operator">}</span>
+</code></code></pre>
+
+<p>By default, Moose constructors accept a list of key-value pairs, or a hash reference. We need to make sure that <code><code>$_[0]</code></code> is not a reference before assuming it is a social security number.</p>
+
+<p>We call the original <code><code>BUILDARGS</code></code> method to handle all the other cases. You should always do this in your own <code><code>BUILDARGS</code></code> methods, since <a href="../../../../lib/Moose/Object.html">Moose::Object</a> provides its own <code><code>BUILDARGS</code></code> method that handles hash references and a list of key-value pairs.</p>
+
+<p>The <code><code>BUILD</code></code> method is called <i>after</i> the object is constructed, but before it is returned to the caller. The <code><code>BUILD</code></code> method provides an opportunity to check the object state as a whole. This is a good place to put logic that cannot be expressed as a type constraint on a single attribute.</p>
+
+<p>In the <code><code>Person</code></code> class, we need to check the relationship between two attributes, <code><code>ssn</code></code> and <code><code>country_of_residence</code></code>. We throw an exception if the object is not logically consistent.</p>
+
+<h1 id="MORE-CONSIDERATIONS">MORE CONSIDERATIONS</h1>
+
+<p>This recipe is made significantly simpler because all of the attributes are read-only. If the <code><code>country_of_residence</code></code> attribute were settable, we would need to check that a Person had an <code><code>ssn</code></code> if the new country was <code><code>usa</code></code>. This could be done with a <code><code>before</code></code> modifier.</p>
+
+<h1 id="CONCLUSION">CONCLUSION</h1>
+
+<p>We have repeatedly discouraged overriding <code><code>new</code></code> in Moose classes. This recipe shows how you can use <code><code>BUILDARGS</code></code> and <code><code>BUILD</code></code> to hook into object construction without overriding <code><code>new</code></code>.</p>
+
+<p>The <code><code>BUILDARGS</code></code> method lets us expand on Moose&#39;s built-in parameter handling for constructors. The <code><code>BUILD</code></code> method lets us implement logical constraints across the whole object after it is created.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Moose is maintained by the Moose Cabal, along with the help of many contributors. See <a href="../../../../lib/Moose.html#CABAL">&quot;CABAL&quot; in Moose</a> and <a href="../../../../lib/Moose.html#CONTRIBUTORS">&quot;CONTRIBUTORS&quot; in Moose</a> for details.</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>This software is copyright (c) 2012 by Infinity Interactive, Inc..</p>
+
+<p>This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.</p>
+
+
+</body>
+
+</html>
+
+

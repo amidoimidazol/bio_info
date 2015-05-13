@@ -1,0 +1,9 @@
+	#!/usr/bin/perl -w
+
+	$proteinfilename = 'NM_021964fragment.pep';
+		open (PROTEINFILE, $proteinfilename);
+	@protein = <PROTEINFILE>;
+		print @protein;
+
+	close PROTEINFILE;
+	exit;

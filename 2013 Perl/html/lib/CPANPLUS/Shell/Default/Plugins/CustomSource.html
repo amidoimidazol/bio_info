@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Shell::Default::Plugins::CustomSource - add custom sources to CPANPLUS</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    ### elaborate help text
+    CPAN Terminal&gt; /? cs
+
+    ### add a new custom source
+    CPAN Terminal&gt; /cs --add file:///path/to/releases
+
+    ### list all your custom sources by
+    CPAN Terminal&gt; /cs --list
+
+    ### display the contents of a custom source by URI or ID
+    CPAN Terminal&gt; /cs --contents file:///path/to/releases
+    CPAN Terminal&gt; /cs --contents 1
+
+    ### Update a custom source by URI or ID
+    CPAN Terminal&gt; /cs --update file:///path/to/releases
+    CPAN Terminal&gt; /cs --update 1
+
+    ### Remove a custom source by URI or ID
+    CPAN Terminal&gt; /cs --remove file:///path/to/releases
+    CPAN Terminal&gt; /cs --remove 1
+
+    ### Write an index file for a custom source, to share
+    ### with 3rd parties or remote users
+    CPAN Terminal&gt; /cs --write file:///path/to/releases
+
+    ### Make sure to save your sources when adding/removing
+    ### sources, so your changes are reflected in the cache:
+    CPAN Terminal&gt; x</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This is a <code><code>CPANPLUS::Shell::Default</code></code> plugin that can add custom sources to your CPANPLUS installation. This is a wrapper around the <code><code>custom module sources</code></code> code as outlined in <a href="../../../../../lib/CPANPLUS/Backend.html#CUSTOM-MODULE-SOURCES">&quot;CUSTOM MODULE SOURCES&quot; in CPANPLUS::Backend</a>.</p>
+
+<p>This allows you to extend your index of available modules beyond what&#39;s available on <code><code>CPAN</code></code> with your own local distributions, or ones offered by third parties.</p>
+
+
+</body>
+
+</html>
+
+

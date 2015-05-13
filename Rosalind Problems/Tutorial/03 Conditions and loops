@@ -1,0 +1,20 @@
+#Setting Up variables
+a = 4205
+b = 9055
+total = 0
+
+#While a is less or equal to b 
+while a <= b:
+    #If the number is odd sum it with total and incrise it with one
+    if a % 2 == 1:
+        total = total + a 
+        a = a + 1
+
+    else:
+        a = a + 1
+        
+
+print total
+
+
+

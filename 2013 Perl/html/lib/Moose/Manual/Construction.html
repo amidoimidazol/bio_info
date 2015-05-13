@@ -1,0 +1,169 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#WHERES-THE-CONSTRUCTOR-">WHERE&#39;S THE CONSTRUCTOR?</a></li>
+  <li><a href="#OBJECT-CONSTRUCTION-AND-ATTRIBUTES">OBJECT CONSTRUCTION AND ATTRIBUTES</a></li>
+  <li><a href="#OBJECT-CONSTRUCTION-HOOKS">OBJECT CONSTRUCTION HOOKS</a>
+    <ul>
+      <li><a href="#BUILDARGS">BUILDARGS</a></li>
+      <li><a href="#BUILD">BUILD</a>
+        <ul>
+          <li><a href="#BUILD-and-parent-classes">BUILD and parent classes</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#OBJECT-DESTRUCTION">OBJECT DESTRUCTION</a>
+    <ul>
+      <li><a href="#Error-Handling-During-Destruction">Error Handling During Destruction</a></li>
+    </ul>
+  </li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Moose::Manual::Construction - Object construction (and destruction) with Moose</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>version 2.0604</p>
+
+<h1 id="WHERES-THE-CONSTRUCTOR-">WHERE&#39;S THE CONSTRUCTOR?</h1>
+
+<p><b>Do not define a <code><code>new()</code></code> method for your classes!</b></p>
+
+<p>When you <code><code>use Moose</code></code> in your class, your class becomes a subclass of <a href="../../../lib/Moose/Object.html">Moose::Object</a>. The <a href="../../../lib/Moose/Object.html">Moose::Object</a> provides a <code><code>new()</code></code> method for your class. If you follow our recommendations in <a href="../../../lib/Moose/Manual/BestPractices.html">Moose::Manual::BestPractices</a> and make your class immutable, then you actually get a class-specific <code><code>new()</code></code> method &quot;inlined&quot; in your class.</p>
+
+<h1 id="OBJECT-CONSTRUCTION-AND-ATTRIBUTES">OBJECT CONSTRUCTION AND ATTRIBUTES</h1>
+
+<p>The Moose-provided constructor accepts a hash or hash reference of named parameters matching your attributes (actually, matching their <code><code>init_arg</code></code>s). This is just another way in which Moose keeps you from worrying <i>how</i> classes are implemented. Simply define a class and you&#39;re ready to start creating objects!</p>
+
+<h1 id="OBJECT-CONSTRUCTION-HOOKS">OBJECT CONSTRUCTION HOOKS</h1>
+
+<p>Moose lets you hook into object construction. You can validate an object&#39;s state, do logging, customize construction from parameters which do not match your attributes, or maybe allow non-hash(ref) constructor arguments. You can do this by creating <code><code>BUILD</code></code> and/or <code><code>BUILDARGS</code></code> methods.</p>
+
+<p>If these methods exist in your class, Moose will arrange for them to be called as part of the object construction process.</p>
+
+<h2 id="BUILDARGS">BUILDARGS</h2>
+
+<p>The <code><code>BUILDARGS</code></code> method is called as a class method <i>before</i> an object is created. It will receive all of the arguments that were passed to <code><code>new()</code></code> <i>as-is</i>, and is expected to return a hash reference. This hash reference will be used to construct the object, so it should contain keys matching your attributes&#39; names (well, <code><code>init_arg</code></code>s).</p>
+
+<p>One common use for <code><code>BUILDARGS</code></code> is to accommodate a non-hash(ref) calling style. For example, we might want to allow our Person class to be called with a single argument of a social security number, <code><code>Person-&gt;new($ssn)</code></code>.</p>
+
+<p>Without a <code><code>BUILDARGS</code></code> method, Moose will complain, because it expects a hash or hash reference. We can use the <code><code>BUILDARGS</code></code> method to accommodate this calling style:</p>
+
+<pre><code><code>  <span class="variable">around</span> <span class="string">BUILDARGS</span> <span class="operator">=&gt;</span> <span class="keyword">sub</span><span class="variable"> </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$orig</span>  <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+      <span class="keyword">my</span> <span class="variable">$class</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">@_</span> <span class="operator">==</span> <span class="number">1</span> <span class="operator">&amp;&amp;</span> <span class="operator">!</span><span class="keyword">ref</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">)</span> <span class="operator">{</span>
+          <span class="keyword">return</span> <span class="variable">$class</span><span class="operator">-&gt;</span><span class="variable">$orig</span><span class="operator">(</span> <span class="string">ssn</span> <span class="operator">=&gt;</span> <span class="variable">$_</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">);</span>
+      <span class="operator">}</span>
+      <span class="keyword">else</span> <span class="operator">{</span>
+          <span class="keyword">return</span> <span class="variable">$class</span><span class="operator">-&gt;</span><span class="variable">$orig</span><span class="operator">(</span><span class="variable">@_</span><span class="operator">);</span>
+      <span class="operator">}</span>
+  <span class="operator">};</span>
+</code></code></pre>
+
+<p>Note the call to <code><code>$class-&gt;$orig</code></code>. This will call the default <code><code>BUILDARGS</code></code> in <a href="../../../lib/Moose/Object.html">Moose::Object</a>. This method takes care of distinguishing between a hash reference and a plain hash for you.</p>
+
+<h2 id="BUILD">BUILD</h2>
+
+<p>The <code><code>BUILD</code></code> method is called <i>after</i> an object is created. There are several reasons to use a <code><code>BUILD</code></code> method. One of the most common is to check that the object state is valid. While we can validate individual attributes through the use of types, we can&#39;t validate the state of a whole object that way.</p>
+
+<pre><code><code>  <span class="keyword">sub</span><span class="variable"> BUILD </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$self</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">country_of_residence</span> <span class="keyword">eq</span> <span class="string">'USA'</span> <span class="operator">)</span> <span class="operator">{</span>
+          <span class="keyword">die</span> <span class="string">'All US residents must have an SSN'</span>
+              <span class="keyword">unless</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">has_ssn</span><span class="operator">;</span>
+      <span class="operator">}</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<p>Another use of a <code><code>BUILD</code></code> method could be for logging or tracking object creation.</p>
+
+<pre><code><code>  <span class="keyword">sub</span><span class="variable"> BUILD </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$self</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="variable">debug</span><span class="operator">(</span> <span class="string">'Made a new person - SSN = '</span><span class="operator">,</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">ssn</span><span class="operator">,</span> <span class="operator">);</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<p>The <code><code>BUILD</code></code> method is called with the hash reference of the parameters passed to the constructor (after munging by <code><code>BUILDARGS</code></code>). This gives you a chance to do something with parameters that do not represent object attributes.</p>
+
+<pre><code><code>  <span class="keyword">sub</span><span class="variable"> BUILD </span><span class="operator">{</span>
+      <span class="keyword">my</span> <span class="variable">$self</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+      <span class="keyword">my</span> <span class="variable">$args</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+  
+      <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">add_friend</span><span class="operator">(</span>
+          <span class="variable">My::User</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>
+              <span class="string">user_id</span> <span class="operator">=&gt;</span> <span class="variable">$args</span><span class="operator">-&gt;</span><span class="operator">{</span><span class="string">user_id</span><span class="operator">}</span><span class="operator">,</span>
+          <span class="operator">)</span>
+      <span class="operator">);</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<h3 id="BUILD-and-parent-classes">BUILD and parent classes</h3>
+
+<p>The interaction between multiple <code><code>BUILD</code></code> methods in an inheritance hierarchy is different from normal Perl methods. <b>You should never call <code><code>$self-&gt;SUPER::BUILD</code></code></b>, nor should you ever apply a method modifier to <code><code>BUILD</code></code>.</p>
+
+<p>Moose arranges to have all of the <code><code>BUILD</code></code> methods in a hierarchy called when an object is constructed, <i>from parents to children</i>. This might be surprising at first, because it reverses the normal order of method inheritance.</p>
+
+<p>The theory behind this is that <code><code>BUILD</code></code> methods can only be used for increasing specialization of a class&#39;s constraints, so it makes sense to call the least specific <code><code>BUILD</code></code> method first. Also, this is how Perl 6 does it.</p>
+
+<h1 id="OBJECT-DESTRUCTION">OBJECT DESTRUCTION</h1>
+
+<p>Moose provides a hook for object destruction with the <code><code>DEMOLISH</code></code> method. As with <code><code>BUILD</code></code>, you should never explicitly call <code><code>$self-&gt;SUPER::DEMOLISH</code></code>. Moose will arrange for all of the <code><code>DEMOLISH</code></code> methods in your hierarchy to be called, from most to least specific.</p>
+
+<p>Each <code><code>DEMOLISH</code></code> method is called with a single argument.</p>
+
+<p>In most cases, Perl&#39;s built-in garbage collection is sufficient, and you won&#39;t need to provide a <code><code>DEMOLISH</code></code> method.</p>
+
+<h2 id="Error-Handling-During-Destruction">Error Handling During Destruction</h2>
+
+<p>The interaction of object destruction and Perl&#39;s global <code><code>$@</code></code> and <code><code>$?</code></code> variables can be very confusing.</p>
+
+<p>Moose always localizes <code><code>$?</code></code> when an object is being destroyed. This means that if you explicitly call <code><code>exit</code></code>, that exit code will be preserved even if an object&#39;s destructor makes a system call.</p>
+
+<p>Moose also preserves <code><code>$@</code></code> against any <code><code>eval</code></code> calls that may happen during object destruction. However, if an object&#39;s <code><code>DEMOLISH</code></code> method actually dies, Moose explicitly rethrows that error.</p>
+
+<p>If you do not like this behavior, you will have to provide your own <code><code>DESTROY</code></code> method and use that instead of the one provided by <a href="../../../lib/Moose/Object.html">Moose::Object</a>. You can do this to preserve <code><code>$@</code></code> <i>and</i> capture any errors from object destruction by creating an error stack.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Moose is maintained by the Moose Cabal, along with the help of many contributors. See <a href="../../../lib/Moose.html#CABAL">&quot;CABAL&quot; in Moose</a> and <a href="../../../lib/Moose.html#CONTRIBUTORS">&quot;CONTRIBUTORS&quot; in Moose</a> for details.</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>This software is copyright (c) 2012 by Infinity Interactive, Inc..</p>
+
+<p>This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.</p>
+
+
+</body>
+
+</html>
+
+

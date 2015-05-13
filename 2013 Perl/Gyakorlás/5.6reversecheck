@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+#megnézi hogy reverse complement e  a szal
+
+$DNA1 = "AGTC";
+$DNA2 = "GACT";
+
+#stringbol arrayt csinal
+
+@DNA1 = split('',$DNA1);
+@DNA2 = split('',$DNA2);
+
+$t = 0;
+$f = 0;
+
+$base = shift @DNA1;
+$base2 = pop @DNA2;
+
+for ( $position = 0 ;$position <= scalar @DNA1;++$position)
+	{
+	
+
+# ket kondicio akkor true ha mindketto igaz
+if (($base eq 'A') && ($base2 eq 'T'))
+	{++$t;}
+
+elsif (($base eq 'G') && ($base2 eq 'C'))
+	{++$t;}
+
+elsif (($base eq 'T') && ($base2 eq 'A'))
+	{++$t;}
+
+elsif (($base eq 'C') && ($base2 eq 'G'))
+	{++$t;}
+	
+else {++$f;}
+
+	}
+	
+if ($f > 0)
+	{print "Nem reverse complement!\n";}
+else {print "Reverse complement!\n";
+		exit;}
+		exit;

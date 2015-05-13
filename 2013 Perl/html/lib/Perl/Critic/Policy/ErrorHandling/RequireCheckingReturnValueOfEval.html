@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#AFFILIATION">AFFILIATION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Perl::Critic::Policy::ErrorHandling::RequireCheckingReturnValueOfEval - You can&#39;t depend upon the value of <code><code>$@</code></code>/<code><code>$EVAL_ERROR</code></code> to tell whether an <code><code>eval</code></code> failed.</p>
+
+<h1 id="AFFILIATION">AFFILIATION</h1>
+
+<p>This Policy is part of the core <a href="../../../../../lib/Perl/Critic.html">Perl::Critic</a> distribution.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A common idiom in perl for dealing with possible errors is to use <code><code>eval</code></code> followed by a check of <code><code>$@</code></code>/<code><code>$EVAL_ERROR</code></code>:</p>
+
+<pre><code><code>    <span class="keyword">eval</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">};</span>
+    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">$EVAL_ERROR</span><span class="operator">)</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<p>There&#39;s a problem with this: the value of <code><code>$EVAL_ERROR</code></code> can change between the end of the <code><code>eval</code></code> and the <code><code>if</code></code> statement. The issue is object destructors:</p>
+
+<pre><code><code>    <span class="keyword">package</span> <span class="variable">Foo</span><span class="operator">;</span>
+    
+    <span class="operator">...</span>
+    
+    <span class="keyword">sub</span><span class="variable"> DESTROY </span><span class="operator">{</span>
+        <span class="operator">...</span>
+        <span class="keyword">eval</span> <span class="operator">{</span> <span class="operator">...</span> <span class="operator">};</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span>
+    
+    <span class="keyword">package</span> <span class="variable">main</span><span class="operator">;</span>
+    
+    <span class="keyword">eval</span> <span class="operator">{</span>
+        <span class="keyword">my</span> <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">Foo</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">();</span>
+        <span class="operator">...</span>
+    <span class="operator">};</span>
+    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">$EVAL_ERROR</span><span class="operator">)</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<p>Assuming there are no other references to <code><code>$foo</code></code> created, when the <code><code>eval</code></code> block in <code><code>main</code></code> is exited, <code><code>Foo::DESTROY()</code></code> will be invoked, regardless of whether the <code><code>eval</code></code> finished normally or not. If the <code><code>eval</code></code> in <code><code>main</code></code> fails, but the <code><code>eval</code></code> in <code><code>Foo::DESTROY()</code></code> succeeds, then <code><code>$EVAL_ERROR</code></code> will be empty by the time that the <code><code>if</code></code> is executed. Additional issues arise if you depend upon the exact contents of <code><code>$EVAL_ERROR</code></code> and both <code><code>eval</code></code>s fail, because the messages from both will be concatenated.</p>
+
+<p>Even if there isn&#39;t an <code><code>eval</code></code> directly in the <code><code>DESTROY()</code></code> method code, it may invoke code that does use <code><code>eval</code></code> or otherwise affects <code><code>$EVAL_ERROR</code></code>.</p>
+
+<p>The solution is to ensure that, upon normal exit, an <code><code>eval</code></code> returns a true value and to test that value:</p>
+
+<pre><code><code>    <span class="comment"># Constructors are no problem.</span>
+    <span class="keyword">my</span> <span class="variable">$object</span> <span class="operator">=</span> <span class="keyword">eval</span> <span class="operator">{</span> <span class="variable">Class</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">()</span> <span class="operator">};</span>
+    
+    <span class="comment"># To cover the possiblity that an operation may correctly return a</span>
+    <span class="comment"># false value, end the block with "1":</span>
+    <span class="keyword">if</span> <span class="operator">(</span> <span class="keyword">eval</span> <span class="operator">{</span> <span class="variable">something</span><span class="operator">();</span> <span class="number">1</span> <span class="operator">}</span> <span class="operator">)</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span>
+    
+    <span class="keyword">eval</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+        <span class="number">1</span><span class="operator">;</span>
+    <span class="operator">}</span>
+        <span class="keyword">or</span> <span class="keyword">do</span> <span class="operator">{</span>
+            <span class="comment"># Error handling here</span>
+        <span class="operator">};</span>
+</code></code></pre>
+
+<p>Unfortunately, you can&#39;t use the <code><code>defined</code></code> function to test the result; <code><code>eval</code></code> returns an empty string on failure.</p>
+
+<p>Various modules have been written to take some of the pain out of properly localizing and checking <code><code>$@</code></code>/<code><code>$EVAL_ERROR</code></code>. For example:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Try::Tiny</span><span class="operator">;</span>
+    <span class="variable">try</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span> <span class="variable">catch</span> <span class="operator">{</span>
+        <span class="comment"># Error handling here;</span>
+        <span class="comment"># The exception is in $_/$ARG, not $@/$EVAL_ERROR.</span>
+    <span class="operator">};</span>  <span class="comment"># Note semicolon.</span>
+</code></code></pre>
+
+<p>&quot;But we don&#39;t use DESTROY() anywhere in our code!&quot; you say. That may be the case, but do any of the third-party modules you use have them? What about any you may use in the future or updated versions of the ones you already use?</p>
+
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
+
+<p>This Policy is not configurable except for the standard options.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>See thread on perl5-porters starting here: <a href="http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2008-06/msg00537.html">http://www.xray.mpe.mpg.de/mailing-lists/perl5-porters/2008-06/msg00537.html</a>.</p>
+
+<p>For a nice, easy, non-magical way of properly handling exceptions, see <a href="../../../../../lib/Try/Tiny.html">Try::Tiny</a>.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Elliot Shank <code><code>&lt;perl@galumph.com&gt;</code></code></p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright (c) 2008-2011 Elliot Shank.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself. The full text of this license can be found in the LICENSE file included with this module.</p>
+
+
+</body>
+
+</html>
+
+

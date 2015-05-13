@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#EXPORTS">EXPORTS</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR-COPYRIGHT">AUTHOR / COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Readonly::XS - Companion module for Readonly.pm, to speed up read-only scalar variables.</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>This document describes version 1.05 of Readonly::XS, February 24, 2009.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  Install this module, but do not use it.</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The Readonly module (q.v.) is an effective way to create non-modifiable variables. However, it&#39;s relatively slow.</p>
+
+<p>The reason it&#39;s slow is that is implements the read-only-ness of variables via tied objects. This mechanism is inherently slow. Perl simply has to do a lot of work under the hood to make tied variables work.</p>
+
+<p>This module corrects the speed problem, at least with respect to scalar variables. When Readonly::XS is installed, Readonly uses it to access the internals of scalar variables. Instead of creating a scalar variable object and tying it, Readonly simply flips the SvREADONLY bit in the scalar&#39;s FLAGS structure.</p>
+
+<p>Readonly arrays and hashes are not sped up by this, since the SvREADONLY flag only works for scalars. Arrays and hashes always use the tie interface.</p>
+
+<p>Why implement this as a separate module? Because not everyone can use XS. Not everyone has a C compiler. Also, installations with a statically-linked perl may not want to recompile their perl binary just for this module. Rather than render Readonly.pm useless for these people, the XS portion was put into a separate module.</p>
+
+<p>Programs that you write do not need to know whether Readonly::XS is installed or not. They should just &quot;use Readonly&quot; and let Readonly worry about whether or not it can use XS. If the Readonly::XS is present, Readonly will be faster. If not, it won&#39;t. Either way, it will still work, and your code will not have to change.</p>
+
+<p>Your program can check whether Readonly.pm is using XS or not by examining the $Readonly::XSokay variable. It will be true if the XS module was found and is being used. Please do not change this variable.</p>
+
+<h2 id="EXPORTS">EXPORTS</h2>
+
+<p>None.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>Readonly.pm</p>
+
+<h1 id="AUTHOR-COPYRIGHT">AUTHOR / COPYRIGHT</h1>
+
+<p>Eric Roode, roode@cpan.org</p>
+
+<p>Copyright (c) 2003-2009 by Eric J. Roode. All Rights Reserved. This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+<p>To avoid my spam filter, please include &quot;Perl&quot;, &quot;module&quot;, or this module&#39;s name in the message&#39;s subject line, and/or GPG-sign your message.</p>
+
+
+</body>
+
+</html>
+
+

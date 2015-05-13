@@ -1,0 +1,31 @@
+#!/usr/bin/perl -w
+#prefixek
+use strict;
+use warnings;
+
+use lib '\perl';
+use biolib;
+#scalarok
+my ($dna) = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+my $i;
+my $mutant;
+#a rand funkció seedelese ! nem biztos hogy jó
+(time|$$);
+#mutate lehivasa
+$mutant = mutate_better($dna);
+
+#print
+print "Az eredeti DNS szekvencia:\n\n";
+print "$dna\n";
+print "A mutans DNS szekvencia:\n\n";
+print "$mutant\n";
+
+print "Mutacio alakulasa 10 koron at:\n\n";
+
+# 10x megismetel
+for ($i=0;$i<10;++$i)
+	{
+	$mutant =mutate_better($mutant);
+	print "$mutant\n";
+	}
+exit;

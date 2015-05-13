@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#DATA">DATA</a></li>
+  <li><a href="#EXPORT">EXPORT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#SUPPORT">SUPPORT</a></li>
+  <li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+  <li><a href="#SOURCE-AVAILABILITY">SOURCE AVAILABILITY</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>B::Keywords - Lists of reserved barewords and symbol names</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">B::Keywords</span> <span class="string">qw( @Symbols @Barewords )</span><span class="operator">;</span>
+  <span class="keyword">print</span> <span class="keyword">join</span> <span class="string">"\n"</span><span class="operator">,</span> <span class="variable">@Symbols</span><span class="operator">,</span>
+                   <span class="variable">@Barewords</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>B::Keywords</code></code> supplies seven arrays of keywords: <code><code>@Scalars</code></code>, <code><code>@Arrays</code></code>, <code><code>@Hashes</code></code>, <code><code>@Filehandles</code></code>, <code><code>@Symbols</code></code>, <code><code>@Functions</code></code>, and <code><code>@Barewords</code></code>. The <code><code>@Symbols</code></code> array includes the contents of each of <code><code>@Scalars</code></code>, <code><code>@Arrays</code></code>, <code><code>@Hashes</code></code>, <code><code>@Functions</code></code> and <code><code>@Filehandles</code></code>. Similarly, <code><code>@Barewords</code></code> adds a few non-function keywords and operators to the <code><code>@Functions</code></code> array.</p>
+
+<p>All additions and modifications are welcome.</p>
+
+<h1 id="DATA">DATA</h1>
+
+<dl>
+
+<dt id="Scalars"><code><code>@Scalars</code></code></dt>
+<dd>
+
+</dd>
+<dt id="Arrays"><code><code>@Arrays</code></code></dt>
+<dd>
+
+</dd>
+<dt id="Hashes"><code><code>@Hashes</code></code></dt>
+<dd>
+
+</dd>
+<dt id="Filehandles"><code><code>@Filehandles</code></code></dt>
+<dd>
+
+</dd>
+<dt id="Functions"><code><code>@Functions</code></code></dt>
+<dd>
+
+<p>The above are lists of variables, special file handles, and built in functions.</p>
+
+</dd>
+<dt id="Symbols"><code><code>@Symbols</code></code></dt>
+<dd>
+
+<p>This is just the combination of all of the above: variables, file handles, and functions.</p>
+
+</dd>
+<dt id="Barewords"><code><code>@Barewords</code></code></dt>
+<dd>
+
+<p>This is a list of other special keywords in perl including operators and all the control structures.</p>
+
+</dd>
+</dl>
+
+<h1 id="EXPORT">EXPORT</h1>
+
+<p>Anything can be exported if you desire. Use the :all tag to get everything.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>keywords.pl from the perl source, <a href="../../lib/pods/perlvar.html">perlvar</a>, <a href="../../lib/pods/perlfunc.html">perlfunc</a>, <a href="../../lib/pods/perldelta.html">perldelta</a>.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>Please report any bugs or feature requests to <code><code>bug-B-Keywords at rt.cpan.org</code></code>, or through the web interface at <a href="http://rt.cpan.org/NoAuth/ReportBug.html?Queue=B-Keywords">http://rt.cpan.org/NoAuth/ReportBug.html?Queue=B-Keywords</a>. I will be notified, and then you&#39;ll automatically be notified of progress on your bug as I make changes.</p>
+
+<h1 id="SUPPORT">SUPPORT</h1>
+
+<p>You can find documentation for this module with the perldoc command.</p>
+
+<pre><code><code>  perldoc B::Keywords</code></code></pre>
+
+<p>You can also look for information at:</p>
+
+<ul>
+
+<li><p>RT: CPAN&#39;s request tracker</p>
+
+<p><a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=B-Keywords">http://rt.cpan.org/NoAuth/Bugs.html?Dist=B-Keywords</a></p>
+
+</li>
+<li><p>AnnoCPAN: Annotated CPAN documentation</p>
+
+<p><a href="http://annocpan.org/dist/B-Keywords">http://annocpan.org/dist/B-Keywords</a></p>
+
+</li>
+<li><p>CPAN Ratings</p>
+
+<p><a href="http://cpanratings.perl.org/d/B-Keywords">http://cpanratings.perl.org/d/B-Keywords</a></p>
+
+</li>
+<li><p>Search CPAN</p>
+
+<p><a href="http://search.cpan.org/dist/B-Keywords">http://search.cpan.org/dist/B-Keywords</a></p>
+
+</li>
+</ul>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</h1>
+
+<p>Michael G Schwern for patches</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>Copyright 2009 Joshua ben Jore, All rights reserved.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the terms of either:</p>
+
+<p>a) the GNU General Public License as published by the Free Software Foundation; version 2, or</p>
+
+<p>b) the &quot;Artistic License&quot; which comes with Perl.</p>
+
+<h1 id="SOURCE-AVAILABILITY">SOURCE AVAILABILITY</h1>
+
+<p>This source is in Github: <a href="git://github.com/jbenjore/b-keywords.git">git://github.com/jbenjore/b-keywords.git</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Joshua ben Jore &lt;jjore@cpan.org&gt;</p>
+
+
+</body>
+
+</html>
+
+

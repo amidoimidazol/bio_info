@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a>
+    <ul>
+      <li><a href="#cb-__memory_retrieve_source-name-name-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__memory_retrieve_source(name =&gt; $name, [path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#cb-__memory_save_source-verbose-BOOL-path-path-">$cb-&gt;__memory_save_source([verbose =&gt; BOOL, path =&gt; $path])</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Internals::Source::Memory - In memory implementation</p>
+
+<h2 id="cb-__memory_retrieve_source-name-name-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__memory_retrieve_source(name =&gt; $name, [path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p>This method retrieves a <i>storable</i>d tree identified by <code><code>$name</code></code>.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="name">name</dt>
+<dd>
+
+<p>The internal name for the source file to retrieve.</p>
+
+</dd>
+<dt id="uptodate">uptodate</dt>
+<dd>
+
+<p>A flag indicating whether the file-cache is up-to-date or not.</p>
+
+</dd>
+<dt id="path">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<p>Returns a tree on success, false on failure.</p>
+
+<h2 id="cb-__memory_save_source-verbose-BOOL-path-path-">$cb-&gt;__memory_save_source([verbose =&gt; BOOL, path =&gt; $path])</h2>
+
+<p>This method saves all the parsed trees in <i>storable</i>d format if <code><code>Storable</code></code> is available.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="path1">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose1">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<p>Returns true on success, false on failure.</p>
+
+
+</body>
+
+</html>
+
+

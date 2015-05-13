@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#Configure-CPANPLUS::Configure-new-load_configs-BOOL-">$Configure = CPANPLUS::Configure-&gt;new( load_configs =&gt; BOOL )</a></li>
+      <li><a href="#bool-Configure-init-rescan-BOOL-">$bool = $Configure-&gt;init( [rescan =&gt; BOOL])</a></li>
+      <li><a href="#can_save-config_location-">can_save( [$config_location] )</a></li>
+      <li><a href="#file-conf-save-package_name-">$file = $conf-&gt;save( [$package_name] )</a></li>
+      <li><a href="#options-type-TYPE-">options( type =&gt; TYPE )</a></li>
+    </ul>
+  </li>
+  <li><a href="#ACCESSORS">ACCESSORS</a>
+    <ul>
+      <li><a href="#get_SOMETHING-ITEM-ITEM-ITEM-...-">get_SOMETHING( ITEM, [ITEM, ITEM, ... ] );</a></li>
+      <li><a href="#set_SOMETHING-ITEM-VAL-ITEM-VAL-ITEM-VAL-...-">set_SOMETHING( ITEM =&gt; VAL, [ITEM =&gt; VAL, ITEM =&gt; VAL, ... ] );</a></li>
+      <li><a href="#add_SOMETHING-ITEM-VAL-ITEM-VAL-ITEM-VAL-...-">add_SOMETHING( ITEM =&gt; VAL, [ITEM =&gt; VAL, ITEM =&gt; VAL, ... ] );</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUG-REPORTS">BUG REPORTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Configure - configuration for CPANPLUS</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="variable">$conf</span>   <span class="operator">=</span> <span class="variable">CPANPLUS::Configure</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span> <span class="operator">);</span>
+    
+    <span class="variable">$bool</span>   <span class="operator">=</span> <span class="variable">$conf</span><span class="operator">-&gt;</span><span class="variable">can_save</span><span class="operator">;</span>
+    <span class="variable">$bool</span>   <span class="operator">=</span> <span class="variable">$conf</span><span class="operator">-&gt;</span><span class="variable">save</span><span class="operator">(</span> <span class="variable">$where</span> <span class="operator">);</span>
+    
+    <span class="variable">@opts</span>   <span class="operator">=</span> <span class="variable">$conf</span><span class="operator">-&gt;</span><span class="variable">options</span><span class="operator">(</span> <span class="variable">$type</span> <span class="operator">);</span>
+    
+    <span class="variable">$make</span>       <span class="operator">=</span> <span class="variable">$conf</span><span class="operator">-&gt;</span><span class="variable">get_program</span><span class="operator">(</span><span class="string">'make'</span><span class="operator">);</span>
+    <span class="variable">$verbose</span>    <span class="operator">=</span> <span class="variable">$conf</span><span class="operator">-&gt;</span><span class="variable">set_conf</span><span class="operator">(</span> <span class="string">verbose</span> <span class="operator">=&gt;</span> <span class="number">1</span> <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module deals with all the configuration issues for CPANPLUS. Users can use objects created by this module to alter the behaviour of CPANPLUS.</p>
+
+<p>Please refer to the <code><code>CPANPLUS::Backend</code></code> documentation on how to obtain a <code><code>CPANPLUS::Configure</code></code> object.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="Configure-CPANPLUS::Configure-new-load_configs-BOOL-">$Configure = CPANPLUS::Configure-&gt;new( load_configs =&gt; BOOL )</h2>
+
+<p>This method returns a new object. Normal users will never need to invoke the <code><code>new</code></code> method, but instead retrieve the desired object via a method call on a <code><code>CPANPLUS::Backend</code></code> object.</p>
+
+<dl>
+
+<dt id="load_configs">load_configs</dt>
+<dd>
+
+<p>Controls whether or not additional user configurations are to be loaded or not. Defaults to <code><code>true</code></code>.</p>
+
+</dd>
+</dl>
+
+<h2 id="bool-Configure-init-rescan-BOOL-">$bool = $Configure-&gt;init( [rescan =&gt; BOOL])</h2>
+
+<p>Initialize the configure with other config files than just the default &#39;CPANPLUS::Config&#39;.</p>
+
+<p>Called from <code><code>new()</code></code> to load user/system configurations</p>
+
+<p>If the <code><code>rescan</code></code> option is provided, your disk will be examined again to see if there are new config files that could be read. Defaults to <code><code>false</code></code>.</p>
+
+<p>Returns true on success, false on failure.</p>
+
+<h2 id="can_save-config_location-">can_save( [$config_location] )</h2>
+
+<p>Check if we can save the configuration to the specified file. If no file is provided, defaults to your personal config.</p>
+
+<p>Returns true if the file can be saved, false otherwise.</p>
+
+<h2 id="file-conf-save-package_name-">$file = $conf-&gt;save( [$package_name] )</h2>
+
+<p>Saves the configuration to the package name you provided. If this package is not <code><code>CPANPLUS::Config::System</code></code>, it will be saved in your <code><code>.cpanplus</code></code> directory, otherwise it will be attempted to be saved in the system wide directory.</p>
+
+<p>If no argument is provided, it will default to your personal config.</p>
+
+<p>Returns the full path to the file if the config was saved, false otherwise.</p>
+
+<h2 id="options-type-TYPE-">options( type =&gt; TYPE )</h2>
+
+<p>Returns a list of all valid config options given a specific type (like for example <code><code>conf</code></code> of <code><code>program</code></code>) or false if the type does not exist</p>
+
+<h1 id="ACCESSORS">ACCESSORS</h1>
+
+<p>Accessors that start with a <code><code>_</code></code> are marked private -- regular users should never need to use these.</p>
+
+<p>See the <code><code>CPANPLUS::Config</code></code> documentation for what items can be set and retrieved.</p>
+
+<h2 id="get_SOMETHING-ITEM-ITEM-ITEM-...-">get_SOMETHING( ITEM, [ITEM, ITEM, ... ] );</h2>
+
+<p>The <code><code>get_*</code></code> style accessors merely retrieves one or more desired config options.</p>
+
+<h2 id="set_SOMETHING-ITEM-VAL-ITEM-VAL-ITEM-VAL-...-">set_SOMETHING( ITEM =&gt; VAL, [ITEM =&gt; VAL, ITEM =&gt; VAL, ... ] );</h2>
+
+<p>The <code><code>set_*</code></code> style accessors set the current value for one or more config options and will return true upon success, false on failure.</p>
+
+<h2 id="add_SOMETHING-ITEM-VAL-ITEM-VAL-ITEM-VAL-...-">add_SOMETHING( ITEM =&gt; VAL, [ITEM =&gt; VAL, ITEM =&gt; VAL, ... ] );</h2>
+
+<p>The <code><code>add_*</code></code> style accessor adds a new key to a config key.</p>
+
+<p>Currently, the following accessors exist:</p>
+
+<dl>
+
+<dt id="set-get_conf">set|get_conf</dt>
+<dd>
+
+<p>Simple configuration directives like verbosity and favourite shell.</p>
+
+</dd>
+<dt id="set-get_program">set|get_program</dt>
+<dd>
+
+<p>Location of helper programs.</p>
+
+</dd>
+<dt id="set-_get_build">_set|_get_build</dt>
+<dd>
+
+<p>Locations of where to put what files for CPANPLUS.</p>
+
+</dd>
+<dt id="set-_get_source">_set|_get_source</dt>
+<dd>
+
+<p>Locations and names of source files locally.</p>
+
+</dd>
+<dt id="set-_get_mirror">_set|_get_mirror</dt>
+<dd>
+
+<p>Locations and names of source files remotely.</p>
+
+</dd>
+<dt id="set-_get_fetch">_set|_get_fetch</dt>
+<dd>
+
+<p>Special settings pertaining to the fetching of files.</p>
+
+</dd>
+</dl>
+
+<h1 id="BUG-REPORTS">BUG REPORTS</h1>
+
+<p>Please report bugs or other issues to &lt;bug-cpanplus@rt.cpan.org&lt;gt&gt;.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>The CPAN++ interface (of which this module is a part of) is copyright (c) 2001 - 2007, Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../lib/CPANPLUS/Backend.html">CPANPLUS::Backend</a>, <a>CPANPLUS::Configure::Setup</a>, <a href="../../lib/CPANPLUS/Config.html">CPANPLUS::Config</a></p>
+
+
+</body>
+
+</html>
+
+

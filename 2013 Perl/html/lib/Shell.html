@@ -1,0 +1,128 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#Caveats">Caveats</a></li>
+      <li><a href="#Escaping-Magic-Characters">Escaping Magic Characters</a></li>
+      <li><a href="#Configuration">Configuration</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Shell - run shell commands transparently within perl</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>   <span class="keyword">use</span> <span class="variable">Shell</span> <span class="string">qw(cat ps cp)</span><span class="operator">;</span>
+   <span class="variable">$passwd</span> <span class="operator">=</span> <span class="variable">cat</span><span class="operator">(</span><span class="string">'&lt;/etc/passwd'</span><span class="operator">);</span>
+   <span class="variable">@pslines</span> <span class="operator">=</span> <span class="variable">ps</span><span class="operator">(</span><span class="string">'-ww'</span><span class="operator">),</span>
+   <span class="variable">cp</span><span class="operator">(</span><span class="string">"/etc/passwd"</span><span class="operator">,</span> <span class="string">"/tmp/passwd"</span><span class="operator">);</span>
+   
+   <span class="comment"># object oriented </span>
+   <span class="keyword">my</span> <span class="variable">$sh</span> <span class="operator">=</span> <span class="variable">Shell</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">;</span>
+   <span class="keyword">print</span> <span class="variable">$sh</span><span class="operator">-&gt;</span><span class="variable">ls</span><span class="operator">(</span><span class="string">'-l'</span><span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<h2 id="Caveats">Caveats</h2>
+
+<p>This package is included as a show case, illustrating a few Perl features. It shouldn&#39;t be used for production programs. Although it does provide a simple interface for obtaining the standard output of arbitrary commands, there may be better ways of achieving what you need.</p>
+
+<p>Running shell commands while obtaining standard output can be done with the <code><code>qx/STRING/</code></code> operator, or by calling <code><code>open</code></code> with a filename expression that ends with <code><code>|</code></code>, giving you the option to process one line at a time. If you don&#39;t need to process standard output at all, you might use <code><code>system</code></code> (in preference of doing a print with the collected standard output).</p>
+
+<p>Since Shell.pm and all of the aforementioned techniques use your system&#39;s shell to call some local command, none of them is portable across different systems. Note, however, that there are several built in functions and library packages providing portable implementations of functions operating on files, such as: <code><code>glob</code></code>, <code><code>link</code></code> and <code><code>unlink</code></code>, <code><code>mkdir</code></code> and <code><code>rmdir</code></code>, <code><code>rename</code></code>, <code><code>File::Compare</code></code>, <code><code>File::Copy</code></code>, <code><code>File::Find</code></code> etc.</p>
+
+<p>Using Shell.pm while importing <code><code>foo</code></code> creates a subroutine <code><code>foo</code></code> in the namespace of the importing package. Calling <code><code>foo</code></code> with arguments <code><code>arg1</code></code>, <code><code>arg2</code></code>,... results in a shell command <code><code>foo arg1 arg2...</code></code>, where the function name and the arguments are joined with a blank. (See the subsection on Escaping magic characters.) Since the result is essentially a command line to be passed to the shell, your notion of arguments to the Perl function is not necessarily identical to what the shell treats as a command line token, to be passed as an individual argument to the program. Furthermore, note that this implies that <code><code>foo</code></code> is callable by file name only, which frequently depends on the setting of the program&#39;s environment.</p>
+
+<p>Creating a Shell object gives you the opportunity to call any command in the usual OO notation without requiring you to announce it in the <code><code>use Shell</code></code> statement. Don&#39;t assume any additional semantics being associated with a Shell object: in no way is it similar to a shell process with its environment or current working directory or any other setting.</p>
+
+<h2 id="Escaping-Magic-Characters">Escaping Magic Characters</h2>
+
+<p>It is, in general, impossible to take care of quoting the shell&#39;s magic characters. For some obscure reason, however, Shell.pm quotes apostrophes (<code><code>&#39;</code></code>) and backslashes (<code><code>\</code></code>) on UNIX, and spaces and quotes (<code><code>&quot;</code></code>) on Windows.</p>
+
+<h2 id="Configuration">Configuration</h2>
+
+<p>If you set $Shell::capture_stderr to true, the module will attempt to capture the standard error output of the process as well. This is done by adding <code><code>2&gt;&amp;1</code></code> to the command line, so don&#39;t try this on a system not supporting this redirection.</p>
+
+<p>If you set $Shell::raw to true no quoting whatsoever is done.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>Quoting should be off by default.</p>
+
+<p>It isn&#39;t possible to call shell built in commands, but it can be done by using a workaround, e.g. shell( &#39;-c&#39;, &#39;set&#39; ).</p>
+
+<p>Capturing standard error does not work on some systems (e.g. VMS).</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<pre><code><code>  Date: Thu, 22 Sep 94 16:18:16 -0700
+  Message-Id: &lt;9409222318.AA17072@scalpel.netlabs.com&gt;
+  To: perl5-porters@isu.edu
+  From: Larry Wall &lt;lwall@scalpel.netlabs.com&gt;
+  Subject: a new module I just wrote</code></code></pre>
+
+<p>Here&#39;s one that&#39;ll whack your mind a little out.</p>
+
+<pre><code><code>    <span class="comment">#!/usr/bin/perl</span>
+    
+    <span class="keyword">use</span> <span class="variable">Shell</span><span class="operator">;</span>
+    
+    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">echo</span><span class="operator">(</span><span class="string">"howdy"</span><span class="operator">,</span> <span class="string">"&lt;funny&gt;"</span><span class="operator">,</span> <span class="string">"world"</span><span class="operator">);</span>
+    <span class="keyword">print</span> <span class="variable">$foo</span><span class="operator">;</span>
+    
+    <span class="variable">$passwd</span> <span class="operator">=</span> <span class="variable">cat</span><span class="operator">(</span><span class="string">"&lt;/etc/passwd"</span><span class="operator">);</span>
+    <span class="keyword">print</span> <span class="variable">$passwd</span><span class="operator">;</span>
+    
+    <span class="keyword">sub</span><span class="variable"> ps</span><span class="operator">;</span>
+    <span class="keyword">print</span> <span class="variable">ps</span> <span class="operator">-</span><span class="variable">ww</span><span class="operator">;</span>
+    
+    <span class="variable">cp</span><span class="operator">(</span><span class="string">"/etc/passwd"</span><span class="operator">,</span> <span class="string">"/etc/passwd.orig"</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>That&#39;s maybe too gonzo. It actually exports an AUTOLOAD to the current package (and uncovered a bug in Beta 3, by the way). Maybe the usual usage should be</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Shell</span> <span class="string">qw(echo cat ps cp)</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>Larry Wall</p>
+
+<p>Changes by Jenda@Krynicky.cz and Dave Cottle &lt;d.cottle@csc.canterbury.ac.nz&gt;.</p>
+
+<p>Changes for OO syntax and bug fixes by Casey West &lt;casey@geeknest.com&gt;.</p>
+
+<p><code><code>$Shell::raw</code></code> and pod rewrite by Wolfgang Laun.</p>
+
+<p>Rewritten to use closures rather than <code><code>eval &quot;string&quot;</code></code> by Adriano Ferreira.</p>
+
+
+</body>
+
+</html>
+
+

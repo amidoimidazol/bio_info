@@ -1,0 +1,53 @@
+#!/usr/bin/perl -w
+print "A DNS szekvenciat tartalmazo file neve (.dns):\n";
+	$dnafilename = <STDIN>;
+	chomp $dnafilename;
+	
+		unless ( -e $dnafilename) 
+		{
+		print " A \"$dnafilename\" nevu file nem letezik!\n";
+		exit;
+		}
+		
+		unless ( open (DNAFILE, $dnafilename)) 
+		{
+		print " A \"$dnafilename\" nevu file nem nyithato meg!\n";
+		exit;
+		}
+		
+		@DNA = <DNAFILE>;
+		close DNAFILE;
+		
+		
+		#arraybe alakitas
+		$DNA = join ('', @DNA);
+		#szokozok kiszedese
+		$DNA =~ s/\s//g;
+		#nagybeture valtas
+		$DNA =~ tr/agtcAGTC/AGTCAGTC/;
+		#szamok kiszedese
+		@szamok = ( '1' ,'2','3','4','5','6','7','8','9','0');
+		$DNA =~ s/[@szamok]//g;
+		
+		$G = 0;
+		$C = 0;
+		$AT = 0;
+		
+		for ($position =0; $position < length $DNA; ++$position)
+		{
+		$base = substr ($DNA,$position,1);
+		
+		if ($base eq 'G')
+			{++$G;}
+		elsif ($base eq 'C')
+			{++$C;}
+		else {++$AT;}}
+		
+		$ossz = $G + $C + $AT;
+				
+		
+		#SZAZALEK SZAMITAS
+		$GC = $G + $C;
+		$szazalek = $GC/ ($ossz/100);
+		print "GC telitettseg:$szazalek %\n";
+		exit;

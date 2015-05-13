@@ -1,0 +1,33 @@
+#!/usr/bin/perl -w
+use strict;
+
+# use strict = minden variablet meg a main programban is my -al kell kezdeni
+#subrutine egy olyan kod resz amit elore definiálunk és le tudunk hivni. bárhol lehet a kódban nem hat rá az exit; 
+# az exit-ig tarto resz a MAIN PROGRAM
+$DNS  = "ACGT";
+
+# lehivjuk az addACGT nevü subrutint a $DNA scalarra amit egy uj scalarba ment
+$hosszu_DNA = addACGT($DNS);
+
+	#print
+	print "Eredeti szekvencia:$DNS\n";
+	print "Subrutine utani szekvencia:$hosszu_DNA\n";
+
+exit;
+
+
+####SUBRUTINE MEGHATÁROZÁSA ######	
+	# sub név {block}
+	#a subrutinna különálló variable-je van
+	sub addACGT 
+	{ 
+	# my = azt fejezi ki hogy a variable csak a subrutinon belul ervenyes 
+	# a main programban meghatározott argument ($DNS) a subrutinban a @_ arraybe mentõdik ami egyenlõ a subrutinban meghatarozott variablevel 
+	my ($DNA) = @_;
+	# az igy kiolvasott erteket lehet manipulálni
+	$DNA .= 'ACGT';
+	
+	#subrutinban a végén érdemes leresetelni a variableket
+	return $DNA;
+	}
+	

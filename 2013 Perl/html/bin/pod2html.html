@@ -1,0 +1,171 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ARGUMENTS">ARGUMENTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>pod2html - convert .pod files to .html files</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    pod2html --help --htmlroot=&lt;name&gt; --infile=&lt;name&gt; --outfile=&lt;name&gt;
+             --podpath=&lt;name&gt;:...:&lt;name&gt; --podroot=&lt;name&gt;
+             --recurse --norecurse --verbose
+             --index --noindex --title=&lt;name&gt;</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Converts files from pod format (see <a href="../lib/pods/perlpod.html">perlpod</a>) to HTML format.</p>
+
+<h1 id="ARGUMENTS">ARGUMENTS</h1>
+
+<p>pod2html takes the following arguments:</p>
+
+<dl>
+
+<dt id="help">help</dt>
+<dd>
+
+<pre><code><code>  --help</code></code></pre>
+
+<p>Displays the usage message.</p>
+
+</dd>
+<dt id="htmlroot">htmlroot</dt>
+<dd>
+
+<pre><code><code>  --htmlroot=name</code></code></pre>
+
+<p>Sets the base URL for the HTML files. When cross-references are made, the HTML root is prepended to the URL.</p>
+
+</dd>
+<dt id="infile">infile</dt>
+<dd>
+
+<pre><code><code>  --infile=name</code></code></pre>
+
+<p>Specify the pod file to convert. Input is taken from STDIN if no infile is specified.</p>
+
+</dd>
+<dt id="outfile">outfile</dt>
+<dd>
+
+<pre><code><code>  --outfile=name</code></code></pre>
+
+<p>Specify the HTML file to create. Output goes to STDOUT if no outfile is specified.</p>
+
+</dd>
+<dt id="podroot">podroot</dt>
+<dd>
+
+<pre><code><code>  --podroot=name</code></code></pre>
+
+<p>Specify the base directory for finding library pods.</p>
+
+</dd>
+<dt id="podpath">podpath</dt>
+<dd>
+
+<pre><code><code>  --podpath=name:...:name</code></code></pre>
+
+<p>Specify which subdirectories of the podroot contain pod files whose HTML converted forms can be linked-to in cross-references.</p>
+
+</dd>
+<dt id="index">index</dt>
+<dd>
+
+<pre><code><code>  --index</code></code></pre>
+
+<p>Generate an index at the top of the HTML file (default behaviour).</p>
+
+</dd>
+<dt id="noindex">noindex</dt>
+<dd>
+
+<pre><code><code>  --noindex</code></code></pre>
+
+<p>Do not generate an index at the top of the HTML file.</p>
+
+</dd>
+<dt id="recurse">recurse</dt>
+<dd>
+
+<pre><code><code>  --recurse</code></code></pre>
+
+<p>Recurse into subdirectories specified in podpath (default behaviour).</p>
+
+</dd>
+<dt id="norecurse">norecurse</dt>
+<dd>
+
+<pre><code><code>  --norecurse</code></code></pre>
+
+<p>Do not recurse into subdirectories specified in podpath.</p>
+
+</dd>
+<dt id="title">title</dt>
+<dd>
+
+<pre><code><code>  --title=title</code></code></pre>
+
+<p>Specify the title of the resulting HTML file.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<pre><code><code>  --verbose</code></code></pre>
+
+<p>Display progress messages.</p>
+
+</dd>
+</dl>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Tom Christiansen, &lt;tchrist@perl.com&gt;.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>See <a href="../lib/Pod/Html.html">Pod::Html</a> for a list of known bugs in the translator.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../lib/pods/perlpod.html">perlpod</a>, <a href="../lib/Pod/Html.html">Pod::Html</a></p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This program is distributed under the Artistic License.</p>
+
+
+</body>
+
+</html>
+
+

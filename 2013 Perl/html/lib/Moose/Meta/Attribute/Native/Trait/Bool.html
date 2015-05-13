@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#DEFAULT-TYPE">DEFAULT TYPE</a></li>
+  <li><a href="#PROVIDED-METHODS">PROVIDED METHODS</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Moose::Meta::Attribute::Native::Trait::Bool - Helper trait for Bool attributes</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>version 2.0604</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">package</span> <span class="variable">Room</span><span class="operator">;</span>
+  <span class="keyword">use</span> <span class="variable">Moose</span><span class="operator">;</span>
+  
+  <span class="variable">has</span> <span class="string">'is_lit'</span> <span class="operator">=&gt;</span> <span class="operator">(</span>
+      <span class="string">traits</span>  <span class="operator">=&gt;</span> <span class="operator">[</span><span class="string">'Bool'</span><span class="operator">]</span><span class="operator">,</span>
+      <span class="string">is</span>      <span class="operator">=&gt;</span> <span class="string">'rw'</span><span class="operator">,</span>
+      <span class="string">isa</span>     <span class="operator">=&gt;</span> <span class="string">'Bool'</span><span class="operator">,</span>
+      <span class="string">default</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span>
+      <span class="string">handles</span> <span class="operator">=&gt;</span> <span class="operator">{</span>
+          <span class="string">illuminate</span>  <span class="operator">=&gt;</span> <span class="string">'set'</span><span class="operator">,</span>
+          <span class="string">darken</span>      <span class="operator">=&gt;</span> <span class="string">'unset'</span><span class="operator">,</span>
+          <span class="string">flip_switch</span> <span class="operator">=&gt;</span> <span class="string">'toggle'</span><span class="operator">,</span>
+          <span class="string">is_dark</span>     <span class="operator">=&gt;</span> <span class="string">'not'</span><span class="operator">,</span>
+      <span class="operator">}</span><span class="operator">,</span>
+  <span class="operator">);</span>
+  
+  <span class="keyword">my</span> <span class="variable">$room</span> <span class="operator">=</span> <span class="variable">Room</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">();</span>
+  <span class="variable">$room</span><span class="operator">-&gt;</span><span class="variable">illuminate</span><span class="operator">;</span>        <span class="comment"># same as $room-&gt;is_lit(1);</span>
+  <span class="variable">$room</span><span class="operator">-&gt;</span><span class="variable">darken</span><span class="operator">;</span>            <span class="comment"># same as $room-&gt;is_lit(0);</span>
+  <span class="variable">$room</span><span class="operator">-&gt;</span><span class="variable">flip_switch</span><span class="operator">;</span>       <span class="comment"># same as $room-&gt;is_lit(not $room-&gt;is_lit);</span>
+  <span class="keyword">return</span> <span class="variable">$room</span><span class="operator">-&gt;</span><span class="variable">is_dark</span><span class="operator">;</span>    <span class="comment"># same as !$room-&gt;is_lit</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This trait provides native delegation methods for boolean values. A boolean is a scalar which can be <code><code>1</code></code>, <code><code>0</code></code>, <code><code>&quot;&quot;</code></code>, or <code><code>undef</code></code>.</p>
+
+<h1 id="DEFAULT-TYPE">DEFAULT TYPE</h1>
+
+<p>If you don&#39;t provide an <code><code>isa</code></code> value for your attribute, it will default to <code><code>Bool</code></code>.</p>
+
+<h1 id="PROVIDED-METHODS">PROVIDED METHODS</h1>
+
+<p>None of these methods accept arguments.</p>
+
+<ul>
+
+<li><p><b>set</b></p>
+
+<p>Sets the value to <code><code>1</code></code> and returns <code><code>1</code></code>.</p>
+
+</li>
+<li><p><b>unset</b></p>
+
+<p>Set the value to <code><code>0</code></code> and returns <code><code>0</code></code>.</p>
+
+</li>
+<li><p><b>toggle</b></p>
+
+<p>Toggles the value. If it&#39;s true, set to false, and vice versa.</p>
+
+<p>Returns the new value.</p>
+
+</li>
+<li><p><b>not</b></p>
+
+<p>Equivalent of &#39;not <code><code>$value</code></code>&#39;.</p>
+
+</li>
+</ul>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>See <a href="../../../../../../lib/Moose.html#BUGS">&quot;BUGS&quot; in Moose</a> for details on reporting bugs.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Moose is maintained by the Moose Cabal, along with the help of many contributors. See <a href="../../../../../../lib/Moose.html#CABAL">&quot;CABAL&quot; in Moose</a> and <a href="../../../../../../lib/Moose.html#CONTRIBUTORS">&quot;CONTRIBUTORS&quot; in Moose</a> for details.</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>This software is copyright (c) 2012 by Infinity Interactive, Inc..</p>
+
+<p>This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.</p>
+
+
+</body>
+
+</html>
+
+

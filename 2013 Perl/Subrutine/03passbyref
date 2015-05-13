@@ -1,0 +1,40 @@
+#!/usr/bin/perl -w
+
+#	call by reference subrutine 
+#  mivel a normal subrutinok rosszul kezelik ha egynel tobb arrayt hivunk be rá ekkor érdemes használni ezt  a subrutine tipust
+# hátránya hogy a subrutinban megváltoztatott argumentek a main programben is változnak
+
+######################################################################################################################################################
+# 1 az elohivasnal annyi különbség hogy \-t teszel az array neve ele pl.: my ($i) = subnev (\@j , \@k);
+############################################### MAIN PROGRAM ##########################################################################################
+
+use strict;
+use warnings;
+
+my (@i) = ('1','2','3');
+my (@j) = ('a','b','c');
+
+print "A main programban az eredeti i : @i\n";
+print "A main program az eredeti j : @j\n\n";
+
+referencesub(\@i, \@j);
+
+print "A main programban a subrutine hivasa utanni i: @i\n";
+print "A main programban a subrutine hivasa utanni j: @j\n\n"; 
+
+exit;
+
+############################################ SUBRUTINE ###################################################################################################
+# 2 a subrutin részben az arrayekre $j scalarként hivatkozol my ($j , $k) = @_;
+# ezeket aztán referencelni kell , tehát hogy milyen az eredeti formájuk pl push (@$j, '4');   @array eredetileg $ scalarként használja  a subrutine 
+##########################################################################################################################################################
+sub referencesub 
+	{
+	my ($i, $j) = @_;
+	
+	print "Subrutinban: i = " . "@$i\n";
+	print "Subrutinban: j = " . "@$j\n\n";
+	
+	push (@$i,'4');
+	pop (@$j);
+	}

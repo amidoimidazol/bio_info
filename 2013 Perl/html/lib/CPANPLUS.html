@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#GUIDE-TO-DOCUMENTATION">GUIDE TO DOCUMENTATION</a>
+    <ul>
+      <li><a href="#GENERAL-USAGE">GENERAL USAGE</a></li>
+      <li><a href="#API-REFERENCE">API REFERENCE</a></li>
+    </ul>
+  </li>
+  <li><a href="#COMMANDLINE-TOOLS">COMMANDLINE TOOLS</a>
+    <ul>
+      <li><a href="#STARTING-AN-INTERACTIVE-SHELL">STARTING AN INTERACTIVE SHELL</a></li>
+      <li><a href="#CHOOSE-A-SHELL">CHOOSE A SHELL</a></li>
+      <li><a href="#BUILDING-PACKAGES">BUILDING PACKAGES</a></li>
+    </ul>
+  </li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a>
+    <ul>
+      <li><a href="#bool-install-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$bool = install( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</a></li>
+      <li><a href="#where-fetch-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$where = fetch( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</a></li>
+      <li><a href="#where-get-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$where = get( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</a></li>
+      <li><a href="#shell-">shell()</a></li>
+    </ul>
+  </li>
+  <li><a href="#FAQ">FAQ</a></li>
+  <li><a href="#BUG-REPORTS">BUG REPORTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#CONTACT-INFORMATION">CONTACT INFORMATION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS - API &amp; CLI access to the CPAN mirrors</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    ### standard invocation from the command line
+    $ cpanp
+    $ cpanp -i Some::Module
+
+    $ perl -MCPANPLUS -eshell
+    $ perl -MCPANPLUS -e&#39;fetch Some::Module&#39;</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The <code><code>CPANPLUS</code></code> library is an API to the <code><code>CPAN</code></code> mirrors and a collection of interactive shells, commandline programs, etc, that use this API.</p>
+
+<h1 id="GUIDE-TO-DOCUMENTATION">GUIDE TO DOCUMENTATION</h1>
+
+<h2 id="GENERAL-USAGE">GENERAL USAGE</h2>
+
+<p>This is the document you are currently reading. It describes basic usage and background information. Its main purpose is to assist the user who wants to learn how to invoke CPANPLUS and install modules from the commandline and to point you to more indepth reading if required.</p>
+
+<h2 id="API-REFERENCE">API REFERENCE</h2>
+
+<p>The <code><code>CPANPLUS</code></code> API is meant to let you programmatically interact with the <code><code>CPAN</code></code> mirrors. The documentation in <a href="../lib/CPANPLUS/Backend.html">CPANPLUS::Backend</a> shows you how to create an object capable of interacting with those mirrors, letting you create &amp; retrieve module objects. <a href="../lib/CPANPLUS/Module.html">CPANPLUS::Module</a> shows you how you can use these module objects to perform actions like installing and testing.</p>
+
+<p>The default shell, documented in <a href="../lib/CPANPLUS/Shell/Default.html">CPANPLUS::Shell::Default</a> is also scriptable. You can use its API to dispatch calls from your script to the CPANPLUS Shell.</p>
+
+<h1 id="COMMANDLINE-TOOLS">COMMANDLINE TOOLS</h1>
+
+<h2 id="STARTING-AN-INTERACTIVE-SHELL">STARTING AN INTERACTIVE SHELL</h2>
+
+<p>You can start an interactive shell by running either of the two following commands:</p>
+
+<pre><code><code>    $ cpanp
+
+    $ perl -MCPANPLUS -eshell</code></code></pre>
+
+<p>All commands available are listed in the interactive shells help menu. See <code><code>cpanp -h</code></code> or <a href="../lib/CPANPLUS/Shell/Default.html">CPANPLUS::Shell::Default</a> for instructions on using the default shell.</p>
+
+<h2 id="CHOOSE-A-SHELL">CHOOSE A SHELL</h2>
+
+<p>By running <code><code>cpanp</code></code> without arguments, you will start up the shell specified in your config, which defaults to <a href="../lib/CPANPLUS/Shell/Default.html">CPANPLUS::Shell::Default</a>. There are more shells available. <code><code>CPANPLUS</code></code> itself ships with an emulation shell called <a href="../lib/CPANPLUS/Shell/Classic.html">CPANPLUS::Shell::Classic</a> that looks and feels just like the old <code><code>CPAN.pm</code></code> shell.</p>
+
+<p>You can start this shell by typing:</p>
+
+<pre><code><code>    $ perl -MCPANPLUS -e&#39;shell Classic&#39;</code></code></pre>
+
+<p>Even more shells may be available from <code><code>CPAN</code></code>.</p>
+
+<p>Note that if you have changed your default shell in your configuration, that shell will be used instead. If for some reason there was an error with your specified shell, you will be given the default shell.</p>
+
+<h2 id="BUILDING-PACKAGES">BUILDING PACKAGES</h2>
+
+<p><code><code>cpan2dist</code></code> is a commandline tool to convert any distribution from <code><code>CPAN</code></code> into a package in the format of your choice, like for example <code><code>.deb</code></code> or <code><code>FreeBSD ports</code></code>.</p>
+
+<p>See <code><code>cpan2dist -h</code></code> for details.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<p>For quick access to common commands, you may use this module, <code><code>CPANPLUS</code></code> rather than the full programmatic API situated in <code><code>CPANPLUS::Backend</code></code>. This module offers the following functions:</p>
+
+<h2 id="bool-install-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$bool = install( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</h2>
+
+<p>This function requires the full name of the module, which is case sensitive. The module name can also be provided as a fully qualified file name, beginning with a <i>/</i>, relative to the /authors/id directory on a CPAN mirror.</p>
+
+<p>It will download, extract and install the module.</p>
+
+<h2 id="where-fetch-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$where = fetch( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</h2>
+
+<p>Like install, fetch needs the full name of a module or the fully qualified file name, and is case sensitive.</p>
+
+<p>It will download the specified module to the current directory.</p>
+
+<h2 id="where-get-Module::Name-A-AU-AUTHOR-Module-Name-1.tgz-">$where = get( Module::Name | /A/AU/AUTHOR/Module-Name-1.tgz )</h2>
+
+<p>Get is provided as an alias for fetch for compatibility with CPAN.pm.</p>
+
+<h2 id="shell-">shell()</h2>
+
+<p>Shell starts the default CPAN shell. You can also start the shell by using the <code><code>cpanp</code></code> command, which will be installed in your perl bin.</p>
+
+<h1 id="FAQ">FAQ</h1>
+
+<p>For frequently asked questions and answers, please consult the <code><code>CPANPLUS::FAQ</code></code> manual.</p>
+
+<h1 id="BUG-REPORTS">BUG REPORTS</h1>
+
+<p>Please report bugs or other issues to &lt;bug-cpanplus@rt.cpan.org&lt;gt&gt;.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>The CPAN++ interface (of which this module is a part of) is copyright (c) 2001 - 2007, Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../lib/CPANPLUS/Shell/Default.html">CPANPLUS::Shell::Default</a>, <a href="../lib/CPANPLUS/FAQ.html">CPANPLUS::FAQ</a>, <a href="../lib/CPANPLUS/Backend.html">CPANPLUS::Backend</a>, <a href="../lib/CPANPLUS/Module.html">CPANPLUS::Module</a>, <a href="../bin/cpanp.html">cpanp</a>, <a href="../bin/cpan2dist.html">cpan2dist</a></p>
+
+<h1 id="CONTACT-INFORMATION">CONTACT INFORMATION</h1>
+
+<ul>
+
+<li><p>Bug reporting: <i>bug-cpanplus@rt.cpan.org</i></p>
+
+</li>
+<li><p>Questions &amp; suggestions: <i>bug-cpanplus@rt.cpan.org</i></p>
+
+</li>
+</ul>
+
+
+</body>
+
+</html>
+
+

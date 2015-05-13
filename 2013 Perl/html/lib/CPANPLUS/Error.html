@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a>
+    <ul>
+      <li><a href="#cp_msg-message-string-VERBOSE-">cp_msg(&quot;message string&quot; [,VERBOSE])</a></li>
+      <li><a href="#msg-">msg()</a></li>
+      <li><a href="#cp_error-error-string-VERBOSE-">cp_error(&quot;error string&quot; [,VERBOSE])</a></li>
+      <li><a href="#error-">error()</a></li>
+    </ul>
+  </li>
+  <li><a href="#CLASS-METHODS">CLASS METHODS</a>
+    <ul>
+      <li><a href="#CPANPLUS::Error-stack-">CPANPLUS::Error-&gt;stack()</a></li>
+      <li><a href="#CPANPLUS::Error-stack_as_string-TRACE-">CPANPLUS::Error-&gt;stack_as_string([TRACE])</a></li>
+      <li><a href="#CPANPLUS::Error-flush-">CPANPLUS::Error-&gt;flush()</a></li>
+    </ul>
+  </li>
+  <li><a href="#GLOBAL-VARIABLES">GLOBAL VARIABLES</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Error - error handling for CPANPLUS</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">CPANPLUS::Error</span> <span class="string">qw[cp_msg cp_error]</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module provides the error handling code for the CPANPLUS libraries, and is mainly intended for internal use.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<h2 id="cp_msg-message-string-VERBOSE-">cp_msg(&quot;message string&quot; [,VERBOSE])</h2>
+
+<p>Records a message on the stack, and prints it to <code><code>STDOUT</code></code> (or actually <code><code>$MSG_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> section below), if the <code><code>VERBOSE</code></code> option is true. The <code><code>VERBOSE</code></code> option defaults to false.</p>
+
+<h2 id="msg-">msg()</h2>
+
+<p>An alias for <code><code>cp_msg</code></code>.</p>
+
+<h2 id="cp_error-error-string-VERBOSE-">cp_error(&quot;error string&quot; [,VERBOSE])</h2>
+
+<p>Records an error on the stack, and prints it to <code><code>STDERR</code></code> (or actually <code><code>$ERROR_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> sections below), if the <code><code>VERBOSE</code></code> option is true. The <code><code>VERBOSE</code></code> options defaults to true.</p>
+
+<h2 id="error-">error()</h2>
+
+<p>An alias for <code><code>cp_error</code></code>.</p>
+
+<h1 id="CLASS-METHODS">CLASS METHODS</h1>
+
+<h2 id="CPANPLUS::Error-stack-">CPANPLUS::Error-&gt;stack()</h2>
+
+<p>Retrieves all the items on the stack. Since <code><code>CPANPLUS::Error</code></code> is implemented using <code><code>Log::Message</code></code>, consult its manpage for the function <code><code>retrieve</code></code> to see what is returned and how to use the items.</p>
+
+<h2 id="CPANPLUS::Error-stack_as_string-TRACE-">CPANPLUS::Error-&gt;stack_as_string([TRACE])</h2>
+
+<p>Returns the whole stack as a printable string. If the <code><code>TRACE</code></code> option is true all items are returned with <code><code>Carp::longmess</code></code> output, rather than just the message. <code><code>TRACE</code></code> defaults to false.</p>
+
+<h2 id="CPANPLUS::Error-flush-">CPANPLUS::Error-&gt;flush()</h2>
+
+<p>Removes all the items from the stack and returns them. Since <code><code>CPANPLUS::Error</code></code> is implemented using <code><code>Log::Message</code></code>, consult its manpage for the function <code><code>retrieve</code></code> to see what is returned and how to use the items.</p>
+
+<h1 id="GLOBAL-VARIABLES">GLOBAL VARIABLES</h1>
+
+<dl>
+
+<dt id="ERROR_FH">$ERROR_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>error()</code></code> are being printed. This defaults to <code><code>*STDERR</code></code>.</p>
+
+</dd>
+<dt id="MSG_FH">$MSG_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>msg()</code></code> are being printed. This default to <code><code>*STDOUT</code></code>.</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

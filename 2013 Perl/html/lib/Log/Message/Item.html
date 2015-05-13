@@ -1,0 +1,142 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#Methods-and-Accessors">Methods and Accessors</a>
+    <ul>
+      <li><a href="#remove">remove</a></li>
+      <li><a href="#id">id</a></li>
+      <li><a href="#when">when</a></li>
+      <li><a href="#message">message</a></li>
+      <li><a href="#level">level</a></li>
+      <li><a href="#tag">tag</a></li>
+      <li><a href="#shortmess">shortmess</a></li>
+      <li><a href="#longmess">longmess</a></li>
+      <li><a href="#parent">parent</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#Acknowledgements">Acknowledgements</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Log::Message::Item - Message objects for Log::Message</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="comment"># Implicitly used by Log::Message to create Log::Message::Item objects</span>
+    
+    <span class="keyword">print</span> <span class="string">"this is the message's id: "</span><span class="operator">,</span>     <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">id</span><span class="operator">;</span>
+    
+    <span class="keyword">print</span> <span class="string">"this is the message stored: "</span><span class="operator">,</span>   <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">message</span><span class="operator">;</span>
+    
+    <span class="keyword">print</span> <span class="string">"this is when it happened: "</span><span class="operator">,</span>     <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">when</span><span class="operator">;</span>
+    
+    <span class="keyword">print</span> <span class="string">"the message was tagged: "</span><span class="operator">,</span>       <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">tag</span><span class="operator">;</span>
+    
+    <span class="keyword">print</span> <span class="string">"this was the severity level: "</span><span class="operator">,</span>  <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">level</span><span class="operator">;</span>
+    
+    <span class="variable">$item</span><span class="operator">-&gt;</span><span class="variable">remove</span><span class="operator">;</span>  <span class="comment"># delete the item from the stack it was on</span>
+    
+    <span class="comment"># Besides these methods, you can also call the handlers on</span>
+    <span class="comment"># the object specifically.</span>
+    <span class="comment"># See the Log::Message::Handlers manpage for documentation on what</span>
+    <span class="comment"># handlers are available by default and how to add your own</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Log::Message::Item is a class that generates generic Log items. These items are stored on a Log::Message stack, so see the Log::Message manpage about details how to retrieve them.</p>
+
+<p>You should probably not create new items by yourself, but use the storing mechanism provided by Log::Message.</p>
+
+<p>However, the accessors and handlers are of interest if you want to do fine tuning of how your messages are handled.</p>
+
+<p>The accessors and methods are described below, the handlers are documented in the Log::Message::Handlers manpage.</p>
+
+<h1 id="Methods-and-Accessors">Methods and Accessors</h1>
+
+<h2 id="remove">remove</h2>
+
+<p>Calling remove will remove the object from the stack it was on, so it will not show up any more in subsequent fetches of messages.</p>
+
+<p>You can still call accessors and handlers on it however, to handle it as you will.</p>
+
+<h2 id="id">id</h2>
+
+<p>Returns the internal ID of the item. This may be useful for comparing since the ID is incremented each time a new item is created. Therefore, an item with ID 4 must have been logged before an item with ID 9.</p>
+
+<h2 id="when">when</h2>
+
+<p>Returns the timestamp of when the message was logged</p>
+
+<h2 id="message">message</h2>
+
+<p>The actual message that was stored</p>
+
+<h2 id="level">level</h2>
+
+<p>The severity type of this message, as well as the name of the handler that was called upon storing it.</p>
+
+<h2 id="tag">tag</h2>
+
+<p>Returns the identification tag that was put on the message.</p>
+
+<h2 id="shortmess">shortmess</h2>
+
+<p>Returns the equivalent of a <code><code>Carp::shortmess</code></code> for this item. See the <code><code>Carp</code></code> manpage for details.</p>
+
+<h2 id="longmess">longmess</h2>
+
+<p>Returns the equivalent of a <code><code>Carp::longmess</code></code> for this item, which is essentially a stack trace. See the <code><code>Carp</code></code> manpage for details.</p>
+
+<h2 id="parent">parent</h2>
+
+<p>Returns a reference to the Log::Message object that stored this item. This is useful if you want to have access to the full stack in a handler.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../../lib/Log/Message.html">Log::Message</a>, <a href="../../../lib/Log/Message/Handlers.html">Log::Message::Handlers</a>, <a href="../../../lib/Log/Message/Config.html">Log::Message::Config</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="Acknowledgements">Acknowledgements</h1>
+
+<p>Thanks to Ann Barcomb for her suggestions.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This module is copyright (c) 2002 Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

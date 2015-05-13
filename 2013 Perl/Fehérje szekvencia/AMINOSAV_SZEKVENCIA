@@ -1,0 +1,9 @@
+#!/usr/bin/perl -w
+$proteinfilename = 'NM_021964fragment.pep';
+	open (PROTEINFILE, $proteinfilename);
+		$protein = <PROTEINFILE>;
+	close PROTEINFILE;
+ 
+ print "Ez az aminosav szekvencia:\n\n";
+ print $protein;
+ exit;

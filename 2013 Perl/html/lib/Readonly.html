@@ -1,0 +1,393 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#COMPARISON-WITH-use-constant">COMPARISON WITH &quot;use constant&quot;</a></li>
+  <li><a href="#COMPARISON-WITH-TYPEGLOB-CONSTANTS">COMPARISON WITH TYPEGLOB CONSTANTS</a></li>
+  <li><a href="#PROS">PROS</a></li>
+  <li><a href="#CONS">CONS</a></li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a></li>
+  <li><a href="#EXAMPLES">EXAMPLES</a></li>
+  <li><a href="#EXPORTS">EXPORTS</a></li>
+  <li><a href="#REQUIREMENTS">REQUIREMENTS</a></li>
+  <li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+  <li><a href="#AUTHOR-COPYRIGHT">AUTHOR / COPYRIGHT</a></li>
+</ul>
+
+<p>- -----BEGIN PGP SIGNED MESSAGE----- Hash: SHA1</p>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Readonly - Facility for creating read-only scalars, arrays, hashes.</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>This documentation describes version 1.03 of Readonly.pm, April 20, 2004.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code> <span class="keyword">use</span> <span class="variable">Readonly</span><span class="operator">;</span>
+ 
+ <span class="comment"># Read-only scalar</span>
+ <span class="variable">Readonly::Scalar</span>     <span class="variable">$sca</span> <span class="operator">=&gt;</span> <span class="variable">$initial_value</span><span class="operator">;</span>
+ <span class="variable">Readonly::Scalar</span>  <span class="keyword">my</span> <span class="variable">$sca</span> <span class="operator">=&gt;</span> <span class="variable">$initial_value</span><span class="operator">;</span>
+ 
+ <span class="comment"># Read-only array</span>
+ <span class="variable">Readonly::Array</span>      <span class="variable">@arr</span> <span class="operator">=&gt;</span> <span class="variable">@values</span><span class="operator">;</span>
+ <span class="variable">Readonly::Array</span>   <span class="keyword">my</span> <span class="variable">@arr</span> <span class="operator">=&gt;</span> <span class="variable">@values</span><span class="operator">;</span>
+ 
+ <span class="comment"># Read-only hash</span>
+ <span class="variable">Readonly::Hash</span>       <span class="variable">%has</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...);</span>
+ <span class="variable">Readonly::Hash</span>    <span class="keyword">my</span> <span class="variable">%has</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...);</span>
+ <span class="comment"># or:</span>
+ <span class="variable">Readonly::Hash</span>       <span class="variable">%has</span> <span class="operator">=&gt;</span> <span class="operator">{</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...</span><span class="operator">}</span><span class="operator">;</span>
+ 
+ <span class="comment"># You can use the read-only variables like any regular variables:</span>
+ <span class="keyword">print</span> <span class="variable">$sca</span><span class="operator">;</span>
+ <span class="variable">$something</span> <span class="operator">=</span> <span class="variable">$sca</span> <span class="operator">+</span> <span class="variable">$arr</span><span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">;</span>
+ <span class="keyword">next</span> <span class="keyword">if</span> <span class="variable">$has</span><span class="operator">{</span><span class="variable">$some_key</span><span class="operator">}</span><span class="operator">;</span>
+ 
+ <span class="comment"># But if you try to modify a value, your program will die:</span>
+ <span class="variable">$sca</span> <span class="operator">=</span> <span class="number">7</span><span class="operator">;</span>
+ <span class="keyword">push</span> <span class="variable">@arr</span><span class="operator">,</span> <span class="string">'seven'</span><span class="operator">;</span>
+ <span class="keyword">delete</span> <span class="variable">$has</span><span class="operator">{</span><span class="string">key</span><span class="operator">}</span><span class="operator">;</span>
+ <span class="comment"># The error message is "Modification of a read-only value</span>
+ <span class="variable">attempted</span><span class="string">"
+ 
+ # Alternate form (Perl 5.8 and later)
+ Readonly    </span><span class="variable">$sca</span><span class="string"> =&gt; </span><span class="variable">$initial_value</span><span class="string">;
+ Readonly my </span><span class="variable">$sca</span><span class="string"> =&gt; </span><span class="variable">$initial_value</span><span class="string">;
+ Readonly    </span><span class="variable">@arr</span><span class="string"> =&gt; </span><span class="variable">@values</span><span class="string">;
+ Readonly my </span><span class="variable">@arr</span><span class="string"> =&gt; </span><span class="variable">@values</span><span class="string">;
+ Readonly    %has =&gt; (key =&gt; value, key =&gt; value, ...);
+ Readonly my %has =&gt; (key =&gt; value, key =&gt; value, ...);
+ # Alternate form (for Perls earlier than v5.8)
+ Readonly    \$sca =&gt; </span><span class="variable">$initial_value</span><span class="string">;
+ Readonly \my </span><span class="variable">$sca</span><span class="string"> =&gt; </span><span class="variable">$initial_value</span><span class="string">;
+ Readonly    \@arr =&gt; </span><span class="variable">@values</span><span class="string">;
+ Readonly \my </span><span class="variable">@arr</span><span class="string"> =&gt; </span><span class="variable">@values</span><span class="string">;
+ Readonly    \%has =&gt; (key =&gt; value, key =&gt; value, ...);
+ Readonly \my %has =&gt; (key =&gt; value, key =&gt; value, ...);
+ </span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This is a facility for creating non-modifiable variables. This is useful for configuration files, headers, etc. It can also be useful as a development and debugging tool, for catching updates to variables that should not be changed.</p>
+
+<p>If any of the values you pass to <code><code>Scalar</code></code>, <code><code>Array</code></code>, or <code><code>Hash</code></code> are references, then those functions recurse over the data structures, marking everything as Readonly. Usually, this is what you want: the entire structure nonmodifiable. If you want only the top level to be Readonly, use the alternate <code><code>Scalar1</code></code>, <code><code>Array1</code></code> and <code><code>Hash1</code></code> functions.</p>
+
+<p>Please note that most users of Readonly will also want to install a companion module Readonly::XS. See the <a href="#CONS">&quot;CONS&quot;</a> section below for more details.</p>
+
+<h1 id="COMPARISON-WITH-use-constant">COMPARISON WITH &quot;use constant&quot;</h1>
+
+<p>Perl provides a facility for creating constant values, via the &quot;use constant&quot; pragma. There are several problems with this pragma.</p>
+
+<ul>
+
+<li><p>The constants created have no leading $ or @ character.</p>
+
+</li>
+<li><p>These constants cannot be interpolated into strings.</p>
+
+</li>
+<li><p>Syntax can get dicey sometimes. For example:</p>
+
+<pre><code><code> <span class="keyword">use</span> <span class="variable">constant</span> <span class="string">CARRAY</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="number">2</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">5</span><span class="operator">,</span> <span class="number">7</span><span class="operator">,</span> <span class="number">11</span><span class="operator">,</span> <span class="number">13</span><span class="operator">);</span>
+ <span class="variable">$a_prime</span> <span class="operator">=</span> <span class="variable">CARRAY</span><span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">;</span>        <span class="comment"># wrong!</span>
+ <span class="variable">$a_prime</span> <span class="operator">=</span> <span class="operator">(</span><span class="variable">CARRAY</span><span class="operator">)</span><span class="operator">[</span><span class="number">2</span><span class="operator">]</span><span class="operator">;</span>      <span class="comment"># right -- MUST use parentheses</span>
+</code></code></pre>
+
+</li>
+<li><p>You have to be very careful in places where barewords are allowed. For example:</p>
+
+<pre><code><code> <span class="keyword">use</span> <span class="variable">constant</span> <span class="string">SOME_KEY</span> <span class="operator">=&gt;</span> <span class="string">'key'</span><span class="operator">;</span>
+ <span class="variable">%hash</span> <span class="operator">=</span> <span class="operator">(</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="string">'value'</span><span class="operator">,</span> <span class="string">other_key</span> <span class="operator">=&gt;</span> <span class="string">'other_value'</span><span class="operator">);</span>
+ <span class="variable">$some_value</span> <span class="operator">=</span> <span class="variable">$hash</span><span class="operator">{</span><span class="string">SOME_KEY</span><span class="operator">}</span><span class="operator">;</span>        <span class="comment"># wrong!</span>
+ <span class="variable">$some_value</span> <span class="operator">=</span> <span class="variable">$hash</span><span class="operator">{</span><span class="operator">+</span><span class="variable">SOME_KEY</span><span class="operator">}</span><span class="operator">;</span>       <span class="comment"># right</span>
+</code></code></pre>
+
+<p>(who thinks to use a unary plus when using a hash?)</p>
+
+</li>
+<li><p><code><code>use constant</code></code> works for scalars and arrays, not hashes.</p>
+
+</li>
+<li><p>These constants are global ot the package in which they&#39;re declared; cannot be lexically scoped.</p>
+
+</li>
+<li><p>Works only at compile time.</p>
+
+</li>
+<li><p>Can be overridden:</p>
+
+<pre><code><code> <span class="keyword">use</span> <span class="variable">constant</span> <span class="string">PI</span> <span class="operator">=&gt;</span> <span class="number">3.14159</span><span class="operator">;</span>
+ <span class="operator">...</span>
+ <span class="keyword">use</span> <span class="variable">constant</span> <span class="string">PI</span> <span class="operator">=&gt;</span> <span class="number">2.71828</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>(this does generate a warning, however, if you have warnings enabled).</p>
+
+</li>
+<li><p>It is very difficult to make and use deep structures (complex data structures) with <code><code>use constant</code></code>.</p>
+
+</li>
+</ul>
+
+<h1 id="COMPARISON-WITH-TYPEGLOB-CONSTANTS">COMPARISON WITH TYPEGLOB CONSTANTS</h1>
+
+<p>Another popular way to create read-only scalars is to modify the symbol table entry for the variable by using a typeglob:</p>
+
+<pre><code><code> <span class="variable">*a</span> <span class="operator">=</span> <span class="operator">\</span><span class="string">'value'</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This works fine, but it only works for global variables (&quot;my&quot; variables have no symbol table entry). Also, the following similar constructs do <b>not</b> work:</p>
+
+<pre><code><code> <span class="variable">*a</span> <span class="operator">=</span> <span class="operator">[</span><span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">3</span><span class="operator">]</span><span class="operator">;</span>      <span class="comment"># Does NOT create a read-only array</span>
+ <span class="variable">*a</span> <span class="operator">=</span> <span class="operator">{</span> <span class="string">a</span> <span class="operator">=&gt;</span> <span class="string">'A'</span><span class="operator">}</span><span class="operator">;</span>    <span class="comment"># Does NOT create a read-only hash</span>
+</code></code></pre>
+
+<h1 id="PROS">PROS</h1>
+
+<p>Readonly.pm, on the other hand, will work with global variables and with lexical (&quot;my&quot;) variables. It will create scalars, arrays, or hashes, all of which look and work like normal, read-write Perl variables. You can use them in scalar context, in list context; you can take references to them, pass them to functions, anything.</p>
+
+<p>Readonly.pm also works well with complex data structures, allowing you to tag the whole structure as nonmodifiable, or just the top level.</p>
+
+<p>Also, Readonly variables may not be reassigned. The following code will die:</p>
+
+<pre><code><code> <span class="variable">Readonly::Scalar</span> <span class="variable">$pi</span> <span class="operator">=&gt;</span> <span class="number">3.14159</span><span class="operator">;</span>
+ <span class="operator">...</span>
+ <span class="variable">Readonly::Scalar</span> <span class="variable">$pi</span> <span class="operator">=&gt;</span> <span class="number">2.71828</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="CONS">CONS</h1>
+
+<p>Readonly.pm does impose a performance penalty. It&#39;s pretty slow. How slow? Run the <code><code>benchmark.pl</code></code> script that comes with Readonly. On my test system, &quot;use constant&quot;, typeglob constants, and regular read/write Perl variables were all about the same speed, and Readonly.pm constants were about 1/20 the speed.</p>
+
+<p>However, there is relief. There is a companion module available, Readonly::XS. If it is installed on your system, Readonly.pm uses it to make read-only scalars much faster. With Readonly::XS, Readonly scalars are as fast as the other types of variables. Readonly arrays and hashes will still be relatively slow. But it&#39;s likely that most of your Readonly variables will be scalars.</p>
+
+<p>If you can&#39;t use Readonly::XS (for example, if you don&#39;t have a C compiler, or your perl is statically linked and you don&#39;t want to re-link it), you have to decide whether the benefits of Readonly variables outweigh the speed issue. For most configuration variables (and other things that Readonly is likely to be useful for), the speed issue is probably not really a big problem. But benchmark your program if it might be. If it turns out to be a problem, you may still want to use Readonly.pm during development, to catch changes to variables that should not be changed, and then remove it for production:</p>
+
+<pre><code><code> <span class="comment"># For testing:</span>
+ <span class="variable">Readonly::Scalar</span>  <span class="variable">$Foo_Directory</span> <span class="operator">=&gt;</span> <span class="string">'/usr/local/foo'</span><span class="operator">;</span>
+ <span class="variable">Readonly::Scalar</span>  <span class="variable">$Bar_Directory</span> <span class="operator">=&gt;</span> <span class="string">'/usr/local/bar'</span><span class="operator">;</span>
+ <span class="comment"># $Foo_Directory = '/usr/local/foo';</span>
+ <span class="comment"># $Bar_Directory = '/usr/local/bar';</span>
+ 
+ <span class="comment"># For production:</span>
+ <span class="comment"># Readonly::Scalar  $Foo_Directory =&gt; '/usr/local/foo';</span>
+ <span class="comment"># Readonly::Scalar  $Bar_Directory =&gt; '/usr/local/bar';</span>
+ <span class="variable">$Foo_Directory</span> <span class="operator">=</span> <span class="string">'/usr/local/foo'</span><span class="operator">;</span>
+ <span class="variable">$Bar_Directory</span> <span class="operator">=</span> <span class="string">'/usr/local/bar'</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<dl>
+
+<dt id="Readonly::Scalar-var-value-">Readonly::Scalar $var =&gt; $value;</dt>
+<dd>
+
+<p>Creates a nonmodifiable scalar, <code><code>$var</code></code>, and assigns a value of <code><code>$value</code></code> to it. Thereafter, its value may not be changed. Any attempt to modify the value will cause your program to die.</p>
+
+<p>A value <i>must</i> be supplied. If you want the variable to have <code><code>undef</code></code> as its value, you must specify <code><code>undef</code></code>.</p>
+
+<p>If <code><code>$value</code></code> is a reference to a scalar, array, or hash, then this function will mark the scalar, array, or hash it points to as being Readonly as well, and it will recursively traverse the structure, marking the whole thing as Readonly. Usually, this is what you want. However, if you want only the <code><code>$value</code></code> marked as Readonly, use <code><code>Scalar1</code></code>.</p>
+
+<p>If $var is already a Readonly variable, the program will die with an error about reassigning Readonly variables.</p>
+
+</dd>
+<dt id="Readonly::Array-arr-value-value-...-">Readonly::Array @arr =&gt; (value, value, ...);</dt>
+<dd>
+
+<p>Creates a nonmodifiable array, <code><code>@arr</code></code>, and assigns the specified list of values to it. Thereafter, none of its values may be changed; the array may not be lengthened or shortened or spliced. Any attempt to do so will cause your program to die.</p>
+
+<p>If any of the values passed is a reference to a scalar, array, or hash, then this function will mark the scalar, array, or hash it points to as being Readonly as well, and it will recursively traverse the structure, marking the whole thing as Readonly. Usually, this is what you want. However, if you want only the hash <code><code>%@arr</code></code> itself marked as Readonly, use <code><code>Array1</code></code>.</p>
+
+<p>If @arr is already a Readonly variable, the program will die with an error about reassigning Readonly variables.</p>
+
+</dd>
+<dt id="Readonly::Hash-h-key-value-key-value-...-">Readonly::Hash %h =&gt; (key =&gt; value, key =&gt; value, ...);</dt>
+<dd>
+
+</dd>
+<dt id="Readonly::Hash-h-key-value-key-value-...-1">Readonly::Hash %h =&gt; {key =&gt; value, key =&gt; value, ...};</dt>
+<dd>
+
+<p>Creates a nonmodifiable hash, <code><code>%h</code></code>, and assigns the specified keys and values to it. Thereafter, its keys or values may not be changed. Any attempt to do so will cause your program to die.</p>
+
+<p>A list of keys and values may be specified (with parentheses in the synopsis above), or a hash reference may be specified (curly braces in the synopsis above). If a list is specified, it must have an even number of elements, or the function will die.</p>
+
+<p>If any of the values is a reference to a scalar, array, or hash, then this function will mark the scalar, array, or hash it points to as being Readonly as well, and it will recursively traverse the structure, marking the whole thing as Readonly. Usually, this is what you want. However, if you want only the hash <code><code>%h</code></code> itself marked as Readonly, use <code><code>Hash1</code></code>.</p>
+
+<p>If %h is already a Readonly variable, the program will die with an error about reassigning Readonly variables.</p>
+
+</dd>
+<dt id="Readonly-var-value-">Readonly $var =&gt; $value;</dt>
+<dd>
+
+</dd>
+<dt id="Readonly-arr-value-value-...-">Readonly @arr =&gt; (value, value, ...);</dt>
+<dd>
+
+</dd>
+<dt id="Readonly-h-key-value-...-">Readonly %h =&gt; (key =&gt; value, ...);</dt>
+<dd>
+
+</dd>
+<dt id="Readonly-h-key-value-...-1">Readonly %h =&gt; {key =&gt; value, ...};</dt>
+<dd>
+
+<p>The <code><code>Readonly</code></code> function is an alternate to the <code><code>Scalar</code></code>, <code><code>Array</code></code>, and <code><code>Hash</code></code> functions. It has the advantage (if you consider it an advantage) of being one function. That may make your program look neater, if you&#39;re initializing a whole bunch of constants at once. You may or may not prefer this uniform style.</p>
+
+<p>It has the disadvantage of having a slightly different syntax for versions of Perl prior to 5.8. For earlier versions, you must supply a backslash, because it requires a reference as the first parameter.</p>
+
+<pre><code><code>  <span class="variable">Readonly</span> <span class="operator">\</span><span class="variable">$var</span> <span class="operator">=&gt;</span> <span class="variable">$value</span><span class="operator">;</span>
+  <span class="variable">Readonly</span> <span class="operator">\</span><span class="variable">@arr</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="variable">value</span><span class="operator">,</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...);</span>
+  <span class="variable">Readonly</span> <span class="operator">\</span><span class="variable">%h</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...);</span>
+  <span class="variable">Readonly</span> <span class="operator">\</span><span class="variable">%h</span> <span class="operator">=&gt;</span> <span class="operator">{</span><span class="string">key</span> <span class="operator">=&gt;</span> <span class="variable">value</span><span class="operator">,</span> <span class="operator">...</span><span class="operator">}</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>You may or may not consider this ugly.</p>
+
+</dd>
+<dt id="Readonly::Scalar1-var-value-">Readonly::Scalar1 $var =&gt; $value;</dt>
+<dd>
+
+</dd>
+<dt id="Readonly::Array1-arr-value-value-...-">Readonly::Array1 @arr =&gt; (value, value, ...);</dt>
+<dd>
+
+</dd>
+<dt id="Readonly::Hash1-h-key-value-key-value-...-">Readonly::Hash1 %h =&gt; (key =&gt; value, key =&gt; value, ...);</dt>
+<dd>
+
+</dd>
+<dt id="Readonly::Hash1-h-key-value-key-value-...-1">Readonly::Hash1 %h =&gt; {key =&gt; value, key =&gt; value, ...};</dt>
+<dd>
+
+<p>These alternate functions create shallow Readonly variables, instead of deep ones. For example:</p>
+
+<pre><code><code> <span class="variable">Readonly::Array1</span> <span class="variable">@shal</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="operator">{</span><span class="string">perl</span><span class="operator">=&gt;</span><span class="string">'Rules'</span><span class="operator">,</span> <span class="string">java</span><span class="operator">=&gt;</span><span class="string">'Bites'</span><span class="operator">}</span><span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">5</span><span class="operator">);</span>
+ <span class="variable">Readonly::Array</span>  <span class="variable">@deep</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="operator">{</span><span class="string">perl</span><span class="operator">=&gt;</span><span class="string">'Rules'</span><span class="operator">,</span> <span class="string">java</span><span class="operator">=&gt;</span><span class="string">'Bites'</span><span class="operator">}</span><span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">5</span><span class="operator">);</span>
+ 
+ <span class="variable">$shal</span><span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">7</span><span class="operator">;</span>           <span class="comment"># error</span>
+ <span class="variable">$shal</span><span class="operator">[</span><span class="number">2</span><span class="operator">]{</span><span class="string">APL</span><span class="operator">}</span><span class="operator">=</span><span class="string">'Weird'</span><span class="operator">;</span>  <span class="comment"># Allowed! since the hash isn't Readonly</span>
+ <span class="variable">$deep</span><span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">7</span><span class="operator">;</span>           <span class="comment"># error</span>
+ <span class="variable">$deep</span><span class="operator">[</span><span class="number">2</span><span class="operator">]{</span><span class="string">APL</span><span class="operator">}</span><span class="operator">=</span><span class="string">'Weird'</span><span class="operator">;</span>  <span class="comment"># error, since the hash is Readonly</span>
+</code></code></pre>
+
+</dd>
+</dl>
+
+<h1 id="EXAMPLES">EXAMPLES</h1>
+
+<pre><code><code> <span class="comment"># SCALARS:</span>
+ 
+ <span class="comment"># A plain old read-only value</span>
+ <span class="variable">Readonly::Scalar</span> <span class="variable">$a</span> <span class="operator">=&gt;</span> <span class="string">"A string value"</span><span class="operator">;</span>
+ 
+ <span class="comment"># The value need not be a compile-time constant:</span>
+ <span class="variable">Readonly::Scalar</span> <span class="variable">$a</span> <span class="operator">=&gt;</span> <span class="variable">$computed_value</span><span class="operator">;</span>
+ 
+ 
+ <span class="comment"># ARRAYS:</span>
+ 
+ <span class="comment"># A read-only array:</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">4</span><span class="operator">);</span>
+ 
+ <span class="comment"># The parentheses are optional:</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">4</span><span class="operator">;</span>
+ 
+ <span class="comment"># You can use Perl's built-in array quoting syntax:</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span> <span class="operator">=&gt;</span> <span class="string">qw/1 2 3 4/</span><span class="operator">;</span>
+ 
+ <span class="comment"># You can initialize a read-only array from a variable one:</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span> <span class="operator">=&gt;</span> <span class="variable">@computed_values</span><span class="operator">;</span>
+ 
+ <span class="comment"># A read-only array can be empty, too:</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span> <span class="operator">=&gt;</span> <span class="operator">();</span>
+ <span class="variable">Readonly::Array</span> <span class="variable">@a</span><span class="operator">;</span>        <span class="comment"># equivalent</span>
+ 
+ 
+ <span class="comment"># HASHES</span>
+ 
+ <span class="comment"># Typical usage:</span>
+ <span class="variable">Readonly::Hash</span> <span class="variable">%a</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="string">key1</span> <span class="operator">=&gt;</span> <span class="string">'value1'</span><span class="operator">,</span> <span class="string">key2</span> <span class="operator">=&gt;</span> <span class="string">'value2'</span><span class="operator">);</span>
+ 
+ <span class="comment"># A read-only hash can be initialized from a variable one:</span>
+ <span class="variable">Readonly::Hash</span> <span class="variable">%a</span> <span class="operator">=&gt;</span> <span class="variable">%computed_values</span><span class="operator">;</span>
+ 
+ <span class="comment"># A read-only hash can be empty:</span>
+ <span class="variable">Readonly::Hash</span> <span class="variable">%a</span> <span class="operator">=&gt;</span> <span class="operator">();</span>
+ <span class="variable">Readonly::Hash</span> <span class="variable">%a</span><span class="operator">;</span>        <span class="comment"># equivalent</span>
+ 
+ <span class="comment"># If you pass an odd number of values, the program will die:</span>
+ <span class="variable">Readonly::Hash</span> <span class="variable">%a</span> <span class="operator">=&gt;</span> <span class="operator">(</span><span class="string">key1</span> <span class="operator">=&gt;</span> <span class="string">'value1'</span><span class="operator">,</span> <span class="string">"value2"</span><span class="operator">);</span>
+     <span class="operator">--&gt;</span> <span class="variable">dies</span> <span class="variable">with</span> <span class="string">"May not store an odd number of values in a hash"</span>
+</code></code></pre>
+
+<h1 id="EXPORTS">EXPORTS</h1>
+
+<p>By default, this module exports the following symbol into the calling program&#39;s namespace:</p>
+
+<pre><code><code> Readonly</code></code></pre>
+
+<p>The following symbols are available for import into your program, if you like:</p>
+
+<pre><code><code> Scalar  Scalar1
+ Array   Array1
+ Hash    Hash1</code></code></pre>
+
+<h1 id="REQUIREMENTS">REQUIREMENTS</h1>
+
+<pre><code><code> Perl 5.000
+ Carp.pm (included with Perl)
+ Exporter.pm (included with Perl)
+
+ Readonly::XS is recommended but not required.</code></code></pre>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</h1>
+
+<p>Thanks to Slaven Rezic for the idea of one common function (Readonly) for all three types of variables (13 April 2002).</p>
+
+<p>Thanks to Ernest Lergon for the idea (and initial code) for deeply-Readonly data structures (21 May 2002).</p>
+
+<p>Thanks to Damian Conway for the idea (and code) for making the Readonly function work a lot smoother under perl 5.8+.</p>
+
+<h1 id="AUTHOR-COPYRIGHT">AUTHOR / COPYRIGHT</h1>
+
+<p>Eric J. Roode, roode@cpan.org</p>
+
+<p>Copyright (c) 2001-2004 by Eric J. Roode. All Rights Reserved. This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+<p>If you have suggestions for improvement, please drop me a line. If you make improvements to this software, I ask that you please send me a copy of your changes. Thanks.</p>
+
+<p>Readonly.pm is made from 100% recycled electrons. No animals were harmed during the development and testing of this module. Not sold in stores! Readonly::XS sold separately. Void where prohibited.</p>
+
+
+</body>
+
+</html>
+
+

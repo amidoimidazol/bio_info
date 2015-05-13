@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#dir-_extract-module-modobj-perl-path-to-perl-extractdir-path-to-extract-to-prefer_bin-BOOL-verbose-BOOL-force-BOOL-">$dir = _extract( module =&gt; $modobj, [perl =&gt; &#39;/path/to/perl&#39;, extractdir =&gt; &#39;/path/to/extract/to&#39;, prefer_bin =&gt; BOOL, verbose =&gt; BOOL, force =&gt; BOOL] )</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Internals::Extract - internals for archive extraction</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="comment">### for source files ###</span>
+    <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">_gunzip</span><span class="operator">(</span> <span class="string">file</span> <span class="operator">=&gt;</span> <span class="string">'foo.gz'</span><span class="operator">,</span> <span class="string">output</span> <span class="operator">=&gt;</span> <span class="string">'blah.txt'</span> <span class="operator">);</span>
+    
+    <span class="comment">### for modules/packages ###</span>
+    <span class="variable">$dir</span> <span class="operator">=</span> <span class="variable">$self</span><span class="operator">-&gt;</span><span class="variable">_extract</span><span class="operator">(</span> <span class="string">module</span>      <span class="operator">=&gt;</span> <span class="variable">$modobj</span><span class="operator">,</span>
+                            <span class="string">extractdir</span>  <span class="operator">=&gt;</span> <span class="string">'/some/where'</span> <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>CPANPLUS::Internals::Extract extracts compressed files for CPANPLUS. It can do this by either a pure perl solution (preferred) with the use of <code><code>Archive::Tar</code></code> and <code><code>Compress::Zlib</code></code>, or with binaries, like <code><code>gzip</code></code> and <code><code>tar</code></code>.</p>
+
+<p>The flow looks like this:</p>
+
+<pre><code><code>    $cb-&gt;_extract
+        Delegate to Archive::Extract</code></code></pre>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="dir-_extract-module-modobj-perl-path-to-perl-extractdir-path-to-extract-to-prefer_bin-BOOL-verbose-BOOL-force-BOOL-">$dir = _extract( module =&gt; $modobj, [perl =&gt; &#39;/path/to/perl&#39;, extractdir =&gt; &#39;/path/to/extract/to&#39;, prefer_bin =&gt; BOOL, verbose =&gt; BOOL, force =&gt; BOOL] )</h2>
+
+<p><code><code>_extract</code></code> will take a module object and extract it to <code><code>extractdir</code></code> if provided, or the default location which is obtained from your config.</p>
+
+<p>The file name is obtained by looking at <code><code>$modobj-&gt;status-&gt;fetch</code></code> and will be parsed to see if it&#39;s a tar or zip archive.</p>
+
+<p>If it&#39;s a zip archive, <code><code>__unzip</code></code> will be called, otherwise <code><code>__untar</code></code> will be called. In the unlikely event the file is of neither format, an error will be thrown.</p>
+
+<p><code><code>_extract</code></code> takes the following options:</p>
+
+<dl>
+
+<dt id="module">module</dt>
+<dd>
+
+<p>A <code><code>CPANPLUS::Module</code></code> object. This is required.</p>
+
+</dd>
+<dt id="extractdir">extractdir</dt>
+<dd>
+
+<p>The directory to extract the archive to. By default this looks something like: /CPANPLUS_BASE/PERL_VERSION/BUILD/MODULE_NAME</p>
+
+</dd>
+<dt id="prefer_bin">prefer_bin</dt>
+<dd>
+
+<p>A flag indicating whether you prefer a pure perl solution, ie <code><code>Archive::Tar</code></code> or <code><code>Archive::Zip</code></code> respectively, or a binary solution like <code><code>unzip</code></code> and <code><code>tar</code></code>.</p>
+
+</dd>
+<dt id="perl">perl</dt>
+<dd>
+
+<p>The path to the perl executable to use for any perl calls. Also used to determine the build version directory for extraction.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<p>Specifies whether to be verbose or not. Defaults to your corresponding config entry.</p>
+
+</dd>
+<dt id="force">force</dt>
+<dd>
+
+<p>Specifies whether to force the extraction or not. Defaults to your corresponding config entry.</p>
+
+</dd>
+</dl>
+
+<p>All other options are passed on verbatim to <code><code>__unzip</code></code> or <code><code>__untar</code></code>.</p>
+
+<p>Returns the directory the file was extracted to on success and false on failure.</p>
+
+
+</body>
+
+</html>
+
+

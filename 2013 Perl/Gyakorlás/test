@@ -1,0 +1,23 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+use lib '/perl';
+use biolib;
+
+
+my @a = ('A','B','C');
+my $length = scalar @a;
+print "elso @a\n";
+
+my $position = int(rand($length));
+print "pozicio:$position\n";
+
+my @b = splice (@a,$position,1,'');
+print "masodik @b\n";
+print "maradek @a\n";
+my @c =splice (@a,$position,1,'');
+print "harmadik @c\n";
+print "maradek @a\n";
+
+exit;

@@ -1,0 +1,29 @@
+#!/usr/bin/perl -w
+
+use warnings;
+use strict;
+use lib '/perl';
+use biolib;
+
+
+my ($dns_darab) = 20;
+my ($dns_max_hossz)=30;
+my ($dns_min_hossz)=15;
+
+my (@random_dna) = ( );
+
+(time|$$);
+
+@random_dna = make_random_dna_set ($dns_min_hossz,$dns_max_hossz,$dns_darab);
+
+print "Random generalt DNS:\n";
+print "Darab:\n$dns_darab\n";
+print "Maximum hossz (bp):\n$dns_max_hossz\n";
+print "Minimum hossz (bp):\n$dns_min_hossz\n";
+
+foreach my $dna (@random_dna)
+	{print "$dna\n";}
+	
+	print "\n";
+	
+exit;

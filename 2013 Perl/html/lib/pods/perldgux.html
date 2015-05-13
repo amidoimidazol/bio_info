@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#BUILDING-PERL-ON-DG-UX">BUILDING PERL ON DG/UX</a>
+    <ul>
+      <li><a href="#Non-threaded-Perl-on-DG-UX">Non-threaded Perl on DG/UX</a></li>
+      <li><a href="#Threaded-Perl-on-DG-UX">Threaded Perl on DG/UX</a></li>
+      <li><a href="#Testing-Perl-on-DG-UX">Testing Perl on DG/UX</a></li>
+      <li><a href="#Installing-the-built-perl-on-DG-UX">Installing the built perl on DG/UX</a></li>
+    </ul>
+  </li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>perldgux - Perl under DG/UX.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>One can read this document in the following formats:</p>
+
+<pre><code><code>        man perldgux
+        view perl perldgux
+        explorer perldgux.html
+        info perldgux</code></code></pre>
+
+<p>to list some (not all may be available simultaneously), or it may be read <i>as is</i>: as <i>README.dgux</i>.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Perl 5.7/8.x for DG/UX ix86 R4.20MU0x</p>
+
+<h1 id="BUILDING-PERL-ON-DG-UX">BUILDING PERL ON DG/UX</h1>
+
+<h2 id="Non-threaded-Perl-on-DG-UX">Non-threaded Perl on DG/UX</h2>
+
+<p>Just run ./Configure script from the top directory. Then give &quot;make&quot; to compile.</p>
+
+<h2 id="Threaded-Perl-on-DG-UX">Threaded Perl on DG/UX</h2>
+
+<p>If you are using as compiler GCC-2.95.x rev(DG/UX) an easy solution for configuring perl in your DG/UX machine is to run the command:</p>
+
+<p>./Configure -Dusethreads -Duseithreads -Dusedevel -des</p>
+
+<p>This will automatically accept all the defaults and in particular /usr/local/ as installation directory. Note that GCC-2.95.x rev(DG/UX) knows the switch -pthread which allows it to link correctly DG/UX&#39;s -lthread library.</p>
+
+<p>If you want to change the installation directory or have a standard DG/UX with C compiler GCC-2.7.2.x then you have no choice than to do an interactive build by issuing the command:</p>
+
+<p>./Configure -Dusethreads -Duseithreads</p>
+
+<p>In particular with GCC-2.7.2.x accept all the defaults and *watch* out for the message:</p>
+
+<pre><code><code>    Any additional ld flags (NOT including libraries)? [ -pthread]</code></code></pre>
+
+<p>Instead of -pthread put here -lthread. CGCC-2.7.2.x that comes with the DG/UX OS does NOT know the -pthread switch. So your build will fail if you choose the defaults. After configuration is done correctly give &quot;make&quot; to compile.</p>
+
+<h2 id="Testing-Perl-on-DG-UX">Testing Perl on DG/UX</h2>
+
+<p>Issuing a &quot;make test&quot; will run all the tests. If the test lib/ftmp-security gives you as a result something like</p>
+
+<pre><code><code>    lib/ftmp-security....File::Temp::_gettemp:
+    Parent directory (/tmp/) is not safe (sticky bit not set
+    when world writable?) at lib/ftmp-security.t line 100</code></code></pre>
+
+<p>don&#39;t panic and just set the sticky bit in your /tmp directory by doing the following as root:</p>
+
+<p>cd / chmod +t /tmp (=set the sticky bit to /tmp).</p>
+
+<p>Then rerun the tests. This time all must be OK.</p>
+
+<h2 id="Installing-the-built-perl-on-DG-UX">Installing the built perl on DG/UX</h2>
+
+<p>Run the command &quot;make install&quot;</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Takis Psarogiannakopoulos University of Cambridge Centre for Mathematical Sciences Department of Pure Mathematics Wilberforce road Cambridge CB3 0WB , UK email &lt;takis@XFree86.Org&gt;</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>perl(1).</p>
+
+
+</body>
+
+</html>
+
+

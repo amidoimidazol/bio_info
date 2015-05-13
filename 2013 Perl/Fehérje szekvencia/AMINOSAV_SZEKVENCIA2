@@ -1,0 +1,15 @@
+#!/usr/bin/perl -w
+$proteinfilename = 'NM_021964fragment.pep';
+	open (PROTEINFILE, $proteinfilename);
+$protein = <PROTEINFILE>;
+
+	print "Elso sor:\n";
+	print $protein;
+
+$protein = <PROTEINFILE>;
+	print "Masodik sor:\n";
+	print $protein;
+	
+$protein = <PROTEINFILE>;
+	print "Harmadik sor:\n";
+	print $protein;

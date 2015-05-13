@@ -1,0 +1,10 @@
+#!/usr/bin/perl -w
+	$DNA = 'GCTA';
+print "Ez az eredeti DNS:\n";
+print "$DNA\n\n";
+	$revcom = reverse $DNA;
+	#lecseréli az összes A-->T a--> t stb.
+	$revcom =~ tr/ACGTacgt/TGCAtgca/;
+print "Ez a forditott szekvencia:\n";
+print $revcom;
+exit;

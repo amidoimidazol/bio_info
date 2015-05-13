@@ -1,0 +1,143 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#AFFILIATION">AFFILIATION</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONFIGURATION">CONFIGURATION</a></li>
+  <li><a href="#TODO">TODO</a></li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Perl::Critic::Policy::NamingConventions::Capitalization - Distinguish different program components by case.</p>
+
+<h1 id="AFFILIATION">AFFILIATION</h1>
+
+<p>This Policy is part of the core <a href="../../../../../lib/Perl/Critic.html">Perl::Critic</a> distribution.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Conway recommends to distinguish different program components by case.</p>
+
+<p>Normal subroutines, methods and variables are all in lower case.</p>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$foo</span><span class="operator">;</span>            <span class="comment"># ok</span>
+    <span class="keyword">my</span> <span class="variable">$foo_bar</span><span class="operator">;</span>        <span class="comment"># ok</span>
+    <span class="keyword">sub</span><span class="variable"> foo </span><span class="operator">{}</span>          <span class="comment"># ok</span>
+    <span class="keyword">sub</span><span class="variable"> foo_bar </span><span class="operator">{}</span>      <span class="comment"># ok</span>
+    
+    <span class="keyword">my</span> <span class="variable">$Foo</span><span class="operator">;</span>            <span class="comment"># not ok</span>
+    <span class="keyword">my</span> <span class="variable">$foo_Bar</span><span class="operator">;</span>        <span class="comment"># not ok</span>
+    <span class="keyword">sub</span><span class="variable"> Foo     </span><span class="operator">{}</span>      <span class="comment"># not ok</span>
+    <span class="keyword">sub</span><span class="variable"> foo_Bar </span><span class="operator">{}</span>      <span class="comment"># not ok</span>
+</code></code></pre>
+
+<p>Package and class names are capitalized.</p>
+
+<pre><code><code>    <span class="keyword">package</span> <span class="variable">IO::Thing</span><span class="operator">;</span>     <span class="comment"># ok</span>
+    <span class="keyword">package</span> <span class="variable">Web::FooBar</span>    <span class="comment"># ok</span>
+    
+    <span class="keyword">package</span> <span class="variable">foo</span><span class="operator">;</span>           <span class="comment"># not ok</span>
+    <span class="keyword">package</span> <span class="variable">foo::Bar</span><span class="operator">;</span>      <span class="comment"># not ok</span>
+</code></code></pre>
+
+<p>Constants are in all-caps.</p>
+
+<pre><code><code>    <span class="variable">Readonly::Scalar</span> <span class="keyword">my</span> <span class="variable">$FOO</span> <span class="operator">=</span> <span class="number">42</span><span class="operator">;</span>  <span class="comment"># ok</span>
+    
+    <span class="variable">Readonly::Scalar</span> <span class="keyword">my</span> <span class="variable">$foo</span> <span class="operator">=</span> <span class="number">42</span><span class="operator">;</span>  <span class="comment"># not ok</span>
+</code></code></pre>
+
+<p>There are other opinions on the specifics, for example, in <a href="../../../../../lib/pods/perlstyle.html">perlstyle</a>. This policy can be configured to match almost any style that you can think of.</p>
+
+<h1 id="CONFIGURATION">CONFIGURATION</h1>
+
+<p>You can specify capitalization rules for the following things: <code><code>packages</code></code>, <code><code>subroutines</code></code>, <code><code>local_lexical_variables</code></code>, <code><code>scoped_lexical_variables</code></code>, <code><code>file_lexical_variables</code></code>, <code><code>global_variables</code></code>, <code><code>constants</code></code>, and <code><code>labels</code></code>.</p>
+
+<p><code><code>constants</code></code> are things declared via <a href="../../../../../lib/constant.html">constant</a> or <a href="../../../../../lib/Readonly.html">Readonly</a>.</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">constant</span> <span class="string">FOO</span> <span class="operator">=&gt;</span> <span class="number">193</span><span class="operator">;</span>
+    <span class="variable">Readonly::Array</span> <span class="keyword">my</span> <span class="variable">@BAR</span> <span class="operator">=&gt;</span> <span class="string">qw&lt; a b c &gt;</span><span class="operator">;</span>
+</code></code></pre>
+
+<p><code><code>global_variables</code></code> are anything declared using <code><code>local</code></code>, <code><code>our</code></code>, or <a href="../../../../../lib/vars.html">vars</a>. <code><code>file_lexical_variables</code></code> are variables declared at the file scope.</p>
+
+<p><code><code>scoped_lexical_variables</code></code> are variables declared inside bare blocks that are outside of any subroutines or other control structures; these are usually created to limit scope of variables to a given subset of subroutines. E.g.</p>
+
+<pre><code><code>    <span class="keyword">sub</span><span class="variable"> foo </span><span class="operator">{</span> <span class="operator">...</span> <span class="operator">}</span>
+    
+    <span class="operator">{</span>
+        <span class="keyword">my</span> <span class="variable">$thingy</span><span class="operator">;</span>
+    
+        <span class="keyword">sub</span><span class="variable"> bar </span><span class="operator">{</span> <span class="operator">...</span> <span class="variable">$thingy</span> <span class="operator">...</span> <span class="operator">}</span>
+        <span class="keyword">sub</span><span class="variable"> baz </span><span class="operator">{</span> <span class="operator">...</span> <span class="variable">$thingy</span> <span class="operator">...</span> <span class="operator">}</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<p>All other variable declarations are considered <code><code>local_lexical_variables</code></code>.</p>
+
+<p>Each of the <code><code>packages</code></code>, <code><code>subroutines</code></code>, <code><code>local_lexical_variables</code></code>, <code><code>scoped_lexical_variables</code></code>, <code><code>file_lexical_variables</code></code>, <code><code>global_variables</code></code>, <code><code>constants</code></code>, and <code><code>labels</code></code> options can be specified as one of <code><code>:single_case</code></code>, <code><code>:all_lower</code></code>, <code><code>:all_upper:</code></code>, <code><code>:starts_with_lower</code></code>, <code><code>:starts_with_upper</code></code>, or <code><code>:no_restriction</code></code> or a regular expression; any value that does not start with a colon, <code><code>:</code></code>, is considered to be a regular expression. The <code><code>:single_case</code></code> tag means a name can be all lower case or all upper case. If a regular expression is specified, it is surrounded by <code><code>\A</code></code> and <code><code>\z</code></code>.</p>
+
+<p><code><code>packages</code></code> defaults to <code><code>:starts_with_upper</code></code>. <code><code>subroutines</code></code>, <code><code>local_lexical_variables</code></code>, <code><code>scoped_lexical_variables</code></code>, <code><code>file_lexical_variables</code></code>, and <code><code>global_variables</code></code> default to <code><code>:single_case</code></code>. And <code><code>constants</code></code> and <code><code>labels</code></code> default to <code><code>:all_upper</code></code>.</p>
+
+<p>There are corresponding <code><code>package_exemptions</code></code>, <code><code>subroutine_exemptions</code></code>, <code><code>local_lexical_variable_exemptions</code></code>, <code><code>scoped_lexical_variable_exemptions</code></code>, <code><code>file_lexical_variable_exemptions</code></code>, <code><code>global_variable_exemptions</code></code>, <code><code>constant_exemptions</code></code>, and <code><code>label_exemptions</code></code> options that are lists of regular expressions to exempt from the corresponding capitalization rule. These values also end up being surrounded by <code><code>\A</code></code> and <code><code>\z</code></code>.</p>
+
+<p><code><code>package_exemptions</code></code> defaults to <code><code>main</code></code>. <code><code>global_variable_exemptions</code></code> defaults to <code><code>\$VERSION @ISA @EXPORT(?:_OK)? %EXPORT_TAGS \$AUTOLOAD %ENV %SIG \$TODO</code></code>. <code><code>subroutine_exemptions</code></code> defaults to <code><code>AUTOLOAD BUILD BUILDARGS CLEAR CLOSE DELETE DEMOLISH DESTROY EXISTS EXTEND FETCH FETCHSIZE FIRSTKEY GETC NEXTKEY POP PRINT PRINTF PUSH READ READLINE SCALAR SHIFT SPLICE STORE STORESIZE TIEARRAY TIEHANDLE TIEHASH TIESCALAR UNSHIFT UNTIE WRITE</code></code> which should cover all the standard Perl subroutines plus those from <a href="../../../../../lib/Moose.html">Moose</a>.</p>
+
+<p>For example, if you want all local variables to be in all lower-case and global variables to start with &quot;G_&quot; and otherwise not contain underscores, but exempt any variable with a name that contains &quot;THINGY&quot;, you could put the following in your <i>.perlcriticrc</i>:</p>
+
+<pre><code><code>    [NamingConventions::Capitalization]
+    local_lexical_variables = :all_lower
+    global_variables = G_(?:(?!_)\w)+
+    global_variable_exemptions = .*THINGY.*</code></code></pre>
+
+<h1 id="TODO">TODO</h1>
+
+<p>Handle <code><code>use vars</code></code>. Treat constant subroutines like constant variables. Handle bareword file handles. There needs to be &quot;schemes&quot; or ways of specifying &quot;perlstyle&quot; or &quot;pbp&quot;. Differentiate lexical <a href="../../../../../lib/Readonly.html">Readonly</a> constants in scopes.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>This policy won&#39;t catch problems with the declaration of <code><code>$y</code></code> below:</p>
+
+<pre><code><code>    <span class="keyword">for</span> <span class="operator">(</span><span class="keyword">my</span> <span class="variable">$x</span> <span class="operator">=</span> <span class="number">3</span><span class="operator">,</span> <span class="keyword">my</span> <span class="variable">$y</span> <span class="operator">=</span> <span class="number">5</span><span class="operator">;</span> <span class="variable">$x</span> <span class="operator">&lt;</span> <span class="number">57</span><span class="operator">;</span> <span class="variable">$x</span> <span class="operator">+=</span> <span class="number">3</span><span class="operator">)</span> <span class="operator">{</span>
+        <span class="operator">...</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Multiple people</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright (c) 2008-2011 Michael G Schwern. All rights reserved.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself. The full text of this license can be found in the LICENSE file included with this module.</p>
+
+
+</body>
+
+</html>
+
+

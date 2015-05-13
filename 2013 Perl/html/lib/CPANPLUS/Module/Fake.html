@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#new-module-mod-path-path-package-pkg-_id-DIGIT-">new( module =&gt; $mod, path =&gt; $path, package =&gt; $pkg, [_id =&gt; DIGIT] )</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Module::Fake - fake module object for internal use</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$obj</span> <span class="operator">=</span> <span class="variable">CPANPLUS::Module::Fake</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>
+                <span class="string">module</span>  <span class="operator">=&gt;</span> <span class="string">'Foo'</span><span class="operator">,</span>
+                <span class="string">path</span>    <span class="operator">=&gt;</span> <span class="string">'ftp/path/to/foo'</span><span class="operator">,</span>
+                <span class="string">author</span>  <span class="operator">=&gt;</span> <span class="variable">CPANPLUS::Module::Author::Fake</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">,</span>
+                <span class="string">package</span> <span class="operator">=&gt;</span> <span class="string">'fake-1.1.tgz'</span><span class="operator">,</span>
+                <span class="string">_id</span>     <span class="operator">=&gt;</span> <span class="variable">$cpan</span><span class="operator">-&gt;</span><span class="variable">_id</span><span class="operator">,</span>
+            <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A class for creating fake module objects, for shortcut use internally by CPANPLUS.</p>
+
+<p>Inherits from <code><code>CPANPLUS::Module</code></code>.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="new-module-mod-path-path-package-pkg-_id-DIGIT-">new( module =&gt; $mod, path =&gt; $path, package =&gt; $pkg, [_id =&gt; DIGIT] )</h2>
+
+<p>Creates a dummy module object from the above parameters. It can take more options (same as <code><code>CPANPLUS::Module-&gt;new</code></code> but the above are required.</p>
+
+
+</body>
+
+</html>
+
+

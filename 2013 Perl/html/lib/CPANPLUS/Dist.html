@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ACCESSORS">ACCESSORS</a></li>
+  <li><a href="#STATUS-ACCESSORS">STATUS ACCESSORS</a>
+    <ul>
+      <li><a href="#dist-CPANPLUS::Dist::YOUR_DIST_TYPE_HERE-new-module-MODOBJ-">$dist = CPANPLUS::Dist::YOUR_DIST_TYPE_HERE-&gt;new( module =&gt; MODOBJ );</a></li>
+      <li><a href="#dists-CPANPLUS::Dist-dist_types-">@dists = CPANPLUS::Dist-&gt;dist_types;</a></li>
+      <li><a href="#bool-CPANPLUS::Dist-rescan_dist_types-">$bool = CPANPLUS::Dist-&gt;rescan_dist_types;</a></li>
+      <li><a href="#bool-CPANPLUS::Dist-has_dist_type-type-">$bool = CPANPLUS::Dist-&gt;has_dist_type( $type )</a></li>
+      <li><a href="#bool-dist-prereq_satisfied-modobj-modobj-version-version_spec-">$bool = $dist-&gt;prereq_satisfied( modobj =&gt; $modobj, version =&gt; $version_spec )</a></li>
+      <li><a href="#configure_requires-dist-find_configure_requires-file-path-to-META.yml-">$configure_requires = $dist-&gt;find_configure_requires( [file =&gt; /path/to/META.yml] )</a></li>
+      <li><a href="#bool-dist-_resolve_prereqs-...-">$bool = $dist-&gt;_resolve_prereqs( ... )</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Dist - base class for plugins</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$dist</span> <span class="operator">=</span> <span class="variable">CPANPLUS::Dist::YOUR_DIST_TYPE_HERE</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>
+                                <span class="string">module</span>  <span class="operator">=&gt;</span> <span class="variable">$modobj</span><span class="operator">,</span>
+                            <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>CPANPLUS::Dist</code></code> is a base class for <code><code>CPANPLUS::Dist::MM</code></code> and <code><code>CPANPLUS::Dist::Build</code></code>. Developers of other <code><code>CPANPLUS::Dist::*</code></code> plugins should look at <code><code>CPANPLUS::Dist::Base</code></code>.</p>
+
+<h1 id="ACCESSORS">ACCESSORS</h1>
+
+<dl>
+
+<dt id="parent-">parent()</dt>
+<dd>
+
+<p>Returns the <code><code>CPANPLUS::Module</code></code> object that parented this object.</p>
+
+</dd>
+<dt id="status-">status()</dt>
+<dd>
+
+<p>Returns the <code><code>Object::Accessor</code></code> object that keeps the status for this module.</p>
+
+</dd>
+</dl>
+
+<h1 id="STATUS-ACCESSORS">STATUS ACCESSORS</h1>
+
+<p>All accessors can be accessed as follows: $deb-&gt;status-&gt;ACCESSOR</p>
+
+<dl>
+
+<dt id="created-">created()</dt>
+<dd>
+
+<p>Boolean indicating whether the dist was created successfully. Explicitly set to <code><code>0</code></code> when failed, so a value of <code><code>undef</code></code> may be interpreted as <code><code>not yet attempted</code></code>.</p>
+
+</dd>
+<dt id="installed-">installed()</dt>
+<dd>
+
+<p>Boolean indicating whether the dist was installed successfully. Explicitly set to <code><code>0</code></code> when failed, so a value of <code><code>undef</code></code> may be interpreted as <code><code>not yet attempted</code></code>.</p>
+
+</dd>
+<dt id="uninstalled-">uninstalled()</dt>
+<dd>
+
+<p>Boolean indicating whether the dist was uninstalled successfully. Explicitly set to <code><code>0</code></code> when failed, so a value of <code><code>undef</code></code> may be interpreted as <code><code>not yet attempted</code></code>.</p>
+
+</dd>
+<dt id="dist-">dist()</dt>
+<dd>
+
+<p>The location of the final distribution. This may be a file or directory, depending on how your distribution plug in of choice works. This will be set upon a successful create.</p>
+
+</dd>
+</dl>
+
+<h2 id="dist-CPANPLUS::Dist::YOUR_DIST_TYPE_HERE-new-module-MODOBJ-">$dist = CPANPLUS::Dist::YOUR_DIST_TYPE_HERE-&gt;new( module =&gt; MODOBJ );</h2>
+
+<p>Create a new <code><code>CPANPLUS::Dist::YOUR_DIST_TYPE_HERE</code></code> object based on the provided <code><code>MODOBJ</code></code>.</p>
+
+<p>*** DEPRECATED *** The optional argument <code><code>format</code></code> is used to indicate what type of dist you would like to create (like <code><code>CPANPLUS::Dist::MM</code></code> or <code><code>CPANPLUS::Dist::Build</code></code> and so on ).</p>
+
+<p><code><code>CPANPLUS::Dist-&gt;new</code></code> is exclusively meant as a method to be inherited by <code><code>CPANPLUS::Dist::MM|Build</code></code>.</p>
+
+<p>Returns a <code><code>CPANPLUS::Dist::YOUR_DIST_TYPE_HERE</code></code> object on success and false on failure.</p>
+
+<h2 id="dists-CPANPLUS::Dist-dist_types-">@dists = CPANPLUS::Dist-&gt;dist_types;</h2>
+
+<p>Returns a list of the CPANPLUS::Dist::* classes available</p>
+
+<h2 id="bool-CPANPLUS::Dist-rescan_dist_types-">$bool = CPANPLUS::Dist-&gt;rescan_dist_types;</h2>
+
+<p>Rescans <code><code>@INC</code></code> for available dist types. Useful if you&#39;ve installed new <code><code>CPANPLUS::Dist::*</code></code> classes and want to make them available to the current process.</p>
+
+<h2 id="bool-CPANPLUS::Dist-has_dist_type-type-">$bool = CPANPLUS::Dist-&gt;has_dist_type( $type )</h2>
+
+<p>Returns true if distribution type <code><code>$type</code></code> is loaded/supported.</p>
+
+<h2 id="bool-dist-prereq_satisfied-modobj-modobj-version-version_spec-">$bool = $dist-&gt;prereq_satisfied( modobj =&gt; $modobj, version =&gt; $version_spec )</h2>
+
+<p>Returns true if this prereq is satisfied. Returns false if it&#39;s not. Also issues an error if it seems &quot;unsatisfiable,&quot; i.e. if it can&#39;t be found on CPAN or the latest CPAN version doesn&#39;t satisfy it.</p>
+
+<h2 id="configure_requires-dist-find_configure_requires-file-path-to-META.yml-">$configure_requires = $dist-&gt;find_configure_requires( [file =&gt; /path/to/META.yml] )</h2>
+
+<p>Reads the configure_requires for this distribution from the META.yml or META.json file in the root directory and returns a hashref with module names and versions required.</p>
+
+<h2 id="bool-dist-_resolve_prereqs-...-">$bool = $dist-&gt;_resolve_prereqs( ... )</h2>
+
+<p>Makes sure prerequisites are resolved</p>
+
+<pre><code><code>    format          The dist class to use to make the prereqs
+                    (ie. CPANPLUS::Dist::MM)
+
+    prereqs         Hash of the prerequisite modules and their versions
+
+    target          What to do with the prereqs.
+                        create  =&gt; Just build them
+                        install =&gt; Install them
+                        ignore  =&gt; Ignore them
+
+    prereq_build    If true, always build the prereqs even if already
+                    resolved
+
+    verbose         Be verbose
+
+    force           Force the prereq to be built, even if already resolved</code></code></pre>
+
+
+</body>
+
+</html>
+
+

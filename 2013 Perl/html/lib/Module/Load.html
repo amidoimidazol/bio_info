@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#Rules">Rules</a></li>
+  <li><a href="#Caveats">Caveats</a></li>
+  <li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+  <li><a href="#BUG-REPORTS">BUG REPORTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Module::Load - runtime require of both modules and files</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>        <span class="keyword">use</span> <span class="variable">Module::Load</span><span class="operator">;</span>
+        
+            <span class="keyword">my</span> <span class="variable">$module</span> <span class="operator">=</span> <span class="string">'Data:Dumper'</span><span class="operator">;</span>
+            <span class="variable">load</span> <span class="variable">Data::Dumper</span><span class="operator">;</span>      <span class="comment"># loads that module</span>
+            <span class="variable">load</span> <span class="string">'Data::Dumper'</span><span class="operator">;</span>    <span class="comment"># ditto</span>
+            <span class="variable">load</span> <span class="variable">$module</span>            <span class="comment"># tritto</span>
+        
+            <span class="keyword">my</span> <span class="variable">$script</span> <span class="operator">=</span> <span class="string">'some/script.pl'</span>
+            <span class="variable">load</span> <span class="variable">$script</span><span class="operator">;</span>
+            <span class="variable">load</span> <span class="string">'some/script.pl'</span><span class="operator">;</span>      <span class="comment"># use quotes because of punctuations</span>
+        
+            <span class="variable">load</span> <span class="variable">thing</span><span class="operator">;</span>             <span class="comment"># try 'thing' first, then 'thing.pm'</span>
+        
+            <span class="variable">load</span> <span class="variable">CGI</span><span class="operator">,</span> <span class="string">':standard'</span>   <span class="comment"># like 'use CGI qw[:standard]'</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>load</code></code> eliminates the need to know whether you are trying to require either a file or a module.</p>
+
+<p>If you consult <code><code>perldoc -f require</code></code> you will see that <code><code>require</code></code> will behave differently when given a bareword or a string.</p>
+
+<p>In the case of a string, <code><code>require</code></code> assumes you are wanting to load a file. But in the case of a bareword, it assumes you mean a module.</p>
+
+<p>This gives nasty overhead when you are trying to dynamically require modules at runtime, since you will need to change the module notation (<code><code>Acme::Comment</code></code>) to a file notation fitting the particular platform you are on.</p>
+
+<p><code><code>load</code></code> eliminates the need for this overhead and will just DWYM.</p>
+
+<h1 id="Rules">Rules</h1>
+
+<p><code><code>load</code></code> has the following rules to decide what it thinks you want:</p>
+
+<ul>
+
+<li><p>If the argument has any characters in it other than those matching <code><code>\w</code></code>, <code><code>:</code></code> or <code><code>&#39;</code></code>, it must be a file</p>
+
+</li>
+<li><p>If the argument matches only <code><code>[\w:&#39;]</code></code>, it must be a module</p>
+
+</li>
+<li><p>If the argument matches only <code><code>\w</code></code>, it could either be a module or a file. We will try to find <code><code>file.pm</code></code> first in <code><code>@INC</code></code> and if that fails, we will try to find <code><code>file</code></code> in @INC. If both fail, we die with the respective error messages.</p>
+
+</li>
+</ul>
+
+<h1 id="Caveats">Caveats</h1>
+
+<p>Because of a bug in perl (#19213), at least in version 5.6.1, we have to hardcode the path separator for a require on Win32 to be <code><code>/</code></code>, like on Unix rather than the Win32 <code><code>\</code></code>. Otherwise perl will not read its own %INC accurately double load files if they are required again, or in the worst case, core dump.</p>
+
+<p><code><code>Module::Load</code></code> cannot do implicit imports, only explicit imports. (in other words, you always have to specify explicitly what you wish to import from a module, even if the functions are in that modules&#39; <code><code>@EXPORT</code></code>)</p>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</h1>
+
+<p>Thanks to Jonas B. Nielsen for making explicit imports work.</p>
+
+<h1 id="BUG-REPORTS">BUG REPORTS</h1>
+
+<p>Please report bugs or other issues to &lt;bug-module-load@rt.cpan.org&lt;gt&gt;.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

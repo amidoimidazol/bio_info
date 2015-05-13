@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#Acknowledgements">Acknowledgements</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Log::Message::Config - Configuration options for Log::Message</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    # This module is implicitly used by Log::Message to create a config
+    # which it uses to log messages.
+    # For the options you can pass, see the C&lt;Log::Message new()&gt; method.
+
+    # Below is a sample of a config file you could use
+
+    # comments are denoted by a single &#39;#&#39;
+    # use a shared stack, or have a private instance?
+    # if none provided, set to &#39;0&#39;,
+    private = 1
+
+    # do not be verbose
+    verbose = 0
+
+    # default tag to set on new items
+    # if none provided, set to &#39;NONE&#39;
+    tag = SOME TAG
+
+    # default level to handle items
+    # if none provided, set to &#39;log&#39;
+    level = carp
+
+    # extra files to include
+    # if none provided, no files are auto included
+    include = mylib.pl
+    include = ../my/other/lib.pl
+
+    # automatically delete items
+    # when you retrieve them from the stack?
+    # if none provided, set to &#39;0&#39;
+    remove = 1
+
+    # retrieve errors in chronological order, or not?
+    # if none provided, set to &#39;1&#39;
+    chrono = 0</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Log::Message::Config provides a standardized config object for Log::Message objects.</p>
+
+<p>It can either read options as perl arguments, or as a config file. See the Log::Message manpage for more information about what arguments are valid, and see the Synopsis for an example config file you can use</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../../lib/Log/Message.html">Log::Message</a>, <a href="../../../lib/Log/Message/Item.html">Log::Message::Item</a>, <a href="../../../lib/Log/Message/Handlers.html">Log::Message::Handlers</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="Acknowledgements">Acknowledgements</h1>
+
+<p>Thanks to Ann Barcomb for her suggestions.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This module is copyright (c) 2002 Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

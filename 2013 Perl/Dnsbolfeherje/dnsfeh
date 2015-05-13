@@ -1,0 +1,22 @@
+#!/usr/bin/perl -w
+use strict;
+use warnings;
+
+use lib '\perl';
+use biolib;
+
+# DNS -- > Fehérje
+
+my $dna = "aaagggggacccccccccttttttttaagagagagagtcgggattcccaggattcaaacctaaagggaagcgcgcgcgcgcgaggggcgcgcgcgcggcattgc";
+my $protein = '';
+my $codon;
+
+#mennyi meddig mennyivel
+	for (my $i =0; $i < (length ($dna) -2) ; $i +=3)
+		{
+		$codon = substr ($dna,$i,3); # substr mibol hol mennyit
+		$protein .=codon_as3 ($codon);
+		}
+		
+		print "Atalakitottam a DNS-t\n\n$dna\n\n feherjebe\n\n$protein\n\n";
+exit; 

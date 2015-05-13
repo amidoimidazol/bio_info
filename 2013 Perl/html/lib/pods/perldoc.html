@@ -1,0 +1,272 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#OPTIONS">OPTIONS</a></li>
+  <li><a href="#SECURITY">SECURITY</a></li>
+  <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#CHANGES">CHANGES</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>perldoc - Look up Perl documentation in Pod format.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    B&lt;perldoc&gt; [B&lt;-h&gt;] [B&lt;-D&gt;] [B&lt;-t&gt;] [B&lt;-u&gt;] [B&lt;-m&gt;] [B&lt;-l&gt;] [B&lt;-F&gt;]
+        [B&lt;-i&gt;] [B&lt;-V&gt;] [B&lt;-T&gt;] [B&lt;-r&gt;]
+        [B&lt;-dI&lt;destination_file&gt;&gt;]
+        [B&lt;-oI&lt;formatname&gt;&gt;]
+        [B&lt;-MI&lt;FormatterClassName&gt;&gt;]
+        [B&lt;-wI&lt;formatteroption:value&gt;&gt;]
+        [B&lt;-n&gt;I&lt;nroff-replacement&gt;]
+        [B&lt;-X&gt;]
+        [B&lt;-L&gt; I&lt;language_code&gt;]
+        PageName|ModuleName|ProgramName|URL</code></code></pre>
+
+<p>Examples:</p>
+
+<pre><code><code>    B&lt;perldoc&gt; B&lt;-f&gt; BuiltinFunction
+
+    B&lt;perldoc&gt; B&lt;-L&gt; it B&lt;-f&gt; BuiltinFunction
+
+    B&lt;perldoc&gt; B&lt;-q&gt; FAQ Keyword
+
+    B&lt;perldoc&gt; B&lt;-L&gt; fr B&lt;-q&gt; FAQ Keyword
+
+    B&lt;perldoc&gt; B&lt;-v&gt; PerlVariable</code></code></pre>
+
+<p>See below for more description of the switches.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>perldoc</b> looks up a piece of documentation in .pod format that is embedded in the perl installation tree or in a perl script, and displays it via <code><code>groff -man | $PAGER</code></code>. (In addition, if running under HP-UX, <code><code>col -x</code></code> will be used.) This is primarily used for the documentation for the perl library modules.</p>
+
+<p>Your system may also have man pages installed for those modules, in which case you can probably just use the man(1) command.</p>
+
+<p>If you are looking for a table of contents to the Perl library modules documentation, see the <a href="../../lib/pods/perltoc.html">perltoc</a> page.</p>
+
+<h1 id="OPTIONS">OPTIONS</h1>
+
+<dl>
+
+<dt id="h"><b>-h</b></dt>
+<dd>
+
+<p>Prints out a brief <b>h</b>elp message.</p>
+
+</dd>
+<dt id="D"><b>-D</b></dt>
+<dd>
+
+<p><b>D</b>escribes search for the item in <b>d</b>etail.</p>
+
+</dd>
+<dt id="t"><b>-t</b></dt>
+<dd>
+
+<p>Display docs using plain <b>t</b>ext converter, instead of nroff. This may be faster, but it probably won&#39;t look as nice.</p>
+
+</dd>
+<dt id="u"><b>-u</b></dt>
+<dd>
+
+<p>Skip the real Pod formatting, and just show the raw Pod source (<b>U</b>nformatted)</p>
+
+</dd>
+<dt id="m-module"><b>-m</b> <i>module</i></dt>
+<dd>
+
+<p>Display the entire module: both code and unformatted pod documentation. This may be useful if the docs don&#39;t explain a function in the detail you need, and you&#39;d like to inspect the code directly; perldoc will find the file for you and simply hand it off for display.</p>
+
+</dd>
+<dt id="l"><b>-l</b></dt>
+<dd>
+
+<p>Display on<b>l</b>y the file name of the module found.</p>
+
+</dd>
+<dt id="F"><b>-F</b></dt>
+<dd>
+
+<p>Consider arguments as file names; no search in directories will be performed.</p>
+
+</dd>
+<dt id="f-perlfunc"><b>-f</b> <i>perlfunc</i></dt>
+<dd>
+
+<p>The <b>-f</b> option followed by the name of a perl built-in function will extract the documentation of this function from <a href="../../lib/pods/perlfunc.html">perlfunc</a>.</p>
+
+<p>Example:</p>
+
+<pre><code><code>      perldoc -f sprintf</code></code></pre>
+
+</dd>
+<dt id="q-perlfaq-search-regexp"><b>-q</b> <i>perlfaq-search-regexp</i></dt>
+<dd>
+
+<p>The <b>-q</b> option takes a regular expression as an argument. It will search the <b>q</b>uestion headings in perlfaq[1-9] and print the entries matching the regular expression.</p>
+
+<p>Example:</p>
+
+<pre><code><code>     perldoc -q shuffle</code></code></pre>
+
+</dd>
+<dt id="v-perlvar"><b>-v</b> <i>perlvar</i></dt>
+<dd>
+
+<p>The <b>-v</b> option followed by the name of a Perl predefined variable will extract the documentation of this variable from <a href="../../lib/pods/perlvar.html">perlvar</a>.</p>
+
+<p>Examples:</p>
+
+<pre><code><code>     perldoc -v &#39;$&quot;&#39;
+     perldoc -v @+
+     perldoc -v DATA</code></code></pre>
+
+</dd>
+<dt id="T"><b>-T</b></dt>
+<dd>
+
+<p>This specifies that the output is not to be sent to a pager, but is to be sent right to STDOUT.</p>
+
+</dd>
+<dt id="d-destination-filename"><b>-d</b> <i>destination-filename</i></dt>
+<dd>
+
+<p>This specifies that the output is to be sent neither to a pager nor to STDOUT, but is to be saved to the specified filename. Example: <code><code>perldoc -oLaTeX -dtextwrapdocs.tex Text::Wrap</code></code></p>
+
+</dd>
+<dt id="o-output-formatname"><b>-o</b> <i>output-formatname</i></dt>
+<dd>
+
+<p>This specifies that you want Perldoc to try using a Pod-formatting class for the output format that you specify. For example: <code><code>-oman</code></code>. This is actually just a wrapper around the <code><code>-M</code></code> switch; using <code><code>-o</code><i><code>formatname</code></i></code> just looks for a loadable class by adding that format name (with different capitalizations) to the end of different classname prefixes.</p>
+
+<p>For example, <code><code>-oLaTeX</code></code> currently tries all of the following classes: Pod::Perldoc::ToLaTeX Pod::Perldoc::Tolatex Pod::Perldoc::ToLatex Pod::Perldoc::ToLATEX Pod::Simple::LaTeX Pod::Simple::latex Pod::Simple::Latex Pod::Simple::LATEX Pod::LaTeX Pod::latex Pod::Latex Pod::LATEX.</p>
+
+</dd>
+<dt id="M-module-name"><b>-M</b> <i>module-name</i></dt>
+<dd>
+
+<p>This specifies the module that you want to try using for formatting the pod. The class must at least provide a <code><code>parse_from_file</code></code> method. For example: <code><code>perldoc -MPod::Perldoc::ToChecker</code></code>.</p>
+
+<p>You can specify several classes to try by joining them with commas or semicolons, as in <code><code><span class="operator">-</span><span class="variable">MTk::SuperPod</span><span class="operator">;</span><span class="variable">Tk::Pod</span>
+</code></code>.</p>
+
+</dd>
+<dt id="w-option:value-or--w-option"><b>-w</b> <i>option:value</i> or <b>-w</b> <i>option</i></dt>
+<dd>
+
+<p>This specifies an option to call the formatter <b>w</b>ith. For example, <code><code>-w textsize:15</code></code> will call <code><code>$formatter-&gt;textsize(15)</code></code> on the formatter object before it is used to format the object. For this to be valid, the formatter class must provide such a method, and the value you pass should be valid. (So if <code><code>textsize</code></code> expects an integer, and you do <code><code>-w textsize:big</code></code>, expect trouble.)</p>
+
+<p>You can use <code><code>-w optionname</code></code> (without a value) as shorthand for <code><code>-w optionname:</code><i><code>TRUE</code></i></code>. This is presumably useful in cases of on/off features like: <code><code>-w page_numbering</code></code>.</p>
+
+<p>You can use an &quot;=&quot; instead of the &quot;:&quot;, as in: <code><code>-w textsize=15</code></code>. This might be more (or less) convenient, depending on what shell you use.</p>
+
+</dd>
+<dt id="X"><b>-X</b></dt>
+<dd>
+
+<p>Use an index if it is present. The <b>-X</b> option looks for an entry whose basename matches the name given on the command line in the file <code><code><span class="variable">$Config</span><span class="operator">{</span><span class="string">archlib</span><span class="operator">}</span><span class="operator">/</span><span class="variable">pod</span><span class="operator">.</span><span class="variable">idx</span>
+</code></code>. The <i>pod.idx</i> file should contain fully qualified filenames, one per line.</p>
+
+</dd>
+<dt id="L-language_code"><b>-L</b> <i>language_code</i></dt>
+<dd>
+
+<p>This allows one to specify the <i>language code</i> for the desired language translation. If the <code><code>POD2::&lt;language_code&gt;</code></code> package isn&#39;t installed in your system, the switch is ignored. All available translation packages are to be found under the <code><code>POD2::</code></code> namespace. See <a>POD2::IT</a> (or <a>POD2::FR</a>) to see how to create new localized <code><code>POD2::*</code></code> documentation packages and integrate them into <a href="../../lib/Pod/Perldoc.html">Pod::Perldoc</a>.</p>
+
+</dd>
+<dt id="PageName-ModuleName-ProgramName-URL"><b>PageName|ModuleName|ProgramName|URL</b></dt>
+<dd>
+
+<p>The item you want to look up. Nested modules (such as <code><code>File::Basename</code></code>) are specified either as <code><code>File::Basename</code></code> or <code><code>File/Basename</code></code>. You may also give a descriptive name of a page, such as <code><code>perlfunc</code></code>. For URLs, HTTP and HTTPS are the only kind currently supported.</p>
+
+<p>For simple names like &#39;foo&#39;, when the normal search fails to find a matching page, a search with the &quot;perl&quot; prefix is tried as well. So &quot;perldoc intro&quot; is enough to find/render &quot;perlintro.pod&quot;.</p>
+
+</dd>
+<dt id="n-some-formatter"><b>-n</b> <i>some-formatter</i></dt>
+<dd>
+
+<p>Specify replacement for groff</p>
+
+</dd>
+<dt id="r"><b>-r</b></dt>
+<dd>
+
+<p>Recursive search.</p>
+
+</dd>
+<dt id="i"><b>-i</b></dt>
+<dd>
+
+<p>Ignore case.</p>
+
+</dd>
+<dt id="V"><b>-V</b></dt>
+<dd>
+
+<p>Displays the version of perldoc you&#39;re running.</p>
+
+</dd>
+</dl>
+
+<h1 id="SECURITY">SECURITY</h1>
+
+<p>Because <b>perldoc</b> does not run properly tainted, and is known to have security issues, when run as the superuser it will attempt to drop privileges by setting the effective and real IDs to nobody&#39;s or nouser&#39;s account, or -2 if unavailable. If it cannot relinquish its privileges, it will not run.</p>
+
+<h1 id="ENVIRONMENT">ENVIRONMENT</h1>
+
+<p>Any switches in the <code><code>PERLDOC</code></code> environment variable will be used before the command line arguments.</p>
+
+<p>Useful values for <code><code>PERLDOC</code></code> include <code><code>-oman</code></code>, <code><code>-otext</code></code>, <code><code>-otk</code></code>, <code><code>-ortf</code></code>, <code><code>-oxml</code></code>, and so on, depending on what modules you have on hand; or the formatter class may be specified exactly with <code><code>-MPod::Perldoc::ToMan</code></code> or the like.</p>
+
+<p><code><code>perldoc</code></code> also searches directories specified by the <code><code>PERL5LIB</code></code> (or <code><code>PERLLIB</code></code> if <code><code>PERL5LIB</code></code> is not defined) and <code><code>PATH</code></code> environment variables. (The latter is so that embedded pods for executables, such as <code><code>perldoc</code></code> itself, are available.)</p>
+
+<p><code><code>perldoc</code></code> will use, in order of preference, the pager defined in <code><code>PERLDOC_PAGER</code></code>, <code><code>MANPAGER</code></code>, or <code><code>PAGER</code></code> before trying to find a pager on its own. (<code><code>MANPAGER</code></code> is not used if <code><code>perldoc</code></code> was told to display plain text or unformatted pod.)</p>
+
+<p>One useful value for <code><code>PERLDOC_PAGER</code></code> is <code><code>less -+C -E</code></code>.</p>
+
+<p>Having PERLDOCDEBUG set to a positive integer will make perldoc emit even more descriptive output than the <code><code>-v</code></code> switch does; the higher the number, the more it emits.</p>
+
+<h1 id="CHANGES">CHANGES</h1>
+
+<p>Up to 3.14_05, the switch <b>-v</b> was used to produce verbose messages of <b>perldoc</b> operation, which is now enabled by <b>-D</b>.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../lib/pods/perlpod.html">perlpod</a>, <a href="../../lib/Pod/Perldoc.html">Pod::Perldoc</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Current maintainer: Mark Allen <code><code>&lt;mallen@cpan.org&gt;</code></code></p>
+
+<p>Past contributors are: brian d foy <code><code>&lt;bdfoy@cpan.org&gt;</code></code> Adriano R. Ferreira <code><code>&lt;ferreira@cpan.org&gt;</code></code>, Sean M. Burke <code><code>&lt;sburke@cpan.org&gt;</code></code>, Kenneth Albanowski <code><code>&lt;kjahds@kjahds.com&gt;</code></code>, Andy Dougherty <code><code>&lt;doughera@lafcol.lafayette.edu&gt;</code></code>, and many others.</p>
+
+
+</body>
+
+</html>
+
+

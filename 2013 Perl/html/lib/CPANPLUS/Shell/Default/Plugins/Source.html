@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#BUG-REPORTS">BUG REPORTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Shell::Default::Plugins::Source - read in CPANPLUS commands</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    CPAN Terminal&gt; /source /tmp/list_of_commands /tmp/more_commands</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This is a <code><code>CPANPLUS::Shell::Default</code></code> plugin that works just like your unix shells source(1) command; it reads in a file that has commands in it to execute, and then executes them.</p>
+
+<p>A sample file might look like this:</p>
+
+<pre><code><code>    <span class="comment"># first, update all the source files</span>
+    <span class="operator">x</span> <span class="operator">--</span><span class="variable">update_source</span>
+    
+    <span class="comment"># find all of my modules that are on the CPAN</span>
+    <span class="comment"># test them, and store the error log</span>
+    <span class="variable">a</span> <span class="operator">^</span><span class="variable">KANE</span><span class="variable">$'</span>
+    <span class="variable">t</span> <span class="operator">*</span>
+    <span class="variable">p</span> <span class="operator">/</span><span class="variable">home</span><span class="operator">/</span><span class="variable">kane</span><span class="operator">/</span><span class="variable">cpan</span><span class="operator">-</span><span class="variable">autotest</span><span class="operator">/</span><span class="keyword">log</span>
+    
+    <span class="comment"># and inform us we're good to go</span>
+    <span class="operator">!</span> <span class="keyword">print</span> <span class="string">"Autotest complete, log stored; please enter your commands!"</span>
+</code></code></pre>
+
+<p>Note how empty lines, and lines starting with a &#39;#&#39; are being skipped in the execution.</p>
+
+<h1 id="BUG-REPORTS">BUG REPORTS</h1>
+
+<p>Please report bugs or other issues to &lt;bug-cpanplus@rt.cpan.org&lt;gt&gt;.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>The CPAN++ interface (of which this module is a part of) is copyright (c) 2001 - 2007, Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../../../../lib/CPANPLUS/Shell/Default.html">CPANPLUS::Shell::Default</a>, <a href="../../../../../lib/CPANPLUS/Shell.html">CPANPLUS::Shell</a>, <a href="../../../../../bin/cpanp.html">cpanp</a></p>
+
+
+</body>
+
+</html>
+
+

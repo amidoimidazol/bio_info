@@ -1,0 +1,2209 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#Object-Oriented-Tied-Handle-Interface">Object Oriented/Tied Handle Interface</a></li>
+      <li><a href="#Exports">Exports</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Win32API::File - Low-level access to Win32 system API calls for files/dirs.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">Win32API::File</span> <span class="number">0</span><span class="operator">.</span><span class="number">08</span> <span class="string">qw( :ALL )</span><span class="operator">;</span>
+  
+  <span class="variable">MoveFile</span><span class="operator">(</span> <span class="variable">$Source</span><span class="operator">,</span> <span class="variable">$Destination</span> <span class="operator">)</span>
+    <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't move </span><span class="variable">$Source</span><span class="string"> to </span><span class="variable">$Destination</span><span class="string">: "</span><span class="operator">,</span><span class="variable">fileLastError</span><span class="operator">(),</span><span class="string">"\n"</span><span class="operator">;</span>
+  <span class="variable">MoveFileEx</span><span class="operator">(</span> <span class="variable">$Source</span><span class="operator">,</span> <span class="variable">$Destination</span><span class="operator">,</span> <span class="variable">MOVEFILE_REPLACE_EXISTING</span><span class="operator">()</span> <span class="operator">)</span>
+    <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't move </span><span class="variable">$Source</span><span class="string"> to </span><span class="variable">$Destination</span><span class="string">: "</span><span class="operator">,</span><span class="variable">fileLastError</span><span class="operator">(),</span><span class="string">"\n"</span><span class="operator">;</span>
+  <span class="operator">[</span><span class="operator">...</span><span class="operator">]</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This provides fairly low-level access to the Win32 System API calls dealing with files and directories.</p>
+
+<p>To pass in <code><code>NULL</code></code> as the pointer to an optional buffer, pass in an empty list reference, <code><code>[]</code></code>.</p>
+
+<p>Beyond raw access to the API calls and related constants, this module handles smart buffer allocation and translation of return codes.</p>
+
+<p>All functions, unless otherwise noted, return a true value for success and a false value for failure and set <code><code>$^E</code></code> on failure.</p>
+
+<h2 id="Object-Oriented-Tied-Handle-Interface">Object Oriented/Tied Handle Interface</h2>
+
+<p>WARNING: this is new code, use at your own risk.</p>
+
+<p>This version of <code><code>Win32API::File</code></code> can be used like an <code><code>IO::File</code></code> object:</p>
+
+<pre><code><code>  <span class="keyword">my</span> <span class="variable">$file</span> <span class="operator">=</span> <span class="variable">Win32API::File</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span><span class="string">"+&gt; foo"</span><span class="operator">);</span>
+  <span class="keyword">binmode</span> <span class="variable">$file</span><span class="operator">;</span>
+  <span class="keyword">print</span> <span class="variable">$file</span> <span class="string">"hello there\n"</span><span class="operator">;</span>
+  <span class="keyword">seek</span> <span class="variable">$file</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">;</span>
+  <span class="keyword">my</span> <span class="variable">$line</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="variable">$file</span><span class="operator">&gt;;</span>
+  <span class="variable">$file</span><span class="operator">-&gt;</span><span class="variable">close</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>It also supports tying via a win32 handle (for example, from <code><code>createFile()</code></code>):</p>
+
+<pre><code><code>  <span class="keyword">tie</span> <span class="variable">FILE</span><span class="operator">,</span> <span class="string">'Win32API::File'</span><span class="operator">,</span> <span class="variable">$win32_handle</span><span class="operator">;</span>
+  <span class="keyword">print</span> <span class="variable">FILE</span> <span class="string">"..."</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>It has not been extensively tested yet and buffered I/O is not yet implemented.</p>
+
+<h2 id="Exports">Exports</h2>
+
+<p>Nothing is exported by default. The following tags can be used to have large sets of symbols exported: <code><code>&quot;:Func&quot;</code></code>, <code><code>&quot;:FuncA&quot;</code></code>, <code><code>&quot;:FuncW&quot;</code></code>, <code><code>&quot;:Misc&quot;</code></code>, <code><code>&quot;:DDD_&quot;</code></code>, <code><code>&quot;:DRIVE_&quot;</code></code>, <code><code>&quot;:FILE_&quot;</code></code>, <code><code>&quot;:FILE_ATTRIBUTE_&quot;</code></code>, <code><code>&quot;:FILE_FLAG_&quot;</code></code>, <code><code>&quot;:FILE_SHARE_&quot;</code></code>, <code><code>&quot;:FILE_TYPE_&quot;</code></code>, <code><code>&quot;:FS_&quot;</code></code>, <code><code>&quot;:FSCTL_&quot;</code></code>, <code><code>&quot;:HANDLE_FLAG_&quot;</code></code>, <code><code>&quot;:IOCTL_STORAGE_&quot;</code></code>, <code><code>&quot;:IOCTL_DISK_&quot;</code></code>, <code><code>&quot;:GENERIC_&quot;</code></code>, <code><code>&quot;:MEDIA_TYPE&quot;</code></code>, <code><code>&quot;:MOVEFILE_&quot;</code></code>, <code><code>&quot;:SECURITY_&quot;</code></code>, <code><code>&quot;:SEM_&quot;</code></code>, and <code><code>&quot;:PARTITION_&quot;</code></code>.</p>
+
+<dl>
+
+<dt id="Func"><code><code>&quot;:Func&quot;</code></code></dt>
+<dd>
+
+<p>The basic function names: <code><code>attrLetsToBits</code></code>, <code><code>createFile</code></code>, <code><code>fileConstant</code></code>, <code><code>fileLastError</code></code>, <code><code>getLogicalDrives</code></code>, <code><code>setFilePointer</code></code>, <code><code>getFileSize</code></code>, <code><code>CloseHandle</code></code>, <code><code>CopyFile</code></code>, <code><code>CreateFile</code></code>, <code><code>DefineDosDevice</code></code>, <code><code>DeleteFile</code></code>, <code><code>DeviceIoControl</code></code>, <code><code>FdGetOsFHandle</code></code>, <code><code>GetDriveType</code></code>, <code><code>GetFileAttributes</code></code>, <code><code>GetFileSize</code></code>, <code><code>GetFileType</code></code>, <code><code>GetHandleInformation</code></code>, <code><code>GetLogicalDrives</code></code>, <code><code>GetLogicalDriveStrings</code></code>, <code><code>GetOsFHandle</code></code>, <code><code>GetOverlappedResult</code></code>, <code><code>GetVolumeInformation</code></code>, <code><code>IsContainerPartition</code></code>, <code><code>IsRecognizedPartition</code></code>, <code><code>MoveFile</code></code>, <code><code>MoveFileEx</code></code>, <code><code>OsFHandleOpen</code></code>, <code><code>OsFHandleOpenFd</code></code>, <code><code>QueryDosDevice</code></code>, <code><code>ReadFile</code></code>, <code><code>SetErrorMode</code></code>, <code><code>SetFilePointer</code></code>, <code><code>SetHandleInformation</code></code>, and <code><code>WriteFile</code></code>.</p>
+
+<dl>
+
+<dt id="attrLetsToBits">attrLetsToBits</dt>
+<dd>
+
+</dd>
+<dt id="uBits-attrLetsToBits-sAttributeLetters-"><code><code>$uBits= attrLetsToBits( $sAttributeLetters )</code></code></dt>
+<dd>
+
+<p>Converts a string of file attribute letters into an unsigned value with the corresponding bits set. <code><code>$sAttributeLetters</code></code> should contain zero or more letters from <code><code>&quot;achorst&quot;</code></code>:</p>
+
+<dl>
+
+<dt id="a"><code><code>&quot;a&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_ARCHIVE</code></code></p>
+
+</dd>
+<dt id="c"><code><code>&quot;c&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_COMPRESSED</code></code></p>
+
+</dd>
+<dt id="h"><code><code>&quot;h&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_HIDDEN</code></code></p>
+
+</dd>
+<dt id="o"><code><code>&quot;o&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_OFFLINE</code></code></p>
+
+</dd>
+<dt id="r"><code><code>&quot;r&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_READONLY</code></code></p>
+
+</dd>
+<dt id="s"><code><code>&quot;s&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_SYSTEM</code></code></p>
+
+</dd>
+<dt id="t"><code><code>&quot;t&quot;</code></code></dt>
+<dd>
+
+<p><code><code>FILE_ATTRIBUTE_TEMPORARY</code></code></p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="createFile">createFile</dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-"><code><code>$hObject= createFile( $sPath )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-rvhvOptions-"><code><code>$hObject= createFile( $sPath, $rvhvOptions )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-svAccess-"><code><code>$hObject= createFile( $sPath, $svAccess )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-svAccess-rvhvOptions-"><code><code>$hObject= createFile( $sPath, $svAccess, $rvhvOptions )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-svAccess-svShare-"><code><code>$hObject= createFile( $sPath, $svAccess, $svShare )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="hObject-createFile-sPath-svAccess-svShare-rvhvOptions-"><code><code>$hObject= createFile( $sPath, $svAccess, $svShare, $rvhvOptions )</code></code></dt>
+<dd>
+
+<p>This is a Perl-friendly wrapper around <code><code>CreateFile</code></code>.</p>
+
+<p>On failure, <code><code>$hObject</code></code> gets set to a false value and <code><code>regLastError()</code></code> and <code><code>$^E</code></code> are set to the reason for the failure. Otherwise, <code><code>$hObject</code></code> gets set to a Win32 native file handle which is alwasy a true value [returns <code><code>&quot;0 but true&quot;</code></code> in the impossible(?) case of the handle having a value of <code><code>0</code></code>].</p>
+
+<p><code><code>$sPath</code></code> is the path to the file [or device, etc.] to be opened. See <code><code>CreateFile</code></code> for more information on possible special values for <code><code>$sPath</code></code>.</p>
+
+<p><code><code>$svAccess</code></code> can be a number containing the bit mask representing the specific type(s) of access to the file that you desire. See the <code><code>$uAccess</code></code> parameter to <code><code>CreateFile</code></code> for more information on these values.</p>
+
+<p>More likely, <code><code>$svAccess</code></code> is a string describing the generic type of access you desire and possibly the file creation options to use. In this case, <code><code>$svAccess</code></code> should contain zero or more characters from <code><code>&quot;qrw&quot;</code></code> [access desired], zero or one character each from <code><code>&quot;ktn&quot;</code></code> and <code><code>&quot;ce&quot;</code></code>, and optional white space. These letters stand for, respectively, &quot;Query access&quot;, &quot;Read access&quot;, &quot;Write access&quot;, &quot;Keep if exists&quot;, &quot;Truncate if exists&quot;, &quot;New file only&quot;, &quot;Create if none&quot;, and &quot;Existing file only&quot;. Case is ignored.</p>
+
+<p>You can pass in <code><code>&quot;?&quot;</code></code> for <code><code>$svAccess</code></code> to have an error message displayed summarizing its possible values. This is very handy when doing on-the-fly programming using the Perl debugger:</p>
+
+<pre><code><code>    Win32API::File::createFile:  $svAccess can use the following:
+        One or more of the following:
+            q -- Query access (same as 0)
+            r -- Read access (GENERIC_READ)
+            w -- Write access (GENERIC_WRITE)
+        At most one of the following:
+            k -- Keep if exists
+            t -- Truncate if exists
+            n -- New file only (fail if file already exists)
+        At most one of the following:
+            c -- Create if doesn&#39;t exist
+            e -- Existing file only (fail if doesn&#39;t exist)
+      &#39;&#39;   is the same as &#39;q  k e&#39;
+      &#39;r&#39;  is the same as &#39;r  k e&#39;
+      &#39;w&#39;  is the same as &#39;w  t c&#39;
+      &#39;rw&#39; is the same as &#39;rw k c&#39;
+      &#39;rt&#39; or &#39;rn&#39; implies &#39;c&#39;.
+      Or $access can be numeric.</code></code></pre>
+
+<p><code><code>$svAccess</code></code> is designed to be &quot;do what I mean&quot;, so you can skip the rest of its explanation unless you are interested in the complex details. Note that, if you want write access to a device, you need to specify <code><code>&quot;k&quot;</code></code> [and perhaps <code><code>&quot;e&quot;</code></code>, as in <code><code>&quot;w ke&quot;</code></code> or <code><code>&quot;rw ke&quot;</code></code>] since Win32 suggests <code><code>OPEN_EXISTING</code></code> be used when opening a device.</p>
+
+<dl>
+
+<dt id="q"><code><code>&quot;q&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Query access&quot;. This is really a no-op since you always have query access when you open a file. You can specify <code><code>&quot;q&quot;</code></code> to document that you plan to query the file [or device, etc.]. This is especially helpful when you don&#39;t want read nor write access since something like <code><code>&quot;q&quot;</code></code> or <code><code>&quot;q ke&quot;</code></code> may be easier to understand than just <code><code>&quot;&quot;</code></code> or <code><code>&quot;ke&quot;</code></code>.</p>
+
+</dd>
+<dt id="r1"><code><code>&quot;r&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Read access&quot;. Sets the <code><code>GENERIC_READ</code></code> bit(s) in the <code><code>$uAccess</code></code> that is passed to <code><code>CreateFile</code></code>. This is the default access if the <code><code>$svAccess</code></code> parameter is missing [or if it is <code><code>undef</code></code> and <code><code>$rvhvOptions</code></code> doesn&#39;t specify an <code><code>&quot;Access&quot;</code></code> option].</p>
+
+</dd>
+<dt id="w"><code><code>&quot;w&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Write access&quot;. Sets the <code><code>GENERIC_WRITE</code></code> bit(s) in the <code><code>$uAccess</code></code> that is passed to <code><code>CreateFile</code></code>.</p>
+
+</dd>
+<dt id="k"><code><code>&quot;k&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Keep if exists&quot;. If the requested file exists, then it is opened. This is the default unless <code><code>GENERIC_WRITE</code></code> access has been requested but <code><code>GENERIC_READ</code></code> access has not been requested. Contrast with <code><code>&quot;t&quot;</code></code> and <code><code>&quot;n&quot;</code></code>.</p>
+
+</dd>
+<dt id="t1"><code><code>&quot;t&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Truncate if exists&quot;. If the requested file exists, then it is truncated to zero length and then opened. This is the default if <code><code>GENERIC_WRITE</code></code> access has been requested and <code><code>GENERIC_READ</code></code> access has not been requested. Contrast with <code><code>&quot;k&quot;</code></code> and <code><code>&quot;n&quot;</code></code>.</p>
+
+</dd>
+<dt id="n"><code><code>&quot;n&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;New file only&quot;. If the requested file exists, then it is not opened and the <code><code>createFile</code></code> call fails. Contrast with <code><code>&quot;k&quot;</code></code> and <code><code>&quot;t&quot;</code></code>. Can&#39;t be used with <code><code>&quot;e&quot;</code></code>.</p>
+
+</dd>
+<dt id="c1"><code><code>&quot;c&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Create if none&quot;. If the requested file does not exist, then it is created and then opened. This is the default if <code><code>GENERIC_WRITE</code></code> access has been requested or if <code><code>&quot;t&quot;</code></code> or <code><code>&quot;n&quot;</code></code> was specified. Contrast with <code><code>&quot;e&quot;</code></code>.</p>
+
+</dd>
+<dt id="e"><code><code>&quot;e&quot;</code></code></dt>
+<dd>
+
+<p>Stands for &quot;Existing file only&quot;. If the requested file does not exist, then nothing is opened and the <code><code>createFile</code></code> call fails. This is the default unless <code><code>GENERIC_WRITE</code></code> access has been requested or <code><code>&quot;t&quot;</code></code> or <code><code>&quot;n&quot;</code></code> was specified. Contrast with <code><code>&quot;c&quot;</code></code>. Can&#39;t be used with <code><code>&quot;n&quot;</code></code>.</p>
+
+</dd>
+</dl>
+
+<p>The characters from <code><code>&quot;ktn&quot;</code></code> and <code><code>&quot;ce&quot;</code></code> are combined to determine the what value for <code><code>$uCreate</code></code> to pass to <code><code>CreateFile</code></code> [unless overridden by <code><code>$rvhvOptions</code></code>]:</p>
+
+<dl>
+
+<dt id="kc"><code><code>&quot;kc&quot;</code></code></dt>
+<dd>
+
+<p><code><code>OPEN_ALWAYS</code></code></p>
+
+</dd>
+<dt id="ke"><code><code>&quot;ke&quot;</code></code></dt>
+<dd>
+
+<p><code><code>OPEN_EXISTING</code></code></p>
+
+</dd>
+<dt id="tc"><code><code>&quot;tc&quot;</code></code></dt>
+<dd>
+
+<p><code><code>TRUNCATE_EXISTING</code></code></p>
+
+</dd>
+<dt id="te"><code><code>&quot;te&quot;</code></code></dt>
+<dd>
+
+<p><code><code>CREATE_ALWAYS</code></code></p>
+
+</dd>
+<dt id="nc"><code><code>&quot;nc&quot;</code></code></dt>
+<dd>
+
+<p><code><code>CREATE_NEW</code></code></p>
+
+</dd>
+<dt id="ne"><code><code>&quot;ne&quot;</code></code></dt>
+<dd>
+
+<p>Illegal.</p>
+
+</dd>
+</dl>
+
+<p><code><code>$svShare</code></code> controls how the file is shared, that is, whether other processes can have read, write, and/or delete access to the file while we have it opened. <code><code>$svShare</code></code> will usually be a string containing zero or more characters from <code><code>&quot;rwd&quot;</code></code> but can also be a numeric bit mask.</p>
+
+<p><code><code>&quot;r&quot;</code></code> sets the <code><code>FILE_SHARE_READ</code></code> bit which allows other processes to have read access to the file. <code><code>&quot;w&quot;</code></code> sets the <code><code>FILE_SHARE_WRITE</code></code> bit which allows other processes to have write access to the file. <code><code>&quot;d&quot;</code></code> sets the <code><code>FILE_SHARE_DELETE</code></code> bit which allows other processes to have delete access to the file [ignored under Windows 95].</p>
+
+<p>The default for <code><code>$svShare</code></code> is <code><code>&quot;rw&quot;</code></code> which provides the same sharing as using regular perl <code><code>open()</code></code>.</p>
+
+<p>If another process currently has read, write, and/or delete access to the file and you don&#39;t allow that level of sharing, then your call to <code><code>createFile</code></code> will fail. If you requested read, write, and/or delete access and another process already has the file open but doesn&#39;t allow that level of sharing, then your call to <code><code>createFile</code></code> will fail. Once you have the file open, if another process tries to open it with read, write, and/or delete access and you don&#39;t allow that level of sharing, then that process won&#39;t be allowed to open the file.</p>
+
+<p><code><code>$rvhvOptions</code></code> is a reference to a hash where any keys must be from the list <code><code>qw( Access Create Share Attributes Flags Security Model )</code></code>. The meaning of the value depends on the key name, as described below. Any option values in <code><code>$rvhvOptions</code></code> override the settings from <code><code>$svAccess</code></code> and <code><code>$svShare</code></code> if they conflict.</p>
+
+<dl>
+
+<dt id="Flags-uFlags">Flags =&gt; $uFlags</dt>
+<dd>
+
+<p><code><code>$uFlags</code></code> is an unsigned value having any of the <code><code>FILE_FLAG_*</code></code> or <code><code>FILE_ATTRIBUTE_*</code></code> bits set. Any <code><code>FILE_ATTRIBUTE_*</code></code> bits set via the <code><code>Attributes</code></code> option are logically <code><code>or</code></code>ed with these bits. Defaults to <code><code>0</code></code>.</p>
+
+<p>If opening the client side of a named pipe, then you can also specify <code><code>SECURITY_SQOS_PRESENT</code></code> along with one of the other <code><code>SECURITY_*</code></code> constants to specify the security quality of service to be used.</p>
+
+</dd>
+<dt id="Attributes-sAttributes">Attributes =&gt; $sAttributes</dt>
+<dd>
+
+<p>A string of zero or more characters from <code><code>&quot;achorst&quot;</code></code> [see <code><code>attrLetsToBits</code></code> for more information] which are converted to <code><code>FILE_ATTRIBUTE_*</code></code> bits to be set in the <code><code>$uFlags</code></code> argument passed to <code><code>CreateFile</code></code>.</p>
+
+</dd>
+<dt id="Security-pSecurityAttributes">Security =&gt; $pSecurityAttributes</dt>
+<dd>
+
+<p><code><code>$pSecurityAttributes</code></code> should contain a <code><code>SECURITY_ATTRIBUTES</code></code> structure packed into a string or <code><code>[]</code></code> [the default].</p>
+
+</dd>
+<dt id="Model-hModelFile">Model =&gt; $hModelFile</dt>
+<dd>
+
+<p><code><code>$hModelFile</code></code> should contain a handle opened with <code><code>GENERIC_READ</code></code> access to a model file from which file attributes and extended attributes are to be copied. Or <code><code>$hModelFile</code></code> can be <code><code>0</code></code> [the default].</p>
+
+</dd>
+<dt id="Access-sAccess">Access =&gt; $sAccess</dt>
+<dd>
+
+</dd>
+<dt id="Access-uAccess">Access =&gt; $uAccess</dt>
+<dd>
+
+<p><code><code>$sAccess</code></code> should be a string of zero or more characters from <code><code>&quot;qrw&quot;</code></code> specifying the type of access desired: &quot;query&quot; or <code><code>0</code></code>, &quot;read&quot; or <code><code>GENERIC_READ</code></code> [the default], or &quot;write&quot; or <code><code>GENERIC_WRITE</code></code>.</p>
+
+<p><code><code>$uAccess</code></code> should be an unsigned value containing bits set to indicate the type of access desired. <code><code>GENERIC_READ</code></code> is the default.</p>
+
+</dd>
+<dt id="Create-sCreate">Create =&gt; $sCreate</dt>
+<dd>
+
+</dd>
+<dt id="Create-uCreate">Create =&gt; $uCreate</dt>
+<dd>
+
+<p><code><code>$sCreate</code></code> should be a string constaing zero or one character from <code><code>&quot;ktn&quot;</code></code> and zero or one character from <code><code>&quot;ce&quot;</code></code>. These stand for &quot;Keep if exists&quot;, &quot;Truncate if exists&quot;, &quot;New file only&quot;, &quot;Create if none&quot;, and &quot;Existing file only&quot;. These are translated into a <code><code>$uCreate</code></code> value.</p>
+
+<p><code><code>$uCreate</code></code> should be one of <code><code>OPEN_ALWAYS</code></code>, <code><code>OPEN_EXISTING</code></code>, <code><code>TRUNCATE_EXISTING</code></code>, <code><code>CREATE_ALWAYS</code></code>, or <code><code>CREATE_NEW</code></code>.</p>
+
+</dd>
+<dt id="Share-sShare">Share =&gt; $sShare</dt>
+<dd>
+
+</dd>
+<dt id="Share-uShare">Share =&gt; $uShare</dt>
+<dd>
+
+<p><code><code>$sShare</code></code> should be a string with zero or more characters from <code><code>&quot;rwd&quot;</code></code> that is translated into a <code><code>$uShare</code></code> value. <code><code>&quot;rw&quot;</code></code> is the default.</p>
+
+<p><code><code>$uShare</code></code> should be an unsigned value having zero or more of the following bits set: <code><code>FILE_SHARE_READ</code></code>, <code><code>FILE_SHARE_WRITE</code></code>, and <code><code>FILE_SHARE_DELETE</code></code>. <code><code>FILE_SHARE_READ|FILE_SHARE_WRITE</code></code> is the default.</p>
+
+</dd>
+</dl>
+
+<p>Examples:</p>
+
+<pre><code><code>    <span class="variable">$hFlop</span><span class="operator">=</span> <span class="variable">createFile</span><span class="operator">(</span> <span class="string">"//./A:"</span><span class="operator">,</span> <span class="string">"r"</span><span class="operator">,</span> <span class="string">"r"</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't prevent others from writing to floppy: $^E\n"</span><span class="operator">;</span>
+    <span class="variable">$hDisk</span><span class="operator">=</span> <span class="variable">createFile</span><span class="operator">(</span> <span class="string">"//./C:"</span><span class="operator">,</span> <span class="string">"rw ke"</span><span class="operator">,</span> <span class="string">""</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't get exclusive access to C: $^E\n"</span><span class="operator">;</span>
+    <span class="variable">$hDisk</span><span class="operator">=</span> <span class="variable">createFile</span><span class="operator">(</span> <span class="variable">$sFilePath</span><span class="operator">,</span> <span class="string">"ke"</span><span class="operator">,</span>
+      <span class="operator">{</span> <span class="string">Access</span><span class="operator">=&gt;</span><span class="variable">FILE_READ_ATTRIBUTES</span> <span class="operator">}</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't read attributes of </span><span class="variable">$sFilePath</span><span class="string">: $^E\n"</span><span class="operator">;</span>
+    <span class="variable">$hTemp</span><span class="operator">=</span> <span class="variable">createFile</span><span class="operator">(</span> <span class="string">"</span><span class="variable">$ENV</span><span class="string">{Temp}/temp.$$"</span><span class="operator">,</span> <span class="string">"wn"</span><span class="operator">,</span> <span class="string">""</span><span class="operator">,</span>
+      <span class="operator">{</span> <span class="string">Attributes</span><span class="operator">=&gt;</span><span class="string">"hst"</span><span class="operator">,</span> <span class="string">Flags</span><span class="operator">=&gt;</span><span class="variable">FILE_FLAG_DELETE_ON_CLOSE</span><span class="operator">()</span> <span class="operator">}</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't create temporary file, temp.$$: $^E\n"</span><span class="operator">;</span>
+</code></code></pre>
+
+</dd>
+<dt id="getLogicalDrives">getLogicalDrives</dt>
+<dd>
+
+</dd>
+<dt id="roots-getLogicalDrives-"><code><code>@roots= getLogicalDrives()</code></code></dt>
+<dd>
+
+<p>Returns the paths to the root directories of all logical drives currently defined. This includes all types of drive lettters, such as floppies, CD-ROMs, hard disks, and network shares. A typical return value on a poorly equipped computer would be <code><code>(&quot;A:\\&quot;,&quot;C:\\&quot;)</code></code>.</p>
+
+</dd>
+<dt id="CloseHandle">CloseHandle</dt>
+<dd>
+
+</dd>
+<dt id="CloseHandle-hObject-"><code><code>CloseHandle( $hObject )</code></code></dt>
+<dd>
+
+<p>Closes a Win32 native handle, such as one opened via <code><code>CreateFile</code></code>. Like most routines, returns a true value if successful and a false value [and sets <code><code>$^E</code></code> and <code><code>regLastError()</code></code>] on failure.</p>
+
+</dd>
+<dt id="CopyFile">CopyFile</dt>
+<dd>
+
+</dd>
+<dt id="CopyFile-sOldFileName-sNewFileName-bFailIfExists-"><code><code>CopyFile( $sOldFileName, $sNewFileName, $bFailIfExists )</code></code></dt>
+<dd>
+
+<p><code><code>$sOldFileName</code></code> is the path to the file to be copied. <code><code>$sNewFileName</code></code> is the path to where the file should be copied. Note that you can <b>NOT</b> just specify a path to a directory in <code><code>$sNewFileName</code></code> to copy the file to that directory using the same file name.</p>
+
+<p>If <code><code>$bFailIfExists</code></code> is true and <code><code>$sNewFileName</code></code> is the path to a file that already exists, then <code><code>CopyFile</code></code> will fail. If <code><code>$bFailIfExists</code></code> is falsea, then the copy of the <code><code>$sOldFileNmae</code></code> file will overwrite the <code><code>$sNewFileName</code></code> file if it already exists.</p>
+
+<p>Like most routines, returns a true value if successful and a false value [and sets <code><code>$^E</code></code> and <code><code>regLastError()</code></code>] on failure.</p>
+
+</dd>
+<dt id="CreateFile">CreateFile</dt>
+<dd>
+
+</dd>
+<dt id="hObject-CreateFile-sPath-uAccess-uShare-pSecAttr-uCreate-uFlags-hModel-"><code><code>$hObject= CreateFile( $sPath, $uAccess, $uShare, $pSecAttr, $uCreate, $uFlags, $hModel )</code></code></dt>
+<dd>
+
+<p>On failure, <code><code>$hObject</code></code> gets set to a false value and <code><code>$^E</code></code> and <code><code>fileLastError()</code></code> are set to the reason for the failure. Otherwise, <code><code>$hObject</code></code> gets set to a Win32 native file handle which is always a true value [returns <code><code>&quot;0 but true&quot;</code></code> in the impossible(?) case of the handle having a value of <code><code>0</code></code>].</p>
+
+<p><code><code>$sPath</code></code> is the path to the file [or device, etc.] to be opened.</p>
+
+<p><code><code>$sPath</code></code> can use <code><code>&quot;/&quot;</code></code> or <code><code>&quot;\\&quot;</code></code> as path delimiters and can even mix the two. We will usually only use <code><code>&quot;/&quot;</code></code> in our examples since using <code><code>&quot;\\&quot;</code></code> is usually harder to read.</p>
+
+<p>Under Windows NT, <code><code>$sPath</code></code> can start with <code><code>&quot;//?/&quot;</code></code> to allow the use of paths longer than <code><code>MAX_PATH</code></code> [for UNC paths, replace the leading <code><code>&quot;//&quot;</code></code> with <code><code>&quot;//?/UNC/&quot;</code></code>, as in <code><code>&quot;//?/UNC/Server/Share/Dir/File.Ext&quot;</code></code>].</p>
+
+<p><code><code>$sPath</code></code> can start with <code><code>&quot;//./&quot;</code></code> to indicate that the rest of the path is the name of a &quot;DOS device.&quot; You can use <code><code>QueryDosDevice</code></code> to list all current DOS devices and can add or delete them with <code><code>DefineDosDevice</code></code>. If you get the source-code distribution of this module from CPAN, then it includes an example script, <i>ex/ListDevs.plx</i> that will list all current DOS devices and their &quot;native&quot; definition. Again, note that this doesn&#39;t work under Win95 nor Win98.</p>
+
+<p>The most common such DOS devices include:</p>
+
+<dl>
+
+<dt id="PhysicalDrive0"><code><code>&quot;//./PhysicalDrive0&quot;</code></code></dt>
+<dd>
+
+<p>Your entire first hard disk. Doesn&#39;t work under Windows 95. This allows you to read or write raw sectors of your hard disk and to use <code><code>DeviceIoControl</code></code> to perform miscellaneous queries and operations to the hard disk. Writing raw sectors and certain other operations can seriously damage your files or the function of your computer.</p>
+
+<p>Locking this for exclusive access [by specifying <code><code>0</code></code> for <code><code>$uShare</code></code>] doesn&#39;t prevent access to the partitions on the disk nor their file systems. So other processes can still access any raw sectors within a partition and can use the file system on the disk as usual.</p>
+
+</dd>
+<dt id="C:"><code><code>&quot;//./C:&quot;</code></code></dt>
+<dd>
+
+<p>Your <i>C:</i> partition. Doesn&#39;t work under Windows 95. This allows you to read or write raw sectors of that partition and to use <code><code>DeviceIoControl</code></code> to perform miscellaneous queries and operations to the partition. Writing raw sectors and certain other operations can seriously damage your files or the function of your computer.</p>
+
+<p>Locking this for exclusive access doesn&#39;t prevent access to the physical drive that the partition is on so other processes can still access the raw sectors that way. Locking this for exclusive access <b>does</b> prevent other processes from opening the same raw partition and <b>does</b> prevent access to the file system on it. It even prevents the current process from accessing the file system on that partition.</p>
+
+</dd>
+<dt id="A:"><code><code>&quot;//./A:&quot;</code></code></dt>
+<dd>
+
+<p>The raw floppy disk. Doesn&#39;t work under Windows 95. This allows you to read or write raw sectors of the floppy disk and to use <code><code>DeviceIoControl</code></code> to perform miscellaneous queries and operations to the floopy disk or drive.</p>
+
+<p>Locking this for exclusive access prevents all access to the floppy.</p>
+
+</dd>
+<dt id="PIPE-PipeName"><code><code>&quot;//./PIPE/PipeName&quot;</code></code></dt>
+<dd>
+
+<p>A named pipe, created via <code><code>CreateNamedPipe</code></code>.</p>
+
+</dd>
+</dl>
+
+<p><code><code>$uAccess</code></code> is an unsigned value with bits set indicating the type of access desired. Usually either <code><code>0</code></code> [&quot;query&quot; access], <code><code>GENERIC_READ</code></code>, <code><code>GENERIC_WRITE</code></code>, <code><code>GENERIC_READ|GENERIC_WRITE</code></code>, or <code><code>GENERIC_ALL</code></code>. More specific types of access can be specified, such as <code><code>FILE_APPEND_DATA</code></code> or <code><code>FILE_READ_EA</code></code>.</p>
+
+<p><code><code>$uShare</code></code> controls how the file is shared, that is, whether other processes can have read, write, and/or delete access to the file while we have it opened. <code><code>$uShare</code></code> is an unsigned value with zero or more of these bits set: <code><code>FILE_SHARE_READ</code></code>, <code><code>FILE_SHARE_WRITE</code></code>, and <code><code>FILE_SHARE_DELETE</code></code>.</p>
+
+<p>If another process currently has read, write, and/or delete access to the file and you don&#39;t allow that level of sharing, then your call to <code><code>CreateFile</code></code> will fail. If you requested read, write, and/or delete access and another process already has the file open but doesn&#39;t allow that level of sharing, thenn your call to <code><code>createFile</code></code> will fail. Once you have the file open, if another process tries to open it with read, write, and/or delete access and you don&#39;t allow that level of sharing, then that process won&#39;t be allowed to open the file.</p>
+
+<p><code><code>$pSecAttr</code></code> should either be <code><code>[]</code></code> [for <code><code>NULL</code></code>] or a <code><code>SECURITY_ATTRIBUTES</code></code> data structure packed into a string. For example, if <code><code>$pSecDesc</code></code> contains a <code><code>SECURITY_DESCRIPTOR</code></code> structure packed into a string, perhaps via:</p>
+
+<pre><code><code>    <span class="variable">RegGetKeySecurity</span><span class="operator">(</span> <span class="variable">$key</span><span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="variable">$pSecDesc</span><span class="operator">,</span> <span class="number">1024</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>then you can set <code><code>$pSecAttr</code></code> via:</p>
+
+<pre><code><code>    <span class="variable">$pSecAttr</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"L P i"</span><span class="operator">,</span> <span class="number">12</span><span class="operator">,</span> <span class="variable">$pSecDesc</span><span class="operator">,</span> <span class="variable">$bInheritHandle</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p><code><code>$uCreate</code></code> is one of the following values: <code><code>OPEN_ALWAYS</code></code>, <code><code>OPEN_EXISTING</code></code>, <code><code>TRUNCATE_EXISTING</code></code>, <code><code>CREATE_ALWAYS</code></code>, and <code><code>CREATE_NEW</code></code>.</p>
+
+<p><code><code>$uFlags</code></code> is an unsigned value with zero or more bits set indicating attributes to associate with the file [<code><code>FILE_ATTRIBUTE_*</code></code> values] or special options [<code><code>FILE_FLAG_*</code></code> values].</p>
+
+<p>If opening the client side of a named pipe, then you can also set <code><code>$uFlags</code></code> to include <code><code>SECURITY_SQOS_PRESENT</code></code> along with one of the other <code><code>SECURITY_*</code></code> constants to specify the security quality of service to be used.</p>
+
+<p><code><code>$hModel</code></code> is <code><code>0</code></code> [or <code><code>[]</code></code>, both of which mean <code><code>NULL</code></code>] or a Win32 native handle opened with <code><code>GENERIC_READ</code></code> access to a model file from which file attributes and extended attributes are to be copied if a new file gets created.</p>
+
+<p>Examples:</p>
+
+<pre><code><code>    <span class="variable">$hFlop</span><span class="operator">=</span> <span class="variable">CreateFile</span><span class="operator">(</span> <span class="string">"//./A:"</span><span class="operator">,</span> <span class="variable">GENERIC_READ</span><span class="operator">(),</span>
+      <span class="variable">FILE_SHARE_READ</span><span class="operator">(),</span> <span class="operator">[]</span><span class="operator">,</span> <span class="variable">OPEN_EXISTING</span><span class="operator">(),</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">[]</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't prevent others from writing to floppy: $^E\n"</span><span class="operator">;</span>
+    <span class="variable">$hDisk</span><span class="operator">=</span> <span class="variable">CreateFile</span><span class="operator">(</span> <span class="variable">$sFilePath</span><span class="operator">,</span> <span class="variable">FILE_READ_ATTRIBUTES</span><span class="operator">(),</span>
+      <span class="variable">FILE_SHARE_READ</span><span class="operator">()|</span><span class="variable">FILE_SHARE_WRITE</span><span class="operator">(),</span> <span class="operator">[]</span><span class="operator">,</span> <span class="variable">OPEN_EXISTING</span><span class="operator">(),</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">[]</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't read attributes of </span><span class="variable">$sFilePath</span><span class="string">: $^E\n"</span><span class="operator">;</span>
+    <span class="variable">$hTemp</span><span class="operator">=</span> <span class="variable">CreateFile</span><span class="operator">(</span> <span class="string">"</span><span class="variable">$ENV</span><span class="string">{Temp}/temp.$$"</span><span class="operator">,</span> <span class="variable">GENERIC_WRITE</span><span class="operator">(),</span> <span class="number">0</span><span class="operator">,</span>
+      <span class="variable">CREATE_NEW</span><span class="operator">(),</span> <span class="variable">FILE_FLAG_DELETE_ON_CLOSE</span><span class="operator">()|</span><span class="variable">attrLetsToBits</span><span class="operator">(</span><span class="string">"hst"</span><span class="operator">),</span> <span class="operator">[]</span> <span class="operator">)</span>
+      <span class="keyword">or</span>  <span class="keyword">die</span> <span class="string">"Can't create temporary file, temp.$$: $^E\n"</span><span class="operator">;</span>
+</code></code></pre>
+
+</dd>
+<dt id="DefineDosDevice">DefineDosDevice</dt>
+<dd>
+
+</dd>
+<dt id="DefineDosDevice-uFlags-sDosDeviceName-sTargetPath-"><code><code>DefineDosDevice( $uFlags, $sDosDeviceName, $sTargetPath )</code></code></dt>
+<dd>
+
+<p>Defines a new DOS device, overrides the current definition of a DOS device, or deletes a definition of a DOS device. Like most routines, returns a true value if successful and a false value [and sets <code><code>$^E</code></code> and <code><code>regLastError()</code></code>] on failure.</p>
+
+<p><code><code>$sDosDeviceName</code></code> is the name of a DOS device for which we&#39;d like to add or delete a definition.</p>
+
+<p><code><code>$uFlags</code></code> is an unsigned value with zero or more of the following bits set:</p>
+
+<dl>
+
+<dt id="DDD_RAW_TARGET_PATH"><code><code>DDD_RAW_TARGET_PATH</code></code></dt>
+<dd>
+
+<p>Indicates that <code><code>$sTargetPath</code></code> will be a raw Windows NT object name. This usually means that <code><code>$sTargetPath</code></code> starts with <code><code>&quot;\\Device\\&quot;</code></code>. Note that you cannot use <code><code>&quot;/&quot;</code></code> in place of <code><code>&quot;\\&quot;</code></code> in raw target path names.</p>
+
+</dd>
+<dt id="DDD_REMOVE_DEFINITION"><code><code>DDD_REMOVE_DEFINITION</code></code></dt>
+<dd>
+
+<p>Requests that a definition be deleted. If <code><code>$sTargetPath</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>], then the most recently added definition for <code><code>$sDosDeviceName</code></code> is removed. Otherwise the most recently added definition matching <code><code>$sTargetPath</code></code> is removed.</p>
+
+<p>If the last definition is removed, then the DOS device name is also deleted.</p>
+
+</dd>
+<dt id="DDD_EXACT_MATCH_ON_REMOVE"><code><code>DDD_EXACT_MATCH_ON_REMOVE</code></code></dt>
+<dd>
+
+<p>When deleting a definition, this bit causes each <code><code>$sTargetPath</code></code> to be compared to the full-length definition when searching for the most recently added match. If this bit is not set, then <code><code>$sTargetPath</code></code> only needs to match a prefix of the definition.</p>
+
+</dd>
+</dl>
+
+<p><code><code>$sTargetPath</code></code> is the DOS device&#39;s specific definition that you wish to add or delete. For <code><code>DDD_RAW_TARGET_PATH</code></code>, these usually start with <code><code>&quot;\\Device\\&quot;</code></code>. If the <code><code>DDD_RAW_TARGET_PATH</code></code> bit is not set, then <code><code>$sTargetPath</code></code> is just an ordinary path to some file or directory, providing the functionality of the <b>subst</b> command.</p>
+
+</dd>
+<dt id="DeleteFile">DeleteFile</dt>
+<dd>
+
+</dd>
+<dt id="DeleteFile-sFileName-"><code><code>DeleteFile( $sFileName )</code></code></dt>
+<dd>
+
+<p>Deletes the named file. Compared to Perl&#39;s <code><code>unlink</code></code>, <code><code>DeleteFile</code></code> has the advantage of not deleting read-only files. For <b>some</b> versions of Perl, <code><code>unlink</code></code> silently calls <code><code>chmod</code></code> whether it needs to or not before deleting the file so that files that you have protected by marking them as read-only are not always protected from Perl&#39;s <code><code>unlink</code></code>.</p>
+
+<p>Like most routines, returns a true value if successful and a false value [and sets <code><code>$^E</code></code> and <code><code>regLastError()</code></code>] on failure.</p>
+
+</dd>
+<dt id="DeviceIoControl">DeviceIoControl</dt>
+<dd>
+
+</dd>
+<dt id="DeviceIoControl-hDevice-uIoControlCode-pInBuf-lInBuf-opOutBuf-lOutBuf-olRetBytes-pOverlapped-"><code><code>DeviceIoControl( $hDevice, $uIoControlCode, $pInBuf, $lInBuf, $opOutBuf, $lOutBuf, $olRetBytes, $pOverlapped )</code></code></dt>
+<dd>
+
+<p>Requests a special operation on an I/O [input/output] device, such as ejecting a tape or formatting a disk. Like most routines, returns a true value if successful and a false value [and sets <code><code>$^E</code></code> and <code><code>regLastError()</code></code>] on failure.</p>
+
+<p><code><code>$hDevice</code></code> is a Win32 native file handle to a device [return value from <code><code>CreateFile</code></code>].</p>
+
+<p><code><code>$uIoControlCode</code></code> is an unsigned value [a <code><code>IOCTL_*</code></code> or <code><code>FSCTL_*</code></code> constant] indicating the type query or other operation to be performed.</p>
+
+<p><code><code>$pInBuf</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>] or a data structure packed into a string. The type of data structure depends on the <code><code>$uIoControlCode</code></code> value. <code><code>$lInBuf</code></code> is <code><code>0</code></code> or the length of the structure in <code><code>$pInBuf</code></code>. If <code><code>$pInBuf</code></code> is not <code><code>[]</code></code> and <code><code>$lInBuf</code></code> is <code><code>0</code></code>, then <code><code>$lInBuf</code></code> will automatically be set to <code><code>length($pInBuf)</code></code> for you.</p>
+
+<p><code><code>$opOutBuf</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>] or will be set to contain a returned data structure packed into a string. <code><code>$lOutBuf</code></code> indicates how much space to allocate in <code><code>$opOutBuf</code></code> for <code><code>DeviceIoControl</code></code> to store the data structure. If <code><code>$lOutBuf</code></code> is a number and <code><code>$opOutBuf</code></code> already has a buffer allocated for it that is larger than <code><code>$lOutBuf</code></code> bytes, then this larger buffer size will be passed to <code><code>DeviceIoControl</code></code>. However, you can force a specific buffer size to be passed to <code><code>DeviceIoControl</code></code> by prepending a <code><code>&quot;=&quot;</code></code> to the front of <code><code>$lOutBuf</code></code>.</p>
+
+<p><code><code>$olRetBytes</code></code> is <code><code>[]</code></code> or is a scalar to receive the number of bytes written to <code><code>$opOutBuf</code></code>. Even when <code><code>$olRetBytes</code></code> is <code><code>[]</code></code>, a valid pointer to a <code><code>DWORD</code></code> [and not <code><code>NULL</code></code>] is passed to <code><code>DeviceIoControl</code></code>. In this case, <code><code>[]</code></code> just means that you don&#39;t care about the value that might be written to <code><code>$olRetBytes</code></code>, which is usually the case since you can usually use <code><code>length($opOutBuf)</code></code> instead.</p>
+
+<p><code><code>$pOverlapped</code></code> is <code><code>[]</code></code> or is a <code><code>OVERLAPPED</code></code> structure packed into a string. This is only useful if <code><code>$hDevice</code></code> was opened with the <code><code>FILE_FLAG_OVERLAPPED</code></code> flag set.</p>
+
+</dd>
+<dt id="FdGetOsFHandle">FdGetOsFHandle</dt>
+<dd>
+
+</dd>
+<dt id="hNativeHandle-FdGetOsFHandle-ivFd-"><code><code>$hNativeHandle= FdGetOsFHandle( $ivFd )</code></code></dt>
+<dd>
+
+<p><code><code>FdGetOsFHandle</code></code> simply calls <code><code>_get_osfhandle()</code></code>. It was renamed to better fit in with the rest the function names of this module, in particular to distinguish it from <code><code>GetOsFHandle</code></code>. It takes an integer file descriptor [as from Perl&#39;s <code><code>fileno</code></code>] and returns the Win32 native file handle associated with that file descriptor or <code><code>INVALID_HANDLE_VALUE</code></code> if <code><code>$ivFd</code></code> is not an open file descriptor.</p>
+
+<p>When you call Perl&#39;s <code><code>open</code></code> to set a Perl file handle [like <code><code>STDOUT</code></code>], Perl calls C&#39;s <code><code>fopen</code></code> to set a stdio <code><code>FILE *</code></code>. C&#39;s <code><code>fopen</code></code> calls something like Unix&#39;s <code><code>open</code></code>, that is, Win32&#39;s <code><code>_sopen</code></code>, to get an integer file descriptor [where 0 is for <code><code>STDIN</code></code>, 1 for <code><code>STDOUT</code></code>, etc.]. Win32&#39;s <code><code>_sopen</code></code> calls <code><code>CreateFile</code></code> to set a <code><code>HANDLE</code></code>, a Win32 native file handle. So every Perl file handle [like <code><code>STDOUT</code></code>] has an integer file descriptor associated with it that you can get via <code><code>fileno</code></code>. And, under Win32, every file descriptor has a Win32 native file handle associated with it. <code><code>FdGetOsFHandle</code></code> lets you get access to that.</p>
+
+<p><code><code>$hNativeHandle</code></code> is set to <code><code>INVALID_HANDLE_VALUE</code></code> [and <code><code>lastFileError()</code></code> and <code><code>$^E</code></code> are set] if <code><code>FdGetOsFHandle</code></code> fails. See also <code><code>GetOsFHandle</code></code> which provides a friendlier interface.</p>
+
+</dd>
+<dt id="fileConstant">fileConstant</dt>
+<dd>
+
+</dd>
+<dt id="value-fileConstant-sConstantName-"><code><code>$value= fileConstant( $sConstantName )</code></code></dt>
+<dd>
+
+<p>Fetch the value of a constant. Returns <code><code>undef</code></code> if <code><code>$sConstantName</code></code> is not the name of a constant supported by this module. Never sets <code><code>$!</code></code> nor <code><code>$^E</code></code>.</p>
+
+<p>This function is rarely used since you will usually get the value of a constant by having that constant imported into your package by listing the constant name in the <code><code>use Win32API::File</code></code> statement and then simply using the constant name in your code [perhaps followed by <code><code>()</code></code>]. This function is useful for verifying constant names not in Perl code, for example, after prompting a user to type in a constant name.</p>
+
+</dd>
+<dt id="fileLastError">fileLastError</dt>
+<dd>
+
+</dd>
+<dt id="svError-fileLastError-"><code><code><span class="variable">$svError</span><span class="operator">=</span> <span class="variable">fileLastError</span><span class="operator">();</span>
+</code></code></dt>
+<dd>
+
+</dd>
+<dt id="fileLastError-uError-"><code><code><span class="variable">fileLastError</span><span class="operator">(</span> <span class="variable">$uError</span> <span class="operator">);</span>
+</code></code></dt>
+<dd>
+
+<p>Returns the last error encountered by a routine from this module. It is just like <code><code>$^E</code></code> except it isn&#39;t changed by anything except routines from this module. Ideally you could just use <code><code>$^E</code></code>, but current versions of Perl often overwrite <code><code>$^E</code></code> before you get a chance to check it and really old versions of Perl don&#39;t really support <code><code>$^E</code></code> under Win32.</p>
+
+<p>Just like <code><code>$^E</code></code>, in a numeric context <code><code>fileLastError()</code></code> returns the numeric error value while in a string context it returns a text description of the error [actually it returns a Perl scalar that contains both values so <code><code>$x= fileLastError()</code></code> causes <code><code>$x</code></code> to give different values in string vs. numeric contexts].</p>
+
+<p>The last form sets the error returned by future calls to <code><code>fileLastError()</code></code> and should not be used often. <code><code>$uError</code></code> must be a numeric error code. Also returns the dual-valued version of <code><code>$uError</code></code>.</p>
+
+</dd>
+<dt id="GetDriveType">GetDriveType</dt>
+<dd>
+
+</dd>
+<dt id="uDriveType-GetDriveType-sRootPath-"><code><code>$uDriveType= GetDriveType( $sRootPath )</code></code></dt>
+<dd>
+
+<p>Takes a string giving the path to the root directory of a file system [called a &quot;drive&quot; because every file system is assigned a &quot;drive letter&quot;] and returns an unsigned value indicating the type of drive the file system is on. The return value should be one of:</p>
+
+<dl>
+
+<dt id="DRIVE_UNKNOWN"><code><code>DRIVE_UNKNOWN</code></code></dt>
+<dd>
+
+<p>None of the following.</p>
+
+</dd>
+<dt id="DRIVE_NO_ROOT_DIR"><code><code>DRIVE_NO_ROOT_DIR</code></code></dt>
+<dd>
+
+<p>A &quot;drive&quot; that does not have a file system. This can be a drive letter that hasn&#39;t been defined or a drive letter assigned to a partition that hasn&#39;t been formatted yet.</p>
+
+</dd>
+<dt id="DRIVE_REMOVABLE"><code><code>DRIVE_REMOVABLE</code></code></dt>
+<dd>
+
+<p>A floppy diskette drive or other removable media drive, but not a CD-ROM drive.</p>
+
+</dd>
+<dt id="DRIVE_FIXED"><code><code>DRIVE_FIXED</code></code></dt>
+<dd>
+
+<p>An ordinary hard disk partition.</p>
+
+</dd>
+<dt id="DRIVE_REMOTE"><code><code>DRIVE_REMOTE</code></code></dt>
+<dd>
+
+<p>A network share.</p>
+
+</dd>
+<dt id="DRIVE_CDROM"><code><code>DRIVE_CDROM</code></code></dt>
+<dd>
+
+<p>A CD-ROM drive.</p>
+
+</dd>
+<dt id="DRIVE_RAMDISK"><code><code>DRIVE_RAMDISK</code></code></dt>
+<dd>
+
+<p>A &quot;ram disk&quot; or memory-resident virtual file system used for high-speed access to small amounts of temporary file space.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="GetFileAttributes">GetFileAttributes</dt>
+<dd>
+
+</dd>
+<dt id="uAttrs-GetFileAttributes-sPath-"><code><code>$uAttrs = GetFileAttributes( $sPath )</code></code></dt>
+<dd>
+
+<p>Takes a path string and returns an unsigned value with attribute flags. If it fails, it returns INVALID_FILE_ATTRIBUTES, otherwise it can be one or more of the following values:</p>
+
+<dl>
+
+<dt id="FILE_ATTRIBUTE_ARCHIVE"><code><code>FILE_ATTRIBUTE_ARCHIVE</code></code></dt>
+<dd>
+
+<p>The file or directory is an archive file or directory. Applications use this attribute to mark files for backup or removal.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_COMPRESSED"><code><code>FILE_ATTRIBUTE_COMPRESSED</code></code></dt>
+<dd>
+
+<p>The file or directory is compressed. For a file, this means that all of the data in the file is compressed. For a directory, this means that compression is the default for newly created files and subdirectories.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_DEVICE"><code><code>FILE_ATTRIBUTE_DEVICE</code></code></dt>
+<dd>
+
+<p>Reserved; do not use.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_DIRECTORY"><code><code>FILE_ATTRIBUTE_DIRECTORY</code></code></dt>
+<dd>
+
+<p>The handle identifies a directory.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_ENCRYPTED"><code><code>FILE_ATTRIBUTE_ENCRYPTED</code></code></dt>
+<dd>
+
+<p>The file or directory is encrypted. For a file, this means that all data streams in the file are encrypted. For a directory, this means that encryption is the default for newly created files and subdirectories.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_HIDDEN"><code><code>FILE_ATTRIBUTE_HIDDEN</code></code></dt>
+<dd>
+
+<p>The file or directory is hidden. It is not included in an ordinary directory listing.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_NORMAL"><code><code>FILE_ATTRIBUTE_NORMAL</code></code></dt>
+<dd>
+
+<p>The file or directory has no other attributes set. This attribute is valid only if used alone.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_NOT_CONTENT_INDEXED"><code><code>FILE_ATTRIBUTE_NOT_CONTENT_INDEXED</code></code></dt>
+<dd>
+
+<p>The file will not be indexed by the content indexing service.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_OFFLINE"><code><code>FILE_ATTRIBUTE_OFFLINE</code></code></dt>
+<dd>
+
+<p>The data of the file is not immediately available. This attribute indicates that the file data has been physically moved to offline storage. This attribute is used by Remote Storage, the hierarchical storage management software. Applications should not arbitrarily change this attribute.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_READONLY"><code><code>FILE_ATTRIBUTE_READONLY</code></code></dt>
+<dd>
+
+<p>The file or directory is read-only. Applications can read the file but cannot write to it or delete it. In the case of a directory, applications cannot delete it.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_REPARSE_POINT"><code><code>FILE_ATTRIBUTE_REPARSE_POINT</code></code></dt>
+<dd>
+
+<p>The file or directory has an associated reparse point.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_SPARSE_FILE"><code><code>FILE_ATTRIBUTE_SPARSE_FILE</code></code></dt>
+<dd>
+
+<p>The file is a sparse file.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_SYSTEM"><code><code>FILE_ATTRIBUTE_SYSTEM</code></code></dt>
+<dd>
+
+<p>The file or directory is part of, or is used exclusively by, the operating system.</p>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_TEMPORARY"><code><code>FILE_ATTRIBUTE_TEMPORARY</code></code></dt>
+<dd>
+
+<p>The file is being used for temporary storage. File systems avoid writing data back to mass storage if sufficient cache memory is available, because often the application deletes the temporary file shortly after the handle is closed. In that case, the system can entirely avoid writing the data. Otherwise, the data will be written after the handle is closed.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="GetFileType">GetFileType</dt>
+<dd>
+
+</dd>
+<dt id="uFileType-GetFileType-hFile-"><code><code>$uFileType= GetFileType( $hFile )</code></code></dt>
+<dd>
+
+<p>Takes a Win32 native file handle and returns a <code><code>FILE_TYPE_*</code></code> constant indicating the type of the file opened on that handle:</p>
+
+<dl>
+
+<dt id="FILE_TYPE_UNKNOWN"><code><code>FILE_TYPE_UNKNOWN</code></code></dt>
+<dd>
+
+<p>None of the below. Often a special device.</p>
+
+</dd>
+<dt id="FILE_TYPE_DISK"><code><code>FILE_TYPE_DISK</code></code></dt>
+<dd>
+
+<p>An ordinary disk file.</p>
+
+</dd>
+<dt id="FILE_TYPE_CHAR"><code><code>FILE_TYPE_CHAR</code></code></dt>
+<dd>
+
+<p>What Unix would call a &quot;character special file&quot;, that is, a device that works on character streams such as a printer port or a console.</p>
+
+</dd>
+<dt id="FILE_TYPE_PIPE"><code><code>FILE_TYPE_PIPE</code></code></dt>
+<dd>
+
+<p>Either a named or anonymous pipe.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="getFileSize">getFileSize</dt>
+<dd>
+
+</dd>
+<dt id="size-getFileSize-hFile-"><code><code>$size= getFileSize( $hFile )</code></code></dt>
+<dd>
+
+<p>This is a Perl-friendly wrapper for the <code><code>GetFileSize</code></code> (below) API call.</p>
+
+<p>It takes a Win32 native file handle and returns the size in bytes. Since the size can be a 64 bit value, on non 64 bit integer Perls the value returned will be an object of type <code><code>Math::BigInt</code></code>.</p>
+
+</dd>
+<dt id="GetFileSize">GetFileSize</dt>
+<dd>
+
+</dd>
+<dt id="iSizeLow-GetFileSize-win32Handle-iSizeHigh-"><code><code>$iSizeLow= GetFileSize($win32Handle, $iSizeHigh)</code></code></dt>
+<dd>
+
+<p>Returns the size of a file pointed to by <code><code>$win32Handle</code></code>, optionally storing the high order 32 bits into <code><code>$iSizeHigh</code></code> if it is not <code><code>[]</code></code>. If $iSizeHigh is <code><code>[]</code></code>, a non-zero value indicates success. Otherwise, on failure the return value will be <code><code>0xffffffff</code></code> and <code><code>fileLastError()</code></code> will not be <code><code>NO_ERROR</code></code>.</p>
+
+</dd>
+<dt id="GetOverlappedResult">GetOverlappedResult</dt>
+<dd>
+
+</dd>
+<dt id="bRetval-GetOverlappedResult-win32Handle-pOverlapped-numBytesTransferred-bWait-"><code><code>$bRetval= GetOverlappedResult( $win32Handle, $pOverlapped, $numBytesTransferred, $bWait )</code></code></dt>
+<dd>
+
+<p>Used for asynchronous IO in Win32 to get the result of a pending IO operation, such as when a file operation returns <code><code>ERROR_IO_PENDING</code></code>. Returns a false value on failure. The <code><code>$overlapped</code></code> structure and <code><code>$numBytesTransferred</code></code> will be modified with the results of the operation.</p>
+
+<p>As far as creating the <code><code>$pOverlapped</code></code> structure, you are currently on your own.</p>
+
+<p>See <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dllproc/base/getoverlappedresult.asp">http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dllproc/base/getoverlappedresult.asp</a> for more information.</p>
+
+</dd>
+<dt id="GetLogicalDrives">GetLogicalDrives</dt>
+<dd>
+
+</dd>
+<dt id="uDriveBits-GetLogicalDrives-"><code><code>$uDriveBits= GetLogicalDrives()</code></code></dt>
+<dd>
+
+<p>Returns an unsigned value with one bit set for each drive letter currently defined. If &quot;A:&quot; is currently a valid drive letter, then the <code><code>1</code></code> bit will be set in <code><code>$uDriveBits</code></code>. If &quot;B:&quot; is valid, then the <code><code>2</code></code> bit will be set. If &quot;Z:&quot; is valid, then the <code><code>2**26</code></code> [<code><code>0x4000000</code></code>] bit will be set.</p>
+
+</dd>
+<dt id="GetLogicalDriveStrings">GetLogicalDriveStrings</dt>
+<dd>
+
+</dd>
+<dt id="olOutLength-GetLogicalDriveStrings-lBufSize-osBuffer-"><code><code>$olOutLength= GetLogicalDriveStrings( $lBufSize, $osBuffer )</code></code></dt>
+<dd>
+
+<p>For each currently defined drive letter, a <code><code>&#39;\0&#39;</code></code>-terminated string of the path to the root of its file system is constructed. All of these strings are concatenated into a single larger string and an extra terminating <code><code>&#39;\0&#39;</code></code> is added. This larger string is returned in <code><code>$osBuffer</code></code>. Note that this includes drive letters that have been defined but that have no file system, such as drive letters assigned to unformatted partitions.</p>
+
+<p><code><code>$lBufSize</code></code> is the size of the buffer to allocate to store this list of strings. <code><code>26*4+1</code></code> is always sufficient and should usually be used.</p>
+
+<p><code><code>$osBuffer</code></code> is a scalar to be set to contain the constructed string.</p>
+
+<p><code><code>$olOutLength</code></code> is the number of bytes actually written to <code><code>$osBuffer</code></code> but <code><code>length($osBuffer)</code></code> can also be used to determine this.</p>
+
+<p>For example, on a poorly equipped computer,</p>
+
+<pre><code><code>    <span class="variable">GetLogicalDriveStrings</span><span class="operator">(</span> <span class="number">4</span><span class="operator">*</span><span class="number">26</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="variable">$osBuffer</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>might set <code><code>$osBuffer</code></code> to the 9-character string, <code><code>&quot;A:\\\0C:\\\0\0&quot;</code></code>.</p>
+
+</dd>
+<dt id="GetHandleInformation">GetHandleInformation</dt>
+<dd>
+
+</dd>
+<dt id="GetHandleInformation-hObject-ouFlags-"><code><code>GetHandleInformation( $hObject, $ouFlags )</code></code></dt>
+<dd>
+
+<p>Retrieves the flags associated with a Win32 native file handle or object handle.</p>
+
+<p><code><code>$hObject</code></code> is an open Win32 native file handle or an open Win32 native handle to some other type of object.</p>
+
+<p><code><code>$ouFlags</code></code> will be set to an unsigned value having zero or more of the bits <code><code>HANDLE_FLAG_INHERIT</code></code> and <code><code>HANDLE_FLAG_PROTECT_FROM_CLOSE</code></code> set. See the <code><code>&quot;:HANDLE_FLAG_&quot;</code></code> export class for the meanings of these bits.</p>
+
+</dd>
+<dt id="GetOsFHandle">GetOsFHandle</dt>
+<dd>
+
+</dd>
+<dt id="hNativeHandle-GetOsFHandle-FILE-"><code><code>$hNativeHandle= GetOsFHandle( FILE )</code></code></dt>
+<dd>
+
+<p>Takes a Perl file handle [like <code><code>STDIN</code></code>] and returns the Win32 native file handle associated with it. See <code><code>FdGetOsFHandle</code></code> for more information about Win32 native file handles.</p>
+
+<p><code><code>$hNativeHandle</code></code> is set to a false value [and <code><code>lastFileError()</code></code> and <code><code>$^E</code></code> are set] if <code><code>GetOsFHandle</code></code> fails. <code><code>GetOsFHandle</code></code> returns <code><code>&quot;0 but true&quot;</code></code> in the impossible(?) case of the handle having a value of <code><code>0</code></code>.</p>
+
+</dd>
+<dt id="GetVolumeInformation">GetVolumeInformation</dt>
+<dd>
+
+</dd>
+<dt id="GetVolumeInformation-sRootPath-osVolName-lVolName-ouSerialNum-ouMaxNameLen-ouFsFlags-osFsType-lFsType-"><code><code>GetVolumeInformation( $sRootPath, $osVolName, $lVolName, $ouSerialNum, $ouMaxNameLen, $ouFsFlags, $osFsType, $lFsType )</code></code></dt>
+<dd>
+
+<p>Gets information about a file system volume, returning a true value if successful. On failure, returns a false value and sets <code><code>fileLastError()</code></code> and <code><code>$^E</code></code>.</p>
+
+<p><code><code>$sRootPath</code></code> is a string specifying the path to the root of the file system, for example, <code><code>&quot;C:/&quot;</code></code>.</p>
+
+<p><code><code>$osVolName</code></code> is a scalar to be set to the string representing the volume name, also called the file system label. <code><code>$lVolName</code></code> is the number of bytes to allocate for the <code><code>$osVolName</code></code> buffer [see <a href="#Buffer-Sizes">&quot;Buffer Sizes&quot;</a> for more information].</p>
+
+<p><code><code>$ouSerialNum</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>] or will be set to the numeric value of the volume&#39;s serial number.</p>
+
+<p><code><code>$ouMaxNameLen</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>] or will be set to the maximum length allowed for a file name or directory name within the file system.</p>
+
+<p><code><code>$osFsType</code></code> is a scalar to be set to the string representing the file system type, such as <code><code>&quot;FAT&quot;</code></code> or <code><code>&quot;NTFS&quot;</code></code>. <code><code>$lFsType</code></code> is the number of bytes to allocate for the <code><code>$osFsType</code></code> buffer [see <a href="#Buffer-Sizes">&quot;Buffer Sizes&quot;</a> for more information].</p>
+
+<p><code><code>$ouFsFlags</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>] or will be set to an unsigned integer with bits set indicating properties of the file system:</p>
+
+<dl>
+
+<dt id="FS_CASE_IS_PRESERVED"><code><code>FS_CASE_IS_PRESERVED</code></code></dt>
+<dd>
+
+<p>The file system preserves the case of file names [usually true]. That is, it doesn&#39;t change the case of file names such as forcing them to upper- or lower-case.</p>
+
+</dd>
+<dt id="FS_CASE_SENSITIVE"><code><code>FS_CASE_SENSITIVE</code></code></dt>
+<dd>
+
+<p>The file system supports the ability to not ignore the case of file names [but might ignore case the way you are using it]. That is, the file system has the ability to force you to get the letter case of a file&#39;s name exactly right to be able to open it. This is true for &quot;NTFS&quot; file systems, even though case in file names is usually still ignored.</p>
+
+</dd>
+<dt id="FS_UNICODE_STORED_ON_DISK"><code><code>FS_UNICODE_STORED_ON_DISK</code></code></dt>
+<dd>
+
+<p>The file system preserves Unicode in file names [true for &quot;NTFS&quot;].</p>
+
+</dd>
+<dt id="FS_PERSISTENT_ACLS"><code><code>FS_PERSISTENT_ACLS</code></code></dt>
+<dd>
+
+<p>The file system supports setting Access Control Lists on files [true for &quot;NTFS&quot;].</p>
+
+</dd>
+<dt id="FS_FILE_COMPRESSION"><code><code>FS_FILE_COMPRESSION</code></code></dt>
+<dd>
+
+<p>The file system supports compression on a per-file basis [true for &quot;NTFS&quot;].</p>
+
+</dd>
+<dt id="FS_VOL_IS_COMPRESSED"><code><code>FS_VOL_IS_COMPRESSED</code></code></dt>
+<dd>
+
+<p>The entire file system is compressed such as via &quot;DoubleSpace&quot;.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IsRecognizedPartition">IsRecognizedPartition</dt>
+<dd>
+
+</dd>
+<dt id="IsRecognizedPartition-ivPartitionType-"><code><code>IsRecognizedPartition( $ivPartitionType )</code></code></dt>
+<dd>
+
+<p>Takes a partition type and returns whether that partition type is supported under Win32. <code><code>$ivPartitonType</code></code> is an integer value as from the operating system byte of a hard disk&#39;s DOS-compatible partition table [that is, a partition table for x86-based Win32, not, for example, one used with Windows NT for Alpha processors]. For example, the <code><code>PartitionType</code></code> member of the <code><code>PARTITION_INFORMATION</code></code> structure.</p>
+
+<p>Common values for <code><code>$ivPartitionType</code></code> include <code><code>PARTITION_FAT_12==1</code></code>, <code><code>PARTITION_FAT_16==4</code></code>, <code><code>PARTITION_EXTENDED==5</code></code>, <code><code>PARTITION_FAT32==0xB</code></code>.</p>
+
+</dd>
+<dt id="IsContainerPartition">IsContainerPartition</dt>
+<dd>
+
+</dd>
+<dt id="IsContainerPartition-ivPartitionType-"><code><code>IsContainerPartition( $ivPartitionType )</code></code></dt>
+<dd>
+
+<p>Takes a partition type and returns whether that partition is a &quot;container&quot; partition that is supported under Win32, that is, whether it is an &quot;extended&quot; partition that can contain &quot;logical&quot; partitions. <code><code>$ivPartitonType</code></code> is as for <code><code>IsRecognizedPartition</code></code>.</p>
+
+</dd>
+<dt id="MoveFile">MoveFile</dt>
+<dd>
+
+</dd>
+<dt id="MoveFile-sOldName-sNewName-"><code><code>MoveFile( $sOldName, $sNewName )</code></code></dt>
+<dd>
+
+<p>Renames a file or directory. <code><code>$sOldName</code></code> is the name of the existing file or directory that is to be renamed. <code><code>$sNewName</code></code> is the new name to give the file or directory. Returns a true value if the move succeeds. For failure, returns a false value and sets <code><code>fileLastErorr()</code></code> and <code><code>$^E</code></code> to the reason for the failure.</p>
+
+<p>Files can be &quot;renamed&quot; between file systems and the file contents and some attributes will be moved. Directories can only be renamed within one file system. If there is already a file or directory named <code><code>$sNewName</code></code>, then <code><code>MoveFile</code></code> will fail.</p>
+
+</dd>
+<dt id="MoveFileEx">MoveFileEx</dt>
+<dd>
+
+</dd>
+<dt id="MoveFileEx-sOldName-sNewName-uFlags-"><code><code>MoveFileEx( $sOldName, $sNewName, $uFlags )</code></code></dt>
+<dd>
+
+<p>Renames a file or directory. <code><code>$sOldName</code></code> is the name of the existing file or directory that is to be renamed. <code><code>$sNewName</code></code> is the new name to give the file or directory. Returns a true value if the move succeeds. For failure, returns a false value and sets <code><code>fileLastErorr()</code></code> and <code><code>$^E</code></code> to the reason for the failure.</p>
+
+<p><code><code>$uFlags</code></code> is an unsigned value with zero or more of the following bits set:</p>
+
+<dl>
+
+<dt id="MOVEFILE_REPLACE_EXISTING"><code><code>MOVEFILE_REPLACE_EXISTING</code></code></dt>
+<dd>
+
+<p>If this bit is set and a file [but not a directory] named <code><code>$sNewName</code></code> already exists, then it will be replaced by <code><code>$sOldName</code></code>. If this bit is not set then <code><code>MoveFileEx</code></code> will fail rather than replace an existing <code><code>$sNewName</code></code>.</p>
+
+</dd>
+<dt id="MOVEFILE_COPY_ALLOWED"><code><code>MOVEFILE_COPY_ALLOWED</code></code></dt>
+<dd>
+
+<p>Allows files [but not directories] to be moved between file systems by copying the <code><code>$sOldName</code></code> file data and some attributes to <code><code>$sNewName</code></code> and then deleting <code><code>$sOldName</code></code>. If this bit is not set [or if <code><code>$sOldName</code></code> denotes a directory] and <code><code>$sNewName</code></code> refers to a different file system than <code><code>$sOldName</code></code>, then <code><code>MoveFileEx</code></code> will fail.</p>
+
+</dd>
+<dt id="MOVEFILE_DELAY_UNTIL_REBOOT"><code><code>MOVEFILE_DELAY_UNTIL_REBOOT</code></code></dt>
+<dd>
+
+<p>Preliminary verifications are made and then an entry is added to the Registry to cause the rename [or delete] operation to be done the next time this copy of the operating system is booted [right after any automatic file system checks have completed]. This is not supported under Windows 95.</p>
+
+<p>When this bit is set, <code><code>$sNewName</code></code> can be <code><code>[]</code></code> [for <code><code>NULL</code></code>] to indicate that <code><code>$sOldName</code></code> should be deleted during the next boot rather than renamed.</p>
+
+<p>Setting both the <code><code>MOVEFILE_COPY_ALLOWED</code></code> and <code><code>MOVEFILE_DELAY_UNTIL_REBOOT</code></code> bits will cause <code><code>MoveFileEx</code></code> to fail.</p>
+
+</dd>
+<dt id="MOVEFILE_WRITE_THROUGH"><code><code>MOVEFILE_WRITE_THROUGH</code></code></dt>
+<dd>
+
+<p>Ensures that <code><code>MoveFileEx</code></code> won&#39;t return until the operation has finished and been flushed to disk. This is not supported under Windows 95. Only affects file renames to another file system, forcing a buffer flush at the end of the copy operation.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="OsFHandleOpen">OsFHandleOpen</dt>
+<dd>
+
+</dd>
+<dt id="OsFHandleOpen-FILE-hNativeHandle-sMode-"><code><code>OsFHandleOpen( FILE, $hNativeHandle, $sMode )</code></code></dt>
+<dd>
+
+<p>Opens a Perl file handle based on an already open Win32 native file handle [much like C&#39;s <code><code>fdopen()</code></code> does with a file descriptor]. Returns a true value if the open operation succeeded. For failure, returns a false value and sets <code><code>$!</code></code> [and possibly <code><code>fileLastError()</code></code> and <code><code>$^E</code></code>] to the reason for the failure.</p>
+
+<p><code><code>FILE</code></code> is a Perl file handle [in any of the supported forms, a bareword, a string, a typeglob, or a reference to a typeglob] that will be opened. If <code><code>FILE</code></code> is already open, it will automatically be closed before it is reopened.</p>
+
+<p><code><code>$hNativeHandle</code></code> is an open Win32 native file handle, probably the return value from <code><code>CreateFile</code></code> or <code><code>createFile</code></code>.</p>
+
+<p><code><code>$sMode</code></code> is string of zero or more letters from <code><code>&quot;rwatb&quot;</code></code>. These are translated into a combination <code><code>O_RDONLY</code></code> [<code><code>&quot;r&quot;</code></code>], <code><code>O_WRONLY</code></code> [<code><code>&quot;w&quot;</code></code>], <code><code>O_RDWR</code></code> [<code><code>&quot;rw&quot;</code></code>], <code><code>O_APPEND</code></code> [<code><code>&quot;a&quot;</code></code>], <code><code>O_TEXT</code></code> [<code><code>&quot;t&quot;</code></code>], and <code><code>O_BINARY</code></code> [<code><code>&quot;b&quot;</code></code>] flags [see the <a href="../../lib/Fcntl.html">Fcntl</a> module] that is passed to <code><code>OsFHandleOpenFd</code></code>. Currently only <code><code>O_APPEND</code></code> and <code><code>O_TEXT</code></code> have any significance.</p>
+
+<p>Also, a <code><code>&quot;r&quot;</code></code> and/or <code><code>&quot;w&quot;</code></code> in <code><code>$sMode</code></code> is used to decide how the file descriptor is converted into a Perl file handle, even though this doesn&#39;t appear to make a difference. One of the following is used:</p>
+
+<pre><code><code>    open( FILE, &quot;&lt;&amp;=&quot;.$ivFd )   # &quot;r&quot; w/o &quot;w&quot;
+    open( FILE, &quot;&gt;&amp;=&quot;.$ivFd )   # &quot;w&quot; w/o &quot;r&quot;
+    open( FILE, &quot;+&lt;&amp;=&quot;.$ivFd )  # both &quot;r&quot; and &quot;w&quot;</code></code></pre>
+
+<p><code><code>OsFHandleOpen</code></code> eventually calls the Win32-specific C routine <code><code>_open_osfhandle()</code></code> or Perl&#39;s &quot;improved&quot; version called <code><code>win32_open_osfhandle()</code></code>. Prior to Perl5.005, C&#39;s <code><code>_open_osfhandle()</code></code> is called which will fail if <code><code>GetFileType($hNativeHandle)</code></code> would return <code><code>FILE_TYPE_UNKNOWN</code></code>. For Perl5.005 and later, <code><code>OsFHandleOpen</code></code> calls <code><code>win32_open_osfhandle()</code></code> from the Perl DLL which doesn&#39;t have this restriction.</p>
+
+</dd>
+<dt id="OsFHandleOpenFd">OsFHandleOpenFd</dt>
+<dd>
+
+</dd>
+<dt id="ivFD-OsFHandleOpenFd-hNativeHandle-uMode-"><code><code>$ivFD= OsFHandleOpenFd( $hNativeHandle, $uMode )</code></code></dt>
+<dd>
+
+<p>Opens a file descriptor [<code><code>$ivFD</code></code>] based on an already open Win32 native file handle, <code><code>$hNativeHandle</code></code>. This just calls the Win32-specific C routine <code><code>_open_osfhandle()</code></code> or Perl&#39;s &quot;improved&quot; version called <code><code>win32_open_osfhandle()</code></code>. Prior to Perl5.005 and in Cygwin Perl, C&#39;s <code><code>_open_osfhandle()</code></code> is called which will fail if <code><code>GetFileType($hNativeHandle)</code></code> would return <code><code>FILE_TYPE_UNKNOWN</code></code>. For Perl5.005 and later, <code><code>OsFHandleOpenFd</code></code> calls <code><code>win32_open_osfhandle()</code></code> from the Perl DLL which doesn&#39;t have this restriction.</p>
+
+<p><code><code>$uMode</code></code> the logical combination of zero or more <code><code>O_*</code></code> constants exported by the <code><code>Fcntl</code></code> module. Currently only <code><code>O_APPEND</code></code> and <code><code>O_TEXT</code></code> have any significance.</p>
+
+<p><code><code>$ivFD</code></code> will be non-negative if the open operation was successful. For failure, <code><code>-1</code></code> is returned and <code><code>$!</code></code> [and possibly <code><code>fileLastError()</code></code> and <code><code>$^E</code></code>] is set to the reason for the failure.</p>
+
+</dd>
+<dt id="QueryDosDevice">QueryDosDevice</dt>
+<dd>
+
+</dd>
+<dt id="olTargetLen-QueryDosDevice-sDosDeviceName-osTargetPath-lTargetBuf-"><code><code>$olTargetLen= QueryDosDevice( $sDosDeviceName, $osTargetPath, $lTargetBuf )</code></code></dt>
+<dd>
+
+<p>Looks up the definition of a given &quot;DOS&quot; device name, yielding the active Windows NT native device name along with any currently dormant definitions.</p>
+
+<p><code><code>$sDosDeviceName</code></code> is the name of the &quot;DOS&quot; device whose definitions we want. For example, <code><code>&quot;C:&quot;</code></code>, <code><code>&quot;COM1&quot;</code></code>, or <code><code>&quot;PhysicalDrive0&quot;</code></code>. If <code><code>$sDosDeviceName</code></code> is <code><code>[]</code></code> [for <code><code>NULL</code></code>], the list of all DOS device names is returned instead.</p>
+
+<p><code><code>$osTargetPath</code></code> will be assigned a string containing the list of definitions. The definitions are each <code><code>&#39;\0&#39;</code></code>-terminate and are concatenated into the string, most recent first, with an extra <code><code>&#39;\0&#39;</code></code> at the end of the whole string [see <code><code>GetLogicalDriveStrings</code></code> for a sample of this format].</p>
+
+<p><code><code>$lTargetBuf</code></code> is the size [in bytes] of the buffer to allocate for <code><code>$osTargetPath</code></code>. See <a href="#Buffer-Sizes">&quot;Buffer Sizes&quot;</a> for more information.</p>
+
+<p><code><code>$olTargetLen</code></code> is set to the number of bytes written to <code><code>$osTargetPath</code></code> but you can also use <code><code>length($osTargetPath)</code></code> to determine this.</p>
+
+<p>For failure, <code><code>0</code></code> is returned and <code><code>fileLastError()</code></code> and <code><code>$^E</code></code> are set to the reason for the failure.</p>
+
+</dd>
+<dt id="ReadFile">ReadFile</dt>
+<dd>
+
+</dd>
+<dt id="ReadFile-hFile-opBuffer-lBytes-olBytesRead-pOverlapped-"><code><code>ReadFile( $hFile, $opBuffer, $lBytes, $olBytesRead, $pOverlapped )</code></code></dt>
+<dd>
+
+<p>Reads bytes from a file or file-like device. Returns a true value if the read operation was successful. For failure, returns a false value and sets <code><code>fileLastError()</code></code> and <code><code>$^E</code></code> for the reason for the failure.</p>
+
+<p><code><code>$hFile</code></code> is a Win32 native file handle that is already open to the file or device to read from.</p>
+
+<p><code><code>$opBuffer</code></code> will be set to a string containing the bytes read.</p>
+
+<p><code><code>$lBytes</code></code> is the number of bytes you would like to read. <code><code>$opBuffer</code></code> is automatically initialized to have a buffer large enough to hold that many bytes. Unlike other buffer sizes, <code><code>$lBytes</code></code> does not need to have a <code><code>&quot;=&quot;</code></code> prepended to it to prevent a larger value to be passed to the underlying Win32 <code><code>ReadFile</code></code> API. However, a leading <code><code>&quot;=&quot;</code></code> will be silently ignored, even if Perl warnings are enabled.</p>
+
+<p>If <code><code>$olBytesRead</code></code> is not <code><code>[]</code></code>, it will be set to the actual number of bytes read, though <code><code>length($opBuffer)</code></code> can also be used to determine this.</p>
+
+<p><code><code>$pOverlapped</code></code> is <code><code>[]</code></code> or is a <code><code>OVERLAPPED</code></code> structure packed into a string. This is only useful if <code><code>$hFile</code></code> was opened with the <code><code>FILE_FLAG_OVERLAPPED</code></code> flag set.</p>
+
+</dd>
+<dt id="SetErrorMode">SetErrorMode</dt>
+<dd>
+
+</dd>
+<dt id="uOldMode-SetErrorMode-uNewMode-"><code><code>$uOldMode= SetErrorMode( $uNewMode )</code></code></dt>
+<dd>
+
+<p>Sets the mode controlling system error handling <b>and</b> returns the previous mode value. Both <code><code>$uOldMode</code></code> and <code><code>$uNewMode</code></code> will have zero or more of the following bits set:</p>
+
+<dl>
+
+<dt id="SEM_FAILCRITICALERRORS"><code><code>SEM_FAILCRITICALERRORS</code></code></dt>
+<dd>
+
+<p>If set, indicates that when a critical error is encountered, the call that triggered the error fails immediately. Normally this bit is not set, which means that a critical error causes a dialogue box to appear notifying the desktop user that some application has triggered a critical error. The dialogue box allows the desktop user to decide whether the critical error is returned to the process, is ignored, or the offending operation is retried.</p>
+
+<p>This affects the <code><code>CreateFile</code></code> and <code><code>GetVolumeInformation</code></code> calls.</p>
+
+<p>Setting this bit is useful for allowing you to check whether a floppy diskette is in the floppy drive.</p>
+
+</dd>
+<dt id="SEM_NOALIGNMENTFAULTEXCEPT"><code><code>SEM_NOALIGNMENTFAULTEXCEPT</code></code></dt>
+<dd>
+
+<p>If set, this causes memory access misalignment faults to be automatically fixed in a manner invisible to the process. This flag is ignored on x86-based versions of Windows NT. This flag is not supported on Windows 95.</p>
+
+</dd>
+<dt id="SEM_NOGPFAULTERRORBOX"><code><code>SEM_NOGPFAULTERRORBOX</code></code></dt>
+<dd>
+
+<p>If set, general protection faults do not generate a dialogue box but can instead be handled by the process via an exception handler. This bit should not be set by programs that don&#39;t know how to handle such faults.</p>
+
+</dd>
+<dt id="SEM_NOOPENFILEERRORBOX"><code><code>SEM_NOOPENFILEERRORBOX</code></code></dt>
+<dd>
+
+<p>If set, then when an attempt to continue reading from or writing to an already open file [usually on a removable medium like a floppy diskette] finds the file no longer available, the call will immediately fail. Normally this bit is not set, which means that instead a dialogue box will appear notifying the desktop user that some application has run into this problem. The dialogue box allows the desktop user to decide whether the failure is returned to the process, is ignored, or the offending operation is retried.</p>
+
+<p>This affects the <code><code>ReadFile</code></code> and <code><code>WriteFile</code></code> calls.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="setFilePointer">setFilePointer</dt>
+<dd>
+
+</dd>
+<dt id="uNewPos-setFilePointer-hFile-ivOffset-uFromWhere-"><code><code>$uNewPos = setFilePointer( $hFile, $ivOffset, $uFromWhere )</code></code></dt>
+<dd>
+
+<p>This is a perl-friendly wrapper for the SetFilePointer API (below). <code><code>$ivOffset</code></code> can be a 64 bit integer or <code><code>Math::BigInt</code></code> object if your Perl doesn&#39;t have 64 bit integers. The return value is the new offset and will likewise be a 64 bit integer or a <code><code>Math::BigInt</code></code> object.</p>
+
+</dd>
+<dt id="SetFilePointer">SetFilePointer</dt>
+<dd>
+
+</dd>
+<dt id="uNewPos-SetFilePointer-hFile-ivOffset-ioivOffsetHigh-uFromWhere-"><code><code>$uNewPos = SetFilePointer( $hFile, $ivOffset, $ioivOffsetHigh, $uFromWhere )</code></code></dt>
+<dd>
+
+<p>The native Win32 version of <code><code>seek()</code></code>. <code><code>SetFilePointer</code></code> sets the position within a file where the next read or write operation will start from.</p>
+
+<p><code><code>$hFile</code></code> is a Win32 native file handle.</p>
+
+<p><code><code>$uFromWhere</code></code> is either <code><code>FILE_BEGIN</code></code>, <code><code>FILE_CURRENT</code></code>, or <code><code>FILE_END</code></code>, indicating that the new file position is being specified relative to the beginning of the file, the current file pointer, or the end of the file, respectively.</p>
+
+<p><code><code>$ivOffset</code></code> is [if <code><code>$ioivOffsetHigh</code></code> is <code><code>[]</code></code>] the offset [in bytes] to the new file position from the position specified via <code><code>$uFromWhere</code></code>. If <code><code>$ioivOffsetHigh</code></code> is not <code><code>[]</code></code>, then <code><code>$ivOffset</code></code> is converted to an unsigned value to be used as the low-order 4 bytes of the offset.</p>
+
+<p><code><code>$ioivOffsetHigh</code></code> can be <code><code>[]</code></code> [for <code><code>NULL</code></code>] to indicate that you are only specifying a 4-byte offset and the resulting file position will be 0xFFFFFFFE or less [just under 4GB]. Otherwise <code><code>$ioivOfffsetHigh</code></code> starts out with the high-order 4 bytes [signed] of the offset and gets set to the [unsigned] high-order 4 bytes of the resulting file position.</p>
+
+<p>The underlying <code><code>SetFilePointer</code></code> returns <code><code>0xFFFFFFFF</code></code> to indicate failure, but if <code><code>$ioivOffsetHigh</code></code> is not <code><code>[]</code></code>, you would also have to check <code><code>$^E</code></code> to determine whether <code><code>0xFFFFFFFF</code></code> indicates an error or not. <code><code>Win32API::File::SetFilePointer</code></code> does this checking for you and returns a false value if and only if the underlying <code><code>SetFilePointer</code></code> failed. For this reason, <code><code>$uNewPos</code></code> is set to <code><code>&quot;0 but true&quot;</code></code> if you set the file pointer to the beginning of the file [or any position with 0 for the low-order 4 bytes].</p>
+
+<p>So the return value will be true if the seek operation was successful. For failure, a false value is returned and <code><code>fileLastError()</code></code> and <code><code>$^E</code></code> are set to the reason for the failure.</p>
+
+</dd>
+<dt id="SetHandleInformation">SetHandleInformation</dt>
+<dd>
+
+</dd>
+<dt id="SetHandleInformation-hObject-uMask-uFlags-"><code><code>SetHandleInformation( $hObject, $uMask, $uFlags )</code></code></dt>
+<dd>
+
+<p>Sets the flags associated with a Win32 native file handle or object handle. Returns a true value if the operation was successful. For failure, returns a false value and sets <code><code>fileLastError()</code></code> and <code><code>$^E</code></code> for the reason for the failure.</p>
+
+<p><code><code>$hObject</code></code> is an open Win32 native file handle or an open Win32 native handle to some other type of object.</p>
+
+<p><code><code>$uMask</code></code> is an unsigned value having one or more of the bits <code><code>HANDLE_FLAG_INHERIT</code></code> and <code><code>HANDLE_FLAG_PROTECT_FROM_CLOSE</code></code> set. Only bits set in <code><code>$uMask</code></code> will be modified by <code><code>SetHandleInformation</code></code>.</p>
+
+<p><code><code>$uFlags</code></code> is an unsigned value having zero or more of the bits <code><code>HANDLE_FLAG_INHERIT</code></code> and <code><code>HANDLE_FLAG_PROTECT_FROM_CLOSE</code></code> set. For each bit set in <code><code>$uMask</code></code>, the cooresponding bit in the handle&#39;s flags is set to the value of the corresponding bit in <code><code>$uFlags</code></code>.</p>
+
+<p>If <code><code>$uOldFlags</code></code> were the value of the handle&#39;s flags before the call to <code><code>SetHandleInformation</code></code>, then the value of the handle&#39;s flags afterward would be:</p>
+
+<pre><code><code>    ( $uOldFlags &amp; ~$uMask ) | ( $uFlags &amp; $uMask )</code></code></pre>
+
+<p>[at least as far as the <code><code>HANDLE_FLAG_INHERIT</code></code> and <code><code>HANDLE_FLAG_PROTECT_FROM_CLOSE</code></code> bits are concerned.]</p>
+
+<p>See the <code><code>&quot;:HANDLE_FLAG_&quot;</code></code> export class for the meanings of these bits.</p>
+
+</dd>
+<dt id="WriteFile">WriteFile</dt>
+<dd>
+
+</dd>
+<dt id="WriteFile-hFile-pBuffer-lBytes-ouBytesWritten-pOverlapped-"><code><code>WriteFile( $hFile, $pBuffer, $lBytes, $ouBytesWritten, $pOverlapped )</code></code></dt>
+<dd>
+
+<p>Write bytes to a file or file-like device. Returns a true value if the operation was successful. For failure, returns a false value and sets <code><code>fileLastError()</code></code> and <code><code>$^E</code></code> for the reason for the failure.</p>
+
+<p><code><code>$hFile</code></code> is a Win32 native file handle that is already open to the file or device to be written to.</p>
+
+<p><code><code>$pBuffer</code></code> is a string containing the bytes to be written.</p>
+
+<p><code><code>$lBytes</code></code> is the number of bytes you would like to write. If <code><code>$pBuffer</code></code> is not at least <code><code>$lBytes</code></code> long, <code><code>WriteFile</code></code> croaks. You can specify <code><code>0</code></code> for <code><code>$lBytes</code></code> to write <code><code>length($pBuffer)</code></code> bytes. A leading <code><code>&quot;=&quot;</code></code> on <code><code>$lBytes</code></code> will be silently ignored, even if Perl warnings are enabled.</p>
+
+<p><code><code>$ouBytesWritten</code></code> will be set to the actual number of bytes written unless you specify it as <code><code>[]</code></code>.</p>
+
+<p><code><code>$pOverlapped</code></code> is <code><code>[]</code></code> or is an <code><code>OVERLAPPED</code></code> structure packed into a string. This is only useful if <code><code>$hFile</code></code> was opened with the <code><code>FILE_FLAG_OVERLAPPED</code></code> flag set.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="FuncA"><code><code>&quot;:FuncA&quot;</code></code></dt>
+<dd>
+
+<p>The ASCII-specific functions. Each of these is just the same as the version without the trailing &quot;A&quot;.</p>
+
+<pre><code><code>        CopyFileA
+        CreateFileA
+        DefineDosDeviceA
+        DeleteFileA
+        GetDriveTypeA
+        GetFileAttributesA
+        GetLogicalDriveStringsA
+        GetVolumeInformationA
+        MoveFileA
+        MoveFileExA
+        QueryDosDeviceA</code></code></pre>
+
+</dd>
+<dt id="FuncW"><code><code>&quot;:FuncW&quot;</code></code></dt>
+<dd>
+
+<p>The wide-character-specific (Unicode) functions. Each of these is just the same as the version without the trailing &quot;W&quot; except that strings are expected in Unicode and some lengths are measured as number of <code><code>WCHAR</code></code>s instead of number of bytes, as indicated below.</p>
+
+<dl>
+
+<dt id="CopyFileW">CopyFileW</dt>
+<dd>
+
+</dd>
+<dt id="CopyFileW-swOldFileName-swNewFileName-bFailIfExists-"><code><code>CopyFileW( $swOldFileName, $swNewFileName, $bFailIfExists )</code></code></dt>
+<dd>
+
+<p><code><code>$swOldFileName</code></code> and <code><code>$swNewFileName</code></code> are Unicode strings.</p>
+
+</dd>
+<dt id="CreateFileW">CreateFileW</dt>
+<dd>
+
+</dd>
+<dt id="hObject-CreateFileW-swPath-uAccess-uShare-pSecAttr-uCreate-uFlags-hModel-"><code><code>$hObject= CreateFileW( $swPath, $uAccess, $uShare, $pSecAttr, $uCreate, $uFlags, $hModel )</code></code></dt>
+<dd>
+
+<p><code><code>$swPath</code></code> is Unicode.</p>
+
+</dd>
+<dt id="DefineDosDeviceW">DefineDosDeviceW</dt>
+<dd>
+
+</dd>
+<dt id="DefineDosDeviceW-uFlags-swDosDeviceName-swTargetPath-"><code><code>DefineDosDeviceW( $uFlags, $swDosDeviceName, $swTargetPath )</code></code></dt>
+<dd>
+
+<p><code><code>$swDosDeviceName</code></code> and <code><code>$swTargetPath</code></code> are Unicode.</p>
+
+</dd>
+<dt id="DeleteFileW">DeleteFileW</dt>
+<dd>
+
+</dd>
+<dt id="DeleteFileW-swFileName-"><code><code>DeleteFileW( $swFileName )</code></code></dt>
+<dd>
+
+<p><code><code>$swFileName</code></code> is Unicode.</p>
+
+</dd>
+<dt id="GetDriveTypeW">GetDriveTypeW</dt>
+<dd>
+
+</dd>
+<dt id="uDriveType-GetDriveTypeW-swRootPath-"><code><code>$uDriveType= GetDriveTypeW( $swRootPath )</code></code></dt>
+<dd>
+
+<p><code><code>$swRootPath</code></code> is Unicode.</p>
+
+</dd>
+<dt id="GetFileAttributesW">GetFileAttributesW</dt>
+<dd>
+
+</dd>
+<dt id="uAttrs-GetFileAttributesW-swPath-"><code><code>$uAttrs= GetFileAttributesW( $swPath )</code></code></dt>
+<dd>
+
+<p><code><code>$swPath</code></code> is Unicode.</p>
+
+</dd>
+<dt id="GetLogicalDriveStringsW">GetLogicalDriveStringsW</dt>
+<dd>
+
+</dd>
+<dt id="olwOutLength-GetLogicalDriveStringsW-lwBufSize-oswBuffer-"><code><code>$olwOutLength= GetLogicalDriveStringsW( $lwBufSize, $oswBuffer )</code></code></dt>
+<dd>
+
+<p>Unicode is stored in <code><code>$oswBuffer</code></code>. <code><code>$lwBufSize</code></code> and <code><code>$olwOutLength</code></code> are measured as number of <code><code>WCHAR</code></code>s.</p>
+
+</dd>
+<dt id="GetVolumeInformationW">GetVolumeInformationW</dt>
+<dd>
+
+</dd>
+<dt id="GetVolumeInformationW-swRootPath-oswVolName-lwVolName-ouSerialNum-ouMaxNameLen-ouFsFlags-oswFsType-lwFsType-"><code><code>GetVolumeInformationW( $swRootPath, $oswVolName, $lwVolName, $ouSerialNum, $ouMaxNameLen, $ouFsFlags, $oswFsType, $lwFsType )</code></code></dt>
+<dd>
+
+<p><code><code>$swRootPath</code></code> is Unicode and Unicode is written to <code><code>$oswVolName</code></code> and <code><code>$oswFsType</code></code>. <code><code>$lwVolName</code></code> and <code><code>$lwFsType</code></code> are measures as number of <code><code>WCHAR</code></code>s.</p>
+
+</dd>
+<dt id="MoveFileW">MoveFileW</dt>
+<dd>
+
+</dd>
+<dt id="MoveFileW-swOldName-swNewName-"><code><code>MoveFileW( $swOldName, $swNewName )</code></code></dt>
+<dd>
+
+<p><code><code>$swOldName</code></code> and <code><code>$swNewName</code></code> are Unicode.</p>
+
+</dd>
+<dt id="MoveFileExW">MoveFileExW</dt>
+<dd>
+
+</dd>
+<dt id="MoveFileExW-swOldName-swNewName-uFlags-"><code><code>MoveFileExW( $swOldName, $swNewName, $uFlags )</code></code></dt>
+<dd>
+
+<p><code><code>$swOldName</code></code> and <code><code>$swNewName</code></code> are Unicode.</p>
+
+</dd>
+<dt id="QueryDosDeviceW">QueryDosDeviceW</dt>
+<dd>
+
+</dd>
+<dt id="olwTargetLen-QueryDosDeviceW-swDeviceName-oswTargetPath-lwTargetBuf-"><code><code>$olwTargetLen= QueryDosDeviceW( $swDeviceName, $oswTargetPath, $lwTargetBuf )</code></code></dt>
+<dd>
+
+<p><code><code>$swDeviceName</code></code> is Unicode and Unicode is written to <code><code>$oswTargetPath</code></code>. <code><code>$lwTargetBuf</code></code> and <code><code>$olwTargetLen</code></code> are measured as number of <code><code>WCHAR</code></code>s.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="Misc"><code><code>&quot;:Misc&quot;</code></code></dt>
+<dd>
+
+<p>Miscellaneous constants. Used for the <code><code>$uCreate</code></code> argument of <code><code>CreateFile</code></code> or the <code><code>$uFromWhere</code></code> argument of <code><code>SetFilePointer</code></code>. Plus <code><code>INVALID_HANDLE_VALUE</code></code>, which you usually won&#39;t need to check for since most routines translate it into a false value.</p>
+
+<pre><code><code>        CREATE_ALWAYS           CREATE_NEW              OPEN_ALWAYS
+        OPEN_EXISTING           TRUNCATE_EXISTING       INVALID_HANDLE_VALUE
+        FILE_BEGIN              FILE_CURRENT            FILE_END</code></code></pre>
+
+</dd>
+<dt id="DDD_"><code><code>&quot;:DDD_&quot;</code></code></dt>
+<dd>
+
+<p>Constants for the <code><code>$uFlags</code></code> argument of <code><code>DefineDosDevice</code></code>.</p>
+
+<pre><code><code>        DDD_EXACT_MATCH_ON_REMOVE
+        DDD_RAW_TARGET_PATH
+        DDD_REMOVE_DEFINITION</code></code></pre>
+
+</dd>
+<dt id="DRIVE_"><code><code>&quot;:DRIVE_&quot;</code></code></dt>
+<dd>
+
+<p>Constants returned by <code><code>GetDriveType</code></code>.</p>
+
+<pre><code><code>        DRIVE_UNKNOWN           DRIVE_NO_ROOT_DIR       DRIVE_REMOVABLE
+        DRIVE_FIXED             DRIVE_REMOTE            DRIVE_CDROM
+        DRIVE_RAMDISK</code></code></pre>
+
+</dd>
+<dt id="FILE_"><code><code>&quot;:FILE_&quot;</code></code></dt>
+<dd>
+
+<p>Specific types of access to files that can be requested via the <code><code>$uAccess</code></code> argument to <code><code>CreateFile</code></code>.</p>
+
+<pre><code><code>        FILE_READ_DATA                  FILE_LIST_DIRECTORY
+        FILE_WRITE_DATA                 FILE_ADD_FILE
+        FILE_APPEND_DATA                FILE_ADD_SUBDIRECTORY
+        FILE_CREATE_PIPE_INSTANCE       FILE_READ_EA
+        FILE_WRITE_EA                   FILE_EXECUTE
+        FILE_TRAVERSE                   FILE_DELETE_CHILD
+        FILE_READ_ATTRIBUTES            FILE_WRITE_ATTRIBUTES
+        FILE_ALL_ACCESS                 FILE_GENERIC_READ
+        FILE_GENERIC_WRITE              FILE_GENERIC_EXECUTE )],</code></code></pre>
+
+</dd>
+<dt id="FILE_ATTRIBUTE_"><code><code>&quot;:FILE_ATTRIBUTE_&quot;</code></code></dt>
+<dd>
+
+<p>File attribute constants. Returned by <code><code>attrLetsToBits</code></code> and used in the <code><code>$uFlags</code></code> argument to <code><code>CreateFile</code></code>.</p>
+
+<pre><code><code>        FILE_ATTRIBUTE_ARCHIVE                  FILE_ATTRIBUTE_COMPRESSED
+        FILE_ATTRIBUTE_HIDDEN                   FILE_ATTRIBUTE_NORMAL
+        FILE_ATTRIBUTE_OFFLINE                  FILE_ATTRIBUTE_READONLY
+        FILE_ATTRIBUTE_SYSTEM                   FILE_ATTRIBUTE_TEMPORARY</code></code></pre>
+
+<p>In addition, <code><code>GetFileAttributes</code></code> can return these constants (or INVALID_FILE_ATTRIBUTES in case of an error).</p>
+
+<pre><code><code>        FILE_ATTRIBUTE_DEVICE                   FILE_ATTRIBUTE_DIRECTORY
+        FILE_ATTRIBUTE_ENCRYPTED                FILE_ATTRIBUTE_NOT_CONTENT_INDEXED
+        FILE_ATTRIBUTE_REPARSE_POINT    FILE_ATTRIBUTE_SPARSE_FILE</code></code></pre>
+
+</dd>
+<dt id="FILE_FLAG_"><code><code>&quot;:FILE_FLAG_&quot;</code></code></dt>
+<dd>
+
+<p>File option flag constants. Used in the <code><code>$uFlags</code></code> argument to <code><code>CreateFile</code></code>.</p>
+
+<pre><code><code>        FILE_FLAG_BACKUP_SEMANTICS      FILE_FLAG_DELETE_ON_CLOSE
+        FILE_FLAG_NO_BUFFERING          FILE_FLAG_OVERLAPPED
+        FILE_FLAG_POSIX_SEMANTICS       FILE_FLAG_RANDOM_ACCESS
+        FILE_FLAG_SEQUENTIAL_SCAN       FILE_FLAG_WRITE_THROUGH
+        FILE_FLAG_OPEN_REPARSE_POINT</code></code></pre>
+
+</dd>
+<dt id="FILE_SHARE_"><code><code>&quot;:FILE_SHARE_&quot;</code></code></dt>
+<dd>
+
+<p>File sharing constants. Used in the <code><code>$uShare</code></code> argument to <code><code>CreateFile</code></code>.</p>
+
+<pre><code><code>        FILE_SHARE_DELETE       FILE_SHARE_READ         FILE_SHARE_WRITE</code></code></pre>
+
+</dd>
+<dt id="FILE_TYPE_"><code><code>&quot;:FILE_TYPE_&quot;</code></code></dt>
+<dd>
+
+<p>File type constants. Returned by <code><code>GetFileType</code></code>.</p>
+
+<pre><code><code>        FILE_TYPE_CHAR          FILE_TYPE_DISK
+        FILE_TYPE_PIPE          FILE_TYPE_UNKNOWN</code></code></pre>
+
+</dd>
+<dt id="FS_"><code><code>&quot;:FS_&quot;</code></code></dt>
+<dd>
+
+<p>File system characteristics constants. Placed in the <code><code>$ouFsFlags</code></code> argument to <code><code>GetVolumeInformation</code></code>.</p>
+
+<pre><code><code>        FS_CASE_IS_PRESERVED            FS_CASE_SENSITIVE
+        FS_UNICODE_STORED_ON_DISK       FS_PERSISTENT_ACLS 
+        FS_FILE_COMPRESSION             FS_VOL_IS_COMPRESSED</code></code></pre>
+
+</dd>
+<dt id="HANDLE_FLAG_"><code><code>&quot;:HANDLE_FLAG_&quot;</code></code></dt>
+<dd>
+
+<p>Flag bits modifying the behavior of an object handle and accessed via <code><code>GetHandleInformation</code></code> and <code><code>SetHandleInformation</code></code>.</p>
+
+<dl>
+
+<dt id="HANDLE_FLAG_INHERIT">HANDLE_FLAG_INHERIT</dt>
+<dd>
+
+<p>If this bit is set, then children of this process who inherit handles [that is, processes created by calls to the Win32 <code><code>CreateProcess</code></code> API with the <code><code>bInheritHandles</code></code> parameter specified as <code><code>TRUE</code></code>], will inherit this particular object handle.</p>
+
+</dd>
+<dt id="HANDLE_FLAG_PROTECT_FROM_CLOSE">HANDLE_FLAG_PROTECT_FROM_CLOSE</dt>
+<dd>
+
+<p>If this bit is set, then calls to <code><code>CloseHandle</code></code> against this handle will be ignored, leaving the handle open and usable.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_STORAGE_"><code><code>&quot;:IOCTL_STORAGE_&quot;</code></code></dt>
+<dd>
+
+<p>I/O control operations for generic storage devices. Used in the <code><code>$uIoControlCode</code></code> argument to <code><code>DeviceIoControl</code></code>. Includes <code><code>IOCTL_STORAGE_CHECK_VERIFY</code></code>, <code><code>IOCTL_STORAGE_MEDIA_REMOVAL</code></code>, <code><code>IOCTL_STORAGE_EJECT_MEDIA</code></code>, <code><code>IOCTL_STORAGE_LOAD_MEDIA</code></code>, <code><code>IOCTL_STORAGE_RESERVE</code></code>, <code><code>IOCTL_STORAGE_RELEASE</code></code>, <code><code>IOCTL_STORAGE_FIND_NEW_DEVICES</code></code>, and <code><code>IOCTL_STORAGE_GET_MEDIA_TYPES</code></code>.</p>
+
+<dl>
+
+<dt id="IOCTL_STORAGE_CHECK_VERIFY"><code><code>IOCTL_STORAGE_CHECK_VERIFY</code></code></dt>
+<dd>
+
+<p>Verify that a device&#39;s media is accessible. <code><code>$pInBuf</code></code> and <code><code>$opOutBuf</code></code> should both be <code><code>[]</code></code>. If <code><code>DeviceIoControl</code></code> returns a true value, then the media is currently accessible.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_MEDIA_REMOVAL"><code><code>IOCTL_STORAGE_MEDIA_REMOVAL</code></code></dt>
+<dd>
+
+<p>Allows the device&#39;s media to be locked or unlocked. <code><code>$opOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should be a <code><code>PREVENT_MEDIA_REMOVAL</code></code> data structure, which is simply an integer containing a boolean value:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"i"</span><span class="operator">,</span> <span class="variable">$bPreventMediaRemoval</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="IOCTL_STORAGE_EJECT_MEDIA"><code><code>IOCTL_STORAGE_EJECT_MEDIA</code></code></dt>
+<dd>
+
+<p>Requests that the device eject the media. <code><code>$pInBuf</code></code> and <code><code>$opOutBuf</code></code> should both be <code><code>[]</code></code>.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_LOAD_MEDIA"><code><code>IOCTL_STORAGE_LOAD_MEDIA</code></code></dt>
+<dd>
+
+<p>Requests that the device load the media. <code><code>$pInBuf</code></code> and <code><code>$opOutBuf</code></code> should both be <code><code>[]</code></code>.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_RESERVE"><code><code>IOCTL_STORAGE_RESERVE</code></code></dt>
+<dd>
+
+<p>Requests that the device be reserved. <code><code>$pInBuf</code></code> and <code><code>$opOutBuf</code></code> should both be <code><code>[]</code></code>.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_RELEASE"><code><code>IOCTL_STORAGE_RELEASE</code></code></dt>
+<dd>
+
+<p>Releases a previous device reservation. <code><code>$pInBuf</code></code> and <code><code>$opOutBuf</code></code> should both be <code><code>[]</code></code>.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_FIND_NEW_DEVICES"><code><code>IOCTL_STORAGE_FIND_NEW_DEVICES</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL operation was found.</p>
+
+</dd>
+<dt id="IOCTL_STORAGE_GET_MEDIA_TYPES"><code><code>IOCTL_STORAGE_GET_MEDIA_TYPES</code></code></dt>
+<dd>
+
+<p>Requests information about the type of media supported by the device. <code><code>$pInBuf</code></code> should be <code><code>[]</code></code>. <code><code>$opOutBuf</code></code> will be set to contain a vector of <code><code>DISK_GEOMETRY</code></code> data structures, which can be decoded via:</p>
+
+<pre><code><code>    <span class="comment"># Calculate the number of DISK_GEOMETRY structures returned:</span>
+    <span class="keyword">my</span> <span class="variable">$cStructs</span><span class="operator">=</span> <span class="keyword">length</span><span class="operator">(</span><span class="variable">$opOutBuf</span><span class="operator">)/(</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">);</span>
+    <span class="keyword">my</span> <span class="variable">@fields</span><span class="operator">=</span> <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"L l I L L L"</span> <span class="operator">x</span> <span class="variable">$cStructs</span><span class="operator">,</span> <span class="variable">$opOutBuf</span> <span class="operator">)</span>
+    <span class="keyword">my</span><span class="operator">(</span> <span class="variable">@ucCylsLow</span><span class="operator">,</span> <span class="variable">@ivcCylsHigh</span><span class="operator">,</span> <span class="variable">@uMediaType</span><span class="operator">,</span> <span class="variable">@uTracksPerCyl</span><span class="operator">,</span>
+      <span class="variable">@uSectsPerTrack</span><span class="operator">,</span> <span class="variable">@uBytesPerSect</span> <span class="operator">)=</span> <span class="operator">();</span>
+    <span class="keyword">while</span><span class="operator">(</span>  <span class="variable">@fields</span>  <span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@ucCylsLow</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@ivcCylsHigh</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uMediaType</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uTracksPerCyl</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uSectsPerTrack</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uBytesPerSect</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<p>For the <code><code>$i</code></code>th type of supported media, the following variables will contain the following data.</p>
+
+<dl>
+
+<dt id="ucCylsLow-i-"><code><code>$ucCylsLow[$i]</code></code></dt>
+<dd>
+
+<p>The low-order 4 bytes of the total number of cylinders.</p>
+
+</dd>
+<dt id="ivcCylsHigh-i-"><code><code>$ivcCylsHigh[$i]</code></code></dt>
+<dd>
+
+<p>The high-order 4 bytes of the total number of cylinders.</p>
+
+</dd>
+<dt id="uMediaType-i-"><code><code>$uMediaType[$i]</code></code></dt>
+<dd>
+
+<p>A code for the type of media. See the <code><code>&quot;:MEDIA_TYPE&quot;</code></code> export class.</p>
+
+</dd>
+<dt id="uTracksPerCyl-i-"><code><code>$uTracksPerCyl[$i]</code></code></dt>
+<dd>
+
+<p>The number of tracks in each cylinder.</p>
+
+</dd>
+<dt id="uSectsPerTrack-i-"><code><code>$uSectsPerTrack[$i]</code></code></dt>
+<dd>
+
+<p>The number of sectors in each track.</p>
+
+</dd>
+<dt id="uBytesPerSect-i-"><code><code>$uBytesPerSect[$i]</code></code></dt>
+<dd>
+
+<p>The number of bytes in each sector.</p>
+
+</dd>
+</dl>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_DISK_"><code><code>&quot;:IOCTL_DISK_&quot;</code></code></dt>
+<dd>
+
+<p>I/O control operations for disk devices. Used in the <code><code>$uIoControlCode</code></code> argument to <code><code>DeviceIoControl</code></code>. Most of these are to be used on physical drive devices like <code><code>&quot;//./PhysicalDrive0&quot;</code></code>. However, <code><code>IOCTL_DISK_GET_PARTITION_INFO</code></code> and <code><code>IOCTL_DISK_SET_PARTITION_INFO</code></code> should only be used on a single-partition device like <code><code>&quot;//./C:&quot;</code></code>. Also, <code><code>IOCTL_DISK_GET_MEDIA_TYPES</code></code> is documented as having been superseded but is still useful when used on a floppy device like <code><code>&quot;//./A:&quot;</code></code>.</p>
+
+<p>Includes <code><code>IOCTL_DISK_FORMAT_TRACKS</code></code>, <code><code>IOCTL_DISK_FORMAT_TRACKS_EX</code></code>, <code><code>IOCTL_DISK_GET_DRIVE_GEOMETRY</code></code>, <code><code>IOCTL_DISK_GET_DRIVE_LAYOUT</code></code>, <code><code>IOCTL_DISK_GET_MEDIA_TYPES</code></code>, <code><code>IOCTL_DISK_GET_PARTITION_INFO</code></code>, <code><code>IOCTL_DISK_HISTOGRAM_DATA</code></code>, <code><code>IOCTL_DISK_HISTOGRAM_RESET</code></code>, <code><code>IOCTL_DISK_HISTOGRAM_STRUCTURE</code></code>, <code><code>IOCTL_DISK_IS_WRITABLE</code></code>, <code><code>IOCTL_DISK_LOGGING</code></code>, <code><code>IOCTL_DISK_PERFORMANCE</code></code>, <code><code>IOCTL_DISK_REASSIGN_BLOCKS</code></code>, <code><code>IOCTL_DISK_REQUEST_DATA</code></code>, <code><code>IOCTL_DISK_REQUEST_STRUCTURE</code></code>, <code><code>IOCTL_DISK_SET_DRIVE_LAYOUT</code></code>, <code><code>IOCTL_DISK_SET_PARTITION_INFO</code></code>, and <code><code>IOCTL_DISK_VERIFY</code></code>.</p>
+
+<dl>
+
+<dt id="IOCTL_DISK_GET_DRIVE_GEOMETRY"><code><code>IOCTL_DISK_GET_DRIVE_GEOMETRY</code></code></dt>
+<dd>
+
+<p>Request information about the size and geometry of the disk. <code><code>$pInBuf</code></code> should be <code><code>[]</code></code>. <code><code>$opOutBuf</code></code> will be set to a <code><code>DISK_GEOMETRY</code></code> data structure which can be decode via:</p>
+
+<pre><code><code>    <span class="operator">(</span> <span class="variable">$ucCylsLow</span><span class="operator">,</span> <span class="variable">$ivcCylsHigh</span><span class="operator">,</span> <span class="variable">$uMediaType</span><span class="operator">,</span> <span class="variable">$uTracksPerCyl</span><span class="operator">,</span>
+      <span class="variable">$uSectsPerTrack</span><span class="operator">,</span> <span class="variable">$uBytesPerSect</span> <span class="operator">)=</span> <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"L l I L L L"</span><span class="operator">,</span> <span class="variable">$opOutBuf</span> <span class="operator">);</span>
+</code></code></pre>
+
+<dl>
+
+<dt id="ucCylsLow"><code><code>$ucCylsLow</code></code></dt>
+<dd>
+
+<p>The low-order 4 bytes of the total number of cylinders.</p>
+
+</dd>
+<dt id="ivcCylsHigh"><code><code>$ivcCylsHigh</code></code></dt>
+<dd>
+
+<p>The high-order 4 bytes of the total number of cylinders.</p>
+
+</dd>
+<dt id="uMediaType"><code><code>$uMediaType</code></code></dt>
+<dd>
+
+<p>A code for the type of media. See the <code><code>&quot;:MEDIA_TYPE&quot;</code></code> export class.</p>
+
+</dd>
+<dt id="uTracksPerCyl"><code><code>$uTracksPerCyl</code></code></dt>
+<dd>
+
+<p>The number of tracks in each cylinder.</p>
+
+</dd>
+<dt id="uSectsPerTrack"><code><code>$uSectsPerTrack</code></code></dt>
+<dd>
+
+<p>The number of sectors in each track.</p>
+
+</dd>
+<dt id="uBytesPerSect"><code><code>$uBytesPerSect</code></code></dt>
+<dd>
+
+<p>The number of bytes in each sector.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_DISK_GET_PARTITION_INFO"><code><code>IOCTL_DISK_GET_PARTITION_INFO</code></code></dt>
+<dd>
+
+<p>Request information about the size and geometry of the partition. <code><code>$pInBuf</code></code> should be <code><code>[]</code></code>. <code><code>$opOutBuf</code></code> will be set to a <code><code>PARTITION_INFORMATION</code></code> data structure which can be decode via:</p>
+
+<pre><code><code>    <span class="operator">(</span> <span class="variable">$uStartLow</span><span class="operator">,</span> <span class="variable">$ivStartHigh</span><span class="operator">,</span> <span class="variable">$ucHiddenSects</span><span class="operator">,</span> <span class="variable">$uPartitionSeqNumber</span><span class="operator">,</span>
+      <span class="variable">$uPartitionType</span><span class="operator">,</span> <span class="variable">$bActive</span><span class="operator">,</span> <span class="variable">$bRecognized</span><span class="operator">,</span> <span class="variable">$bToRewrite</span> <span class="operator">)=</span>
+      <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"L l L L C c c c"</span><span class="operator">,</span> <span class="variable">$opOutBuf</span> <span class="operator">);</span>
+</code></code></pre>
+
+<dl>
+
+<dt id="uStartLow-and-ivStartHigh"><code><code>$uStartLow</code></code> and <code><code>$ivStartHigh</code></code></dt>
+<dd>
+
+<p>The low-order and high-order [respectively] 4 bytes of the starting offset of the partition, measured in bytes.</p>
+
+</dd>
+<dt id="ucHiddenSects"><code><code>$ucHiddenSects</code></code></dt>
+<dd>
+
+<p>The number of &quot;hidden&quot; sectors for this partition. Actually this is the number of sectors found prior to this partition, that is, the starting offset [as found in <code><code>$uStartLow</code></code> and <code><code>$ivStartHigh</code></code>] divided by the number of bytes per sector.</p>
+
+</dd>
+<dt id="uPartitionSeqNumber"><code><code>$uPartitionSeqNumber</code></code></dt>
+<dd>
+
+<p>The sequence number of this partition. Partitions are numbered starting as <code><code>1</code></code> [with &quot;partition 0&quot; meaning the entire disk]. Sometimes this field may be <code><code>0</code></code> and you&#39;ll have to infer the partition sequence number from how many partitions precede it on the disk.</p>
+
+</dd>
+<dt id="uPartitionType"><code><code>$uPartitionType</code></code></dt>
+<dd>
+
+<p>The type of partition. See the <code><code>&quot;:PARTITION_&quot;</code></code> export class for a list of known types. See also <code><code>IsRecognizedPartition</code></code> and <code><code>IsContainerPartition</code></code>.</p>
+
+</dd>
+<dt id="bActive"><code><code>$bActive</code></code></dt>
+<dd>
+
+<p><code><code>1</code></code> for the active [boot] partition, <code><code>0</code></code> otherwise.</p>
+
+</dd>
+<dt id="bRecognized"><code><code>$bRecognized</code></code></dt>
+<dd>
+
+<p>Whether this type of partition is support under Win32.</p>
+
+</dd>
+<dt id="bToRewrite"><code><code>$bToRewrite</code></code></dt>
+<dd>
+
+<p>Whether to update this partition information. This field is not used by <code><code>IOCTL_DISK_GET_PARTITION_INFO</code></code>. For <code><code>IOCTL_DISK_SET_DRIVE_LAYOUT</code></code>, you must set this field to a true value for any partitions you wish to have changed, added, or deleted.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_DISK_SET_PARTITION_INFO"><code><code>IOCTL_DISK_SET_PARTITION_INFO</code></code></dt>
+<dd>
+
+<p>Change the type of the partition. <code><code>$opOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should be a <code><code>SET_PARTITION_INFORMATION</code></code> data structure which is just a single byte containing the new parition type [see the <code><code>&quot;:PARTITION_&quot;</code></code> export class for a list of known types]:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"C"</span><span class="operator">,</span> <span class="variable">$uPartitionType</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="IOCTL_DISK_GET_DRIVE_LAYOUT"><code><code>IOCTL_DISK_GET_DRIVE_LAYOUT</code></code></dt>
+<dd>
+
+<p>Request information about the disk layout. <code><code>$pInBuf</code></code> should be <code><code>[]</code></code>. <code><code>$opOutBuf</code></code> will be set to contain <code><code>DRIVE_LAYOUT_INFORMATION</code></code> structure including several <code><code>PARTITION_INFORMATION</code></code> structures:</p>
+
+<pre><code><code>    <span class="keyword">my</span><span class="operator">(</span> <span class="variable">$cPartitions</span><span class="operator">,</span> <span class="variable">$uDiskSignature</span> <span class="operator">)=</span> <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"L L"</span><span class="operator">,</span> <span class="variable">$opOutBuf</span> <span class="operator">);</span>
+    <span class="keyword">my</span> <span class="variable">@fields</span><span class="operator">=</span> <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"x8"</span> <span class="operator">.</span> <span class="operator">(</span> <span class="string">"L l L L C c c c"</span> <span class="operator">x</span> <span class="variable">$cPartitions</span> <span class="operator">),</span>
+                        <span class="variable">$opOutBuf</span> <span class="operator">);</span>
+    <span class="keyword">my</span><span class="operator">(</span> <span class="variable">@uStartLow</span><span class="operator">,</span> <span class="variable">@ivStartHigh</span><span class="operator">,</span> <span class="variable">@ucHiddenSects</span><span class="operator">,</span>
+      <span class="variable">@uPartitionSeqNumber</span><span class="operator">,</span> <span class="variable">@uPartitionType</span><span class="operator">,</span> <span class="variable">@bActive</span><span class="operator">,</span>
+      <span class="variable">@bRecognized</span><span class="operator">,</span> <span class="variable">@bToRewrite</span> <span class="operator">)=</span> <span class="operator">();</span>
+    <span class="keyword">for</span><span class="operator">(</span>  <span class="number">1</span><span class="operator">..</span><span class="variable">$cPartition</span>  <span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uStartLow</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@ivStartHigh</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@ucHiddenSects</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uPartitionSeqNumber</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@uPartitionType</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@bActive</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@bRecognized</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@bToRewrite</span><span class="operator">,</span> <span class="keyword">unshift</span> <span class="variable">@fields</span> <span class="operator">);</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<dl>
+
+<dt id="cPartitions"><code><code>$cPartitions</code></code></dt>
+<dd>
+
+<p>If the number of partitions on the disk.</p>
+
+</dd>
+<dt id="uDiskSignature"><code><code>$uDiskSignature</code></code></dt>
+<dd>
+
+<p>Is the disk signature, a unique number assigned by Disk Administrator [<i>WinDisk.exe</i>] and used to identify the disk. This allows drive letters for partitions on that disk to remain constant even if the SCSI Target ID of the disk gets changed.</p>
+
+</dd>
+</dl>
+
+<p>See <code><code>IOCTL_DISK_GET_PARTITION_INFORMATION</code></code> for information on the remaining these fields.</p>
+
+</dd>
+<dt id="IOCTL_DISK_GET_MEDIA_TYPES"><code><code>IOCTL_DISK_GET_MEDIA_TYPES</code></code></dt>
+<dd>
+
+<p>Is supposed to be superseded by <code><code>IOCTL_STORAGE_GET_MEDIA_TYPES</code></code> but is still useful for determining the types of floppy diskette formats that can be produced by a given floppy drive. See <i>ex/FormatFloppy.plx</i> for an example.</p>
+
+</dd>
+<dt id="IOCTL_DISK_SET_DRIVE_LAYOUT"><code><code>IOCTL_DISK_SET_DRIVE_LAYOUT</code></code></dt>
+<dd>
+
+<p>Change the partition layout of the disk. <code><code>$pOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should be a <code><code>DISK_LAYOUT_INFORMATION</code></code> data structure including several <code><code>PARTITION_INFORMATION</code></code> data structures.</p>
+
+<pre><code><code>    <span class="comment"># Already set:  $cPartitions, $uDiskSignature, @uStartLow, @ivStartHigh,</span>
+    <span class="comment">#   @ucHiddenSects, @uPartitionSeqNumber, @uPartitionType, @bActive,</span>
+    <span class="comment">#   @bRecognized, and @bToRewrite.</span>
+    <span class="keyword">my</span><span class="operator">(</span> <span class="variable">@fields</span><span class="operator">,</span> <span class="variable">$prtn</span> <span class="operator">)=</span> <span class="operator">();</span>
+    <span class="keyword">for</span> <span class="variable">$prtn</span> <span class="operator">(</span>  <span class="number">1</span><span class="operator">..</span><span class="variable">$cPartition</span>  <span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">push</span><span class="operator">(</span> <span class="variable">@fields</span><span class="operator">,</span> <span class="variable">$uStartLow</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$ivStartHigh</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
+            <span class="variable">$ucHiddenSects</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$uPartitionSeqNumber</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
+            <span class="variable">$uPartitionType</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$bActive</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span>
+            <span class="variable">$bRecognized</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$bToRewrite</span><span class="operator">[</span><span class="variable">$prtn</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span> <span class="operator">);</span>
+    <span class="operator">}</span>
+    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"L L"</span> <span class="operator">.</span> <span class="operator">(</span> <span class="string">"L l L L C c c c"</span> <span class="operator">x</span> <span class="variable">$cPartitions</span> <span class="operator">),</span>
+                   <span class="variable">$cPartitions</span><span class="operator">,</span> <span class="variable">$uDiskSignature</span><span class="operator">,</span> <span class="variable">@fields</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>To delete a partition, zero out all fields except for <code><code>$bToRewrite</code></code> which should be set to <code><code>1</code></code>. To add a partition, increment <code><code>$cPartitions</code></code> and add the information for the new partition into the arrays, making sure that you insert <code><code>1</code></code> into @bToRewrite.</p>
+
+<p>See <code><code>IOCTL_DISK_GET_DRIVE_LAYOUT</code></code> and <code><code>IOCTL_DISK_GET_PARITITON_INFORMATION</code></code> for descriptions of the fields.</p>
+
+</dd>
+<dt id="IOCTL_DISK_VERIFY"><code><code>IOCTL_DISK_VERIFY</code></code></dt>
+<dd>
+
+<p>Performs a logical format of [part of] the disk. <code><code>$opOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should contain a <code><code>VERIFY_INFORMATION</code></code> data structure:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"L l L"</span><span class="operator">,</span>
+                   <span class="variable">$uStartOffsetLow</span><span class="operator">,</span> <span class="variable">$ivStartOffsetHigh</span><span class="operator">,</span> <span class="variable">$uLength</span> <span class="operator">);</span>
+</code></code></pre>
+
+<dl>
+
+<dt id="uStartOffsetLow-and-ivStartOffsetHigh"><code><code>$uStartOffsetLow</code></code> and <code><code>$ivStartOffsetHigh</code></code></dt>
+<dd>
+
+<p>The low-order and high-order [respectively] 4 bytes of the offset [in bytes] where the formatting should begin.</p>
+
+</dd>
+<dt id="uLength"><code><code>$uLength</code></code></dt>
+<dd>
+
+<p>The length [in bytes] of the section to be formatted.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_DISK_FORMAT_TRACKS"><code><code>IOCTL_DISK_FORMAT_TRACKS</code></code></dt>
+<dd>
+
+<p>Format a range of tracks on the disk. <code><code>$opOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should contain a <code><code>FORMAT_PARAMETERS</code></code> data structure:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"L L L L L"</span><span class="operator">,</span> <span class="variable">$uMediaType</span><span class="operator">,</span>
+                   <span class="variable">$uStartCyl</span><span class="operator">,</span> <span class="variable">$uEndCyl</span><span class="operator">,</span> <span class="variable">$uStartHead</span><span class="operator">,</span> <span class="variable">$uEndHead</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p><code><code>$uMediaType</code></code> if the type of media to be formatted. Mostly used to specify the density to use when formatting a floppy diskette. See the <code><code>&quot;:MEDIA_TYPE&quot;</code></code> export class for more information.</p>
+
+<p>The remaining fields specify the starting and ending cylinder and head of the range of tracks to be formatted.</p>
+
+</dd>
+<dt id="IOCTL_DISK_REASSIGN_BLOCKS"><code><code>IOCTL_DISK_REASSIGN_BLOCKS</code></code></dt>
+<dd>
+
+<p>Reassign a list of disk blocks to the disk&#39;s spare-block pool. <code><code>$opOutBuf</code></code> should be <code><code>[]</code></code>. <code><code>$pInBuf</code></code> should be a <code><code>REASSIGN_BLOCKS</code></code> data structure:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"S S L*"</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">$cBlocks</span><span class="operator">,</span> <span class="variable">@uBlockNumbers</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="IOCTL_DISK_PERFORMANCE"><code><code>IOCTL_DISK_PERFORMANCE</code></code></dt>
+<dd>
+
+<p>Request information about disk performance. <code><code>$pInBuf</code></code> should be <code><code>[]</code></code>. <code><code>$opOutBuf</code></code> will be set to contain a <code><code>DISK_PERFORMANCE</code></code> data structure:</p>
+
+<pre><code><code>    <span class="keyword">my</span><span class="operator">(</span> <span class="variable">$ucBytesReadLow</span><span class="operator">,</span> <span class="variable">$ivcBytesReadHigh</span><span class="operator">,</span>
+        <span class="variable">$ucBytesWrittenLow</span><span class="operator">,</span> <span class="variable">$ivcBytesWrittenHigh</span><span class="operator">,</span>
+        <span class="variable">$uReadTimeLow</span><span class="operator">,</span> <span class="variable">$ivReadTimeHigh</span><span class="operator">,</span>
+        <span class="variable">$uWriteTimeLow</span><span class="operator">,</span> <span class="variable">$ivWriteTimeHigh</span><span class="operator">,</span>
+        <span class="variable">$ucReads</span><span class="operator">,</span> <span class="variable">$ucWrites</span><span class="operator">,</span> <span class="variable">$uQueueDepth</span> <span class="operator">)=</span>
+        <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"L l L l L l L l L L L"</span><span class="operator">,</span> <span class="variable">$opOutBuf</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="IOCTL_DISK_IS_WRITABLE"><code><code>IOCTL_DISK_IS_WRITABLE</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL operation was found.</p>
+
+</dd>
+<dt id="IOCTL_DISK_LOGGING"><code><code>IOCTL_DISK_LOGGING</code></code></dt>
+<dd>
+
+<p>Control disk logging. Little documentation for this IOCTL operation was found. It makes use of a <code><code>DISK_LOGGING</code></code> data structure:</p>
+
+<dl>
+
+<dt id="DISK_LOGGING_START">DISK_LOGGING_START</dt>
+<dd>
+
+<p>Start logging each disk request in a buffer internal to the disk device driver of size <code><code>$uLogBufferSize</code></code>:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"C L L"</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">$uLogBufferSize</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="DISK_LOGGING_STOP">DISK_LOGGING_STOP</dt>
+<dd>
+
+<p>Stop loggin each disk request:</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"C L L"</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="DISK_LOGGING_DUMP">DISK_LOGGING_DUMP</dt>
+<dd>
+
+<p>Copy the internal log into the supplied buffer:</p>
+
+<pre><code><code>    <span class="variable">$pLogBuffer</span><span class="operator">=</span> <span class="string">' '</span> <span class="operator">x</span> <span class="variable">$uLogBufferSize</span>
+    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"C P L"</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="variable">$pLogBuffer</span><span class="operator">,</span> <span class="variable">$uLogBufferSize</span> <span class="operator">);</span>
+    
+    <span class="operator">(</span> <span class="variable">$uByteOffsetLow</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$ivByteOffsetHigh</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span>
+      <span class="variable">$uStartTimeLow</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$ivStartTimeHigh</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span>
+      <span class="variable">$uEndTimeLog</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$ivEndTimeHigh</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span>
+      <span class="variable">$hVirtualAddress</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$ucBytes</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span>
+      <span class="variable">$uDeviceNumber</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span><span class="operator">,</span> <span class="variable">$bWasReading</span><span class="operator">[</span><span class="variable">$i</span><span class="operator">]</span> <span class="operator">)=</span>
+      <span class="keyword">unpack</span><span class="operator">(</span> <span class="string">"x"</span><span class="operator">.(</span><span class="number">8</span><span class="operator">+</span><span class="number">8</span><span class="operator">+</span><span class="number">8</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">4</span><span class="operator">+</span><span class="number">1</span><span class="operator">+</span><span class="number">1</span><span class="operator">+</span><span class="number">2</span><span class="operator">).</span><span class="string">" L l L l L l L L C c x2"</span><span class="operator">,</span> <span class="variable">$pLogBuffer</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+<dt id="DISK_LOGGING_BINNING">DISK_LOGGING_BINNING</dt>
+<dd>
+
+<p>Keep statics grouped into bins based on request sizes.</p>
+
+<pre><code><code>    <span class="variable">$pInBuf</span><span class="operator">=</span> <span class="keyword">pack</span><span class="operator">(</span> <span class="string">"C P L"</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="variable">$pUnknown</span><span class="operator">,</span> <span class="variable">$uUnknownSize</span> <span class="operator">);</span>
+</code></code></pre>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="IOCTL_DISK_FORMAT_TRACKS_EX"><code><code>IOCTL_DISK_FORMAT_TRACKS_EX</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL is included.</p>
+
+</dd>
+<dt id="IOCTL_DISK_HISTOGRAM_STRUCTURE"><code><code>IOCTL_DISK_HISTOGRAM_STRUCTURE</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL is included.</p>
+
+</dd>
+<dt id="IOCTL_DISK_HISTOGRAM_DATA"><code><code>IOCTL_DISK_HISTOGRAM_DATA</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL is included.</p>
+
+</dd>
+<dt id="IOCTL_DISK_HISTOGRAM_RESET"><code><code>IOCTL_DISK_HISTOGRAM_RESET</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL is included.</p>
+
+</dd>
+<dt id="IOCTL_DISK_REQUEST_STRUCTURE"><code><code>IOCTL_DISK_REQUEST_STRUCTURE</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL operation was found.</p>
+
+</dd>
+<dt id="IOCTL_DISK_REQUEST_DATA"><code><code>IOCTL_DISK_REQUEST_DATA</code></code></dt>
+<dd>
+
+<p>No documentation on this IOCTL operation was found.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="FSCTL_"><code><code>&quot;:FSCTL_&quot;</code></code></dt>
+<dd>
+
+<p>File system control operations. Used in the <code><code>$uIoControlCode</code></code> argument to <code><code>DeviceIoControl</code></code>.</p>
+
+<p>Includes <code><code>FSCTL_SET_REPARSE_POINT</code></code>, <code><code>FSCTL_GET_REPARSE_POINT</code></code>, <code><code>FSCTL_DELETE_REPARSE_POINT</code></code>.</p>
+
+<dl>
+
+<dt id="FSCTL_SET_REPARSE_POINT"><code><code>FSCTL_SET_REPARSE_POINT</code></code></dt>
+<dd>
+
+<p>Sets reparse point data to be associated with $hDevice.</p>
+
+</dd>
+<dt id="FSCTL_GET_REPARSE_POINT"><code><code>FSCTL_GET_REPARSE_POINT</code></code></dt>
+<dd>
+
+<p>Retrieves the reparse point data associated with $hDevice.</p>
+
+</dd>
+<dt id="FSCTL_DELETE_REPARSE_POINT"><code><code>FSCTL_DELETE_REPARSE_POINT</code></code></dt>
+<dd>
+
+<p>Deletes the reparse point data associated with $hDevice.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="GENERIC_"><code><code>&quot;:GENERIC_&quot;</code></code></dt>
+<dd>
+
+<p>Constants specifying generic access permissions that are not specific to one type of object.</p>
+
+<pre><code><code>        GENERIC_ALL                     GENERIC_EXECUTE
+        GENERIC_READ            GENERIC_WRITE</code></code></pre>
+
+</dd>
+<dt id="MEDIA_TYPE"><code><code>&quot;:MEDIA_TYPE&quot;</code></code></dt>
+<dd>
+
+<p>Different classes of media that a device can support. Used in the <code><code>$uMediaType</code></code> field of a <code><code>DISK_GEOMETRY</code></code> structure.</p>
+
+<dl>
+
+<dt id="Unknown"><code><code>Unknown</code></code></dt>
+<dd>
+
+<p>Format is unknown.</p>
+
+</dd>
+<dt id="F5_1Pt2_512"><code><code>F5_1Pt2_512</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 1.2MB [really 1,200KB] total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F3_1Pt44_512"><code><code>F3_1Pt44_512</code></code></dt>
+<dd>
+
+<p>3.5&quot; floppy, 1.44MB [really 1,440KB] total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F3_2Pt88_512"><code><code>F3_2Pt88_512</code></code></dt>
+<dd>
+
+<p>3.5&quot; floppy, 2.88MB [really 2,880KB] total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F3_20Pt8_512"><code><code>F3_20Pt8_512</code></code></dt>
+<dd>
+
+<p>3.5&quot; floppy, 20.8MB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F3_720_512"><code><code>F3_720_512</code></code></dt>
+<dd>
+
+<p>3.5&quot; floppy, 720KB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F5_360_512"><code><code>F5_360_512</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 360KB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F5_320_512"><code><code>F5_320_512</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 320KB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F5_320_1024"><code><code>F5_320_1024</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 320KB total space, 1024 bytes/sector.</p>
+
+</dd>
+<dt id="F5_180_512"><code><code>F5_180_512</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 180KB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="F5_160_512"><code><code>F5_160_512</code></code></dt>
+<dd>
+
+<p>5.25&quot; floppy, 160KB total space, 512 bytes/sector.</p>
+
+</dd>
+<dt id="RemovableMedia"><code><code>RemovableMedia</code></code></dt>
+<dd>
+
+<p>Some type of removable media other than a floppy diskette.</p>
+
+</dd>
+<dt id="FixedMedia"><code><code>FixedMedia</code></code></dt>
+<dd>
+
+<p>A fixed hard disk.</p>
+
+</dd>
+<dt id="F3_120M_512"><code><code>F3_120M_512</code></code></dt>
+<dd>
+
+<p>3.5&quot; floppy, 120MB total space.</p>
+
+</dd>
+</dl>
+
+</dd>
+<dt id="MOVEFILE_"><code><code>&quot;:MOVEFILE_&quot;</code></code></dt>
+<dd>
+
+<p>Constants for use in <code><code>$uFlags</code></code> arguments to <code><code>MoveFileEx</code></code>.</p>
+
+<pre><code><code>        MOVEFILE_COPY_ALLOWED           MOVEFILE_DELAY_UNTIL_REBOOT
+        MOVEFILE_REPLACE_EXISTING       MOVEFILE_WRITE_THROUGH</code></code></pre>
+
+</dd>
+<dt id="SECURITY_"><code><code>&quot;:SECURITY_&quot;</code></code></dt>
+<dd>
+
+<p>Security quality of service values that can be used in the <code><code>$uFlags</code></code> argument to <code><code>CreateFile</code></code> if opening the client side of a named pipe.</p>
+
+<pre><code><code>        SECURITY_ANONYMOUS              SECURITY_CONTEXT_TRACKING
+        SECURITY_DELEGATION             SECURITY_EFFECTIVE_ONLY
+        SECURITY_IDENTIFICATION         SECURITY_IMPERSONATION
+        SECURITY_SQOS_PRESENT</code></code></pre>
+
+</dd>
+<dt id="SEM_"><code><code>&quot;:SEM_&quot;</code></code></dt>
+<dd>
+
+<p>Constants to be used with <code><code>SetErrorMode</code></code>.</p>
+
+<pre><code><code>        SEM_FAILCRITICALERRORS          SEM_NOGPFAULTERRORBOX
+        SEM_NOALIGNMENTFAULTEXCEPT      SEM_NOOPENFILEERRORBOX</code></code></pre>
+
+</dd>
+<dt id="PARTITION_"><code><code>&quot;:PARTITION_&quot;</code></code></dt>
+<dd>
+
+<p>Constants describing partition types.</p>
+
+<pre><code><code>        PARTITION_ENTRY_UNUSED          PARTITION_FAT_12
+        PARTITION_XENIX_1               PARTITION_XENIX_2
+        PARTITION_FAT_16                PARTITION_EXTENDED
+        PARTITION_HUGE                  PARTITION_IFS
+        PARTITION_FAT32                 PARTITION_FAT32_XINT13
+        PARTITION_XINT13                PARTITION_XINT13_EXTENDED
+        PARTITION_PREP                  PARTITION_UNIX
+        VALID_NTFT                      PARTITION_NTFT</code></code></pre>
+
+</dd>
+<dt id="ALL"><code><code>&quot;:ALL&quot;</code></code></dt>
+<dd>
+
+<p>All of the above.</p>
+
+</dd>
+</dl>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>None known at this time.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Tye McQueen, tye@metronet.com, http://perlmonks.org/?node=tye.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>The pyramids.</p>
+
+
+</body>
+
+</html>
+
+

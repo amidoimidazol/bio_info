@@ -1,0 +1,8 @@
+#!/usr/bin/perl -w
+#az elsõ sor azért kell hogy UNIX LINUX is betudja olvasni
+#DNA variable
+$DNA = 'TTTTGGGGCCCCC';
+#kiirja a stringet
+print $DNA;
+exit;
+#kilép

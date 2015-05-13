@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+
+use warnings;
+use strict;
+use lib '/perl';
+use biolib;
+
+print "Udv  a szekvencia analizatorban!\n";
+print "Segitsegkeres: -help parancsal\n";
+print "Forras szekvencia neve ( mas mappa eseten eleresi utvonala):\n\n";
+
+#beolvasas
+
+my $dnafilename = <STDIN>;
+	chomp $dnafilename;
+
+unless (open (DNAFILE,$dnafilename))
+	{print "Ervenytelen file nev vagy eleresi utvonal:\"$dnafilename\"\n";
+	exit;
+	}
+
+my @DNA = <DNAFILE>;
+close DNAFILE;
+
+my $DNA = join ('', @DNA);
+		#szokozok kiszedese
+		$DNA =~ s/\s//g;
+		#nagybeture valtas
+		$DNA =~ tr/agtcAGTC/AGTCAGTC/;
+		$DNA =~ s/N\s//g;
+		$DNA =~ s/>chr1\s//;
+		#szamok kiszedese
+		my @szamok = ( '1' ,'2','3','4','5','6','7','8','9','0');
+		$DNA =~ s/[@szamok]//g;
+		
+
+
+#fõmenü
+
+print "DNS beolvasva!\n";
+print "Milyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";
+
+my $n = 0;
+	while (1==1)
+	{my $i= <STDIN>;
+	
+	if ($i =~ "-help")
+		{help , print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-q")
+		{exit;}
+	elsif ($i=~ "-hossz")
+		{hossz ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-szazalek")
+		{szazalek_osszes ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-szam")
+		{szam ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-GC")
+		{GC ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-polyT")
+		{polyT ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-keres")
+		{keres ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	elsif ($i=~ "-print")
+		{print ($DNA), print "\nMilyen adatokat akarsz megtudni az adott szekvenciarol?\n(-help parancsal kilistazodik a modulok listaja):\n";}
+	else {print "Hibas parancs, segitseg -help\n";}
+	}
+	

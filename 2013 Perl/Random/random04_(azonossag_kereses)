@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+#prefixek
+#NOT WORKING
+use strict;
+use warnings;
+
+use lib '\perl';
+use biolib;
+
+#var
+
+my $szazalek;
+my @szazalekok;
+my $eredmeny;
+
+#ures array amiben a dns-t tarolja
+my @random_dna = ( );
+#seed
+(time|$$);
+
+#DNS legeneralasa
+@random_dna = make_random_dna_set(10,10,10);
+
+
+for (my $k = 0 ; $k < scalar @random_dna -1 ; ++$k)
+		{
+		for (my $i = ($k+1) ; $i < scalar @random_dna ; ++$i)
+			{
+			$szazalek = matching_percentage ($random_dna[$k],$random_dna[$i]);
+			push (@szazalekok, $szazalek);
+			
+			}
+			}
+			
+	$eredmeny = 0;
+	$eredmeny += $szazalek;
+	$eredmeny = $eredmeny / scalar (@szazalekok);
+	$eredmeny = int ($eredmeny * 100);
+	
+	print "A generalt DNS-k kozott az azonos mutaciok szazalekos aranya:\n";
+	print "$eredmeny%\n\n";
+	
+	exit;

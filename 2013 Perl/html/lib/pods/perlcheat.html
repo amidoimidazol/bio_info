@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#The-sheet">The sheet</a></li>
+    </ul>
+  </li>
+  <li><a href="#ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>perlcheat - Perl 5 Cheat Sheet</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This &#39;cheat sheet&#39; is a handy reference, meant for beginning Perl programmers. Not everything is mentioned, but 195 features may already be overwhelming.</p>
+
+<h2 id="The-sheet">The sheet</h2>
+
+<pre><code><code>  <span class="variable">CONTEXTS</span>  <span class="variable">SIGILS</span>  <span class="keyword">ref</span>        <span class="variable">ARRAYS</span>        <span class="variable">HASHES</span>
+  <span class="variable">void</span>      <span class="variable">$scalar</span> <span class="variable">SCALAR</span>     <span class="variable">@array</span>        <span class="variable">%hash</span>
+  <span class="keyword">scalar</span>    <span class="variable">@array</span>  <span class="variable">ARRAY</span>      <span class="variable">@array</span><span class="operator">[</span><span class="number">0</span><span class="operator">,</span> <span class="number">2</span><span class="operator">]</span>  <span class="variable">@hash</span><span class="operator">{</span><span class="string">'a'</span><span class="operator">,</span> <span class="string">'b'</span><span class="operator">}</span>
+  <span class="variable">list</span>      <span class="variable">%hash</span>   <span class="variable">HASH</span>       <span class="variable">$array</span><span class="operator">[</span><span class="number">0</span><span class="operator">]</span>     <span class="variable">$hash</span><span class="operator">{</span><span class="string">'a'</span><span class="operator">}</span>
+            <span class="operator">&amp;</span><span class="keyword">sub</span><span class="variable">    CODE
+            *glob   GLOB       SCALAR VALUES
+                    FORMAT     number, string, ref, glob, undef
+  REFERENCES
+  \      reference       $$foo[1]       aka $foo-&gt;[1]
+  $@%&amp;*  dereference     $$foo</span><span class="operator">{</span><span class="variable">bar</span><span class="operator">}</span>     <span class="variable">aka</span> <span class="variable">$foo</span><span class="operator">-&gt;</span><span class="operator">{</span><span class="string">bar</span><span class="operator">}</span>
+  <span class="operator">[]</span>     <span class="variable">anon</span><span class="operator">.</span> <span class="variable">arrayref</span>  <span class="variable">$</span><span class="operator">{</span><span class="variable">$$foo</span><span class="operator">[</span><span class="number">1</span><span class="operator">]}[</span><span class="number">2</span><span class="operator">]</span> <span class="variable">aka</span> <span class="variable">$foo</span><span class="operator">-&gt;</span><span class="operator">[</span><span class="number">1</span><span class="operator">]</span><span class="operator">-&gt;</span><span class="operator">[</span><span class="number">2</span><span class="operator">]</span>
+  <span class="operator">{}</span>     <span class="variable">anon</span><span class="operator">.</span> <span class="variable">hashref</span>   <span class="variable">$</span><span class="operator">{</span><span class="variable">$$foo</span><span class="operator">[</span><span class="number">1</span><span class="operator">]}[</span><span class="number">2</span><span class="operator">]</span> <span class="variable">aka</span> <span class="variable">$foo</span><span class="operator">-&gt;</span><span class="operator">[</span><span class="number">1</span><span class="operator">][</span><span class="number">2</span><span class="operator">]</span>
+  <span class="operator">\()</span>    <span class="variable">list</span> <span class="variable">of</span> <span class="variable">refs</span>
+                         <span class="variable">NUMBERS</span> <span class="variable">vs</span> <span class="variable">STRINGS</span>    <span class="variable">LINKS</span>
+  <span class="variable">OPERATOR</span> <span class="variable">PRECEDENCE</span>    <span class="operator">=</span>          <span class="operator">=</span>          <span class="variable">perldoc</span><span class="operator">.</span><span class="variable">perl</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">-&gt;</span>                     +          <span class="operator">.</span>           <span class="variable">search</span><span class="operator">.</span><span class="variable">cpan</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">++</span> <span class="operator">--</span>                  <span class="operator">==</span> <span class="operator">!=</span>      <span class="keyword">eq</span> <span class="keyword">ne</span>              <span class="variable">cpan</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">**</span>                     <span class="operator">&lt;</span> <span class="operator">&gt;</span> <span class="operator">&lt;=</span> <span class="operator">&gt;=</span>  <span class="keyword">lt</span> <span class="keyword">gt</span> <span class="keyword">le</span> <span class="keyword">ge</span>          <span class="variable">pm</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">!</span> <span class="operator">~</span> <span class="operator">\</span> <span class="variable">u</span><span class="operator">+</span> <span class="variable">u</span><span class="operator">-</span>            <span class="operator">&lt;=&gt;</span>        <span class="keyword">cmp</span>                <span class="variable">p3rl</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">=~</span> <span class="operator">!~</span>                                           <span class="variable">perlmonks</span><span class="operator">.</span><span class="variable">org</span>
+  <span class="operator">*</span> <span class="operator">/</span> <span class="operator">% x</span>                <span class="variable">SYNTAX</span>
+  <span class="operator">+</span> <span class="operator">-</span> <span class="operator">.</span>                  <span class="keyword">foreach</span> <span class="operator">(</span><span class="variable">LIST</span><span class="operator">)</span> <span class="operator">{</span> <span class="operator">}</span>     <span class="keyword">for</span> <span class="operator">(</span><span class="variable">a</span><span class="operator">;</span><span class="variable">b</span><span class="operator">;</span><span class="variable">c</span><span class="operator">)</span> <span class="operator">{</span> <span class="operator">}</span>
+  <span class="operator">&lt;&lt;</span><span class="default"> </span><span class="operator">&gt;&gt;</span>                  <span class="keyword">while</span>   <span class="operator">(</span><span class="variable">e</span><span class="operator">)</span> <span class="operator">{</span> <span class="operator">}</span>        <span class="keyword">until</span> <span class="operator">(</span><span class="variable">e</span><span class="operator">)</span>   <span class="operator">{</span> <span class="operator">}</span><span class="string">
+  named uops             if      (e) { } elsif (e) { } else { }
+  &lt; &gt; &lt;= &gt;= lt gt le ge  unless  (e) { } elsif (e) { } else { }
+  == != &lt;=&gt; eq ne cmp ~~ given   (e) { when (e) {} default {} }
+  &amp;
+  | ^             REGEX METACHARS          REGEX MODIFIERS
+  &amp;&amp;              ^      string begin      /i case insensitive
+  || //           $      str end (bfr \n)  /m line based ^$
+  .. ...          +      one or more       /s . includes \n
+  ?:              *      zero or more      /x ignore wh.space
+  = += -= *= etc  ?      zero or one       /p preserve
+  , =&gt;            {3,7}  repeat in range   /a ASCII    /aa safe
+  list ops        |      alternation       /l locale   /d  dual
+  not             []     character class   /u Unicode
+  and             \b     word boundary     /e evaluate /ee rpts
+  or xor          \z     string end        /g global
+                  ()     capture           /o compile pat once
+  DEBUG           (?:p)  no capture
+   -MO=Deparse    (?#t)  comment           REGEX CHARCLASSES
+   -MO=Terse      (?=p)  ZW pos ahead      .   [^\n]
+   -D##           (?!p)  ZW neg ahead      \s  whitespace
+   -d:Trace       (?&lt;=p) ZW pos behind \K  \w  word chars
+                  (?&lt;!p) ZW neg behind     \d  digits
+  CONFIGURATION   (?&gt;p)  no backtrack      \pP named property
+  perl -V:ivsize  (?|p|p)branch reset      \h  horiz.wh.space
+                  (?&amp;NM) cap to name       \R  linebreak
+                                           \S \W \D \H negate
+  FUNCTION RETURN LISTS
+  stat      localtime    caller         SPECIAL VARIABLES
+   0 dev    0 second      0 package     $_    default variable
+   1 ino    1 minute      1 filename    $0    program name
+   2 mode   2 hour        2 line        $/    input separator
+   3 nlink  3 day         3 subroutine  $\    output separator
+   4 uid    4 month-1     4 hasargs     $|    autoflush
+   5 gid    5 year-1900   5 wantarray   $!    sys/libcall error
+   6 rdev   6 weekday     6 evaltext    $@    eval error
+   7 size   7 yearday     7 is_require  $$    process ID
+   8 atime  8 is_dst      8 hints       $.    line number
+   9 mtime                9 bitmask     @ARGV command line args
+  10 ctime               10 hinthash    @INC  include paths
+  11 blksz               3..10 only     @_    subroutine args
+  12 blcks               with EXPR      %ENV  environment
+  </span>
+</code></code></pre>
+
+<h1 id="ACKNOWLEDGEMENTS">ACKNOWLEDGEMENTS</h1>
+
+<p>The first version of this document appeared on Perl Monks, where several people had useful suggestions. Thank you, Perl Monks.</p>
+
+<p>A special thanks to Damian Conway, who didn&#39;t only suggest important changes, but also took the time to count the number of listed features and make a Perl 6 version to show that Perl will stay Perl.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Juerd Waalboer &lt;#####@juerd.nl&gt;, with the help of many Perl Monks.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<ul>
+
+<li><p><a href="http://perlmonks.org/?node_id=216602">http://perlmonks.org/?node_id=216602</a> - the original PM post</p>
+
+</li>
+<li><p><a href="http://perlmonks.org/?node_id=238031">http://perlmonks.org/?node_id=238031</a> - Damian Conway&#39;s Perl 6 version</p>
+
+</li>
+<li><p><a href="http://juerd.nl/site.plp/perlcheat">http://juerd.nl/site.plp/perlcheat</a> - home of the Perl Cheat Sheet</p>
+
+</li>
+</ul>
+
+
+</body>
+
+</html>
+
+

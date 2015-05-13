@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#and"> and </a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>getopt, getopts - Process single-character switches with switch clustering</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Getopt::Std</span><span class="operator">;</span>
+    
+    <span class="variable">getopt</span><span class="operator">(</span><span class="string">'oDI'</span><span class="operator">);</span>    <span class="comment"># -o, -D &amp; -I take arg.  Sets $opt_* as a side effect.</span>
+    <span class="variable">getopt</span><span class="operator">(</span><span class="string">'oDI'</span><span class="operator">,</span> <span class="operator">\</span><span class="variable">%opts</span><span class="operator">);</span>    <span class="comment"># -o, -D &amp; -I take arg.  Values in %opts</span>
+    <span class="variable">getopts</span><span class="operator">(</span><span class="string">'oif:'</span><span class="operator">);</span>  <span class="comment"># -o &amp; -i are boolean flags, -f takes an argument</span>
+                      <span class="comment"># Sets $opt_* as a side effect.</span>
+    <span class="variable">getopts</span><span class="operator">(</span><span class="string">'oif:'</span><span class="operator">,</span> <span class="operator">\</span><span class="variable">%opts</span><span class="operator">);</span>  <span class="comment"># options as above. Values in %opts</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The getopt() function processes single-character switches with switch clustering. Pass one argument which is a string containing all switches that take an argument. For each switch found, sets $opt_x (where x is the switch name) to the value of the argument if an argument is expected, or 1 otherwise. Switches which take an argument don&#39;t care whether there is a space between the switch and the argument.</p>
+
+<p>The getopts() function is similar, but you should pass to it the list of all switches to be recognized. If unspecified switches are found on the command-line, the user will be warned that an unknown option was given. The getopts() function returns true unless an invalid option was found.</p>
+
+<p>Note that, if your code is running under the recommended <code><code>use strict &#39;vars&#39;</code></code> pragma, you will need to declare these package variables with &quot;our&quot;:</p>
+
+<pre><code><code>    <span class="keyword">our</span><span class="operator">(</span><span class="variable">$opt_x</span><span class="operator">,</span> <span class="variable">$opt_y</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>For those of you who don&#39;t like additional global variables being created, getopt() and getopts() will also accept a hash reference as an optional second argument. Hash keys will be x (where x is the switch name) with key values the value of the argument or 1 if no argument is specified.</p>
+
+<p>To allow programs to process arguments that look like switches, but aren&#39;t, both functions will stop processing switches when they see the argument <code><code>--</code></code>. The <code><code>--</code></code> will be removed from @ARGV.</p>
+
+<h1 id="and"><code><code>--help</code></code> and <code><code>--version</code></code></h1>
+
+<p>If <code><code>-</code></code> is not a recognized switch letter, getopts() supports arguments <code><code>--help</code></code> and <code><code>--version</code></code>. If <code><code>main::HELP_MESSAGE()</code></code> and/or <code><code>main::VERSION_MESSAGE()</code></code> are defined, they are called; the arguments are the output file handle, the name of option-processing package, its version, and the switches string. If the subroutines are not defined, an attempt is made to generate intelligent messages; for best results, define $main::VERSION.</p>
+
+<p>If embedded documentation (in pod format, see <a href="../../lib/pods/perlpod.html">perlpod</a>) is detected in the script, <code><code>--help</code></code> will also show how to access the documentation.</p>
+
+<p>Note that due to excessive paranoia, if $Getopt::Std::STANDARD_HELP_VERSION isn&#39;t true (the default is false), then the messages are printed on STDERR, and the processing continues after the messages are printed. This being the opposite of the standard-conforming behaviour, it is strongly recommended to set $Getopt::Std::STANDARD_HELP_VERSION to true.</p>
+
+<p>One can change the output file handle of the messages by setting $Getopt::Std::OUTPUT_HELP_VERSION. One can print the messages of <code><code>--help</code></code> (without the <code><code>Usage:</code></code> line) and <code><code>--version</code></code> by calling functions help_mess() and version_mess() with the switches string as an argument.</p>
+
+
+</body>
+
+</html>
+
+

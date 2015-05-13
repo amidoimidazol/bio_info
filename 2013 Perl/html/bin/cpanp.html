@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>cpanp - The CPANPLUS launcher</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p><b>cpanp</b></p>
+
+<p><b>cpanp</b> <span style="white-space: nowrap;">[-]<b>a</b></span> <span style="white-space: nowrap;">[ --[<b>no</b>-]<i>option</i>... ]</span> <span style="white-space: nowrap;"> <i>author</i>... </span></p>
+
+<p><b>cpanp</b> <span style="white-space: nowrap;">[-]<b>mfitulrcz</b></span> <span style="white-space: nowrap;">[ --[<b>no</b>-]<i>option</i>... ]</span> <span style="white-space: nowrap;"> <i>module</i>... </span></p>
+
+<p><b>cpanp</b> <span style="white-space: nowrap;">[-]<b>d</b></span> <span style="white-space: nowrap;">[ --[<b>no</b>-]<i>option</i>... ]</span> <span style="white-space: nowrap;">[ --<b>fetchdir</b>=... ]</span> <span style="white-space: nowrap;"> <i>module</i>... </span></p>
+
+<p><b>cpanp</b> <span style="white-space: nowrap;">[-]<b>xb</b></span> <span style="white-space: nowrap;">[ --[<b>no</b>-]<i>option</i>... ]</span></p>
+
+<p><b>cpanp</b> <span style="white-space: nowrap;">[-]<b>o</b></span> <span style="white-space: nowrap;">[ --[<b>no</b>-]<i>option</i>... ]</span> <span style="white-space: nowrap;">[ <i>module</i>... ]</span></p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This script launches the <b>CPANPLUS</b> utility to perform various operations from the command line. If it&#39;s invoked without arguments, an interactive shell is executed by default.</p>
+
+<p>Optionally, it can take a single-letter switch and one or more argument, to perform the associated action on each arguments. A summary of the available commands is listed below; <code><code>cpanp -h</code></code> provides a detailed list.</p>
+
+<pre><code><code>    h                   # help information
+    v                   # version information
+
+    a AUTHOR ...        # search by author(s)
+    m MODULE ...        # search by module(s)
+    f MODULE ...        # list all releases of a module
+
+    i MODULE ...        # install module(s)
+    t MODULE ...        # test module(s)
+    u MODULE ...        # uninstall module(s)
+    d MODULE ...        # download module(s)
+    l MODULE ...        # display detailed information about module(s)
+    r MODULE ...        # display README files of module(s)
+    c MODULE ...        # check for module report(s) from cpan-testers
+    z MODULE ...        # extract module(s) and open command prompt in it
+
+    x                   # reload CPAN indices
+
+    o [ MODULE ... ]    # list installed module(s) that aren&#39;t up to date
+    b                   # write a bundle file for your configuration</code></code></pre>
+
+<p>Each command may be followed by one or more <i>options</i>. If preceded by <code><code>no</code></code>, the corresponding option will be set to <code><code>0</code></code>, otherwise it&#39;s set to <code><code>1</code></code>.</p>
+
+<p>Example: To skip a module&#39;s tests,</p>
+
+<pre><code><code>    cpanp -i --skiptest MODULE ...</code></code></pre>
+
+<p>Valid options for most commands are <code><code>cpantest</code></code>, <code><code>debug</code></code>, <code><code>flush</code></code>, <code><code>force</code></code>, <code><code>prereqs</code></code>, <code><code>storable</code></code>, <code><code>verbose</code></code>, <code><code>md5</code></code>, <code><code>signature</code></code>, and <code><code>skiptest</code></code>; the &#39;d&#39; command also accepts <code><code>fetchdir</code></code>. Please consult <a href="../lib/CPANPLUS/Configure.html">CPANPLUS::Configure</a> for an explanation to their meanings.</p>
+
+<p>Example: To download a module&#39;s tarball to the current directory,</p>
+
+<pre><code><code>    cpanp -d --fetchdir=. MODULE ...</code></code></pre>
+
+
+</body>
+
+</html>
+
+

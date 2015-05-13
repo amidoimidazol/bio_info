@@ -1,0 +1,24 @@
+"""
+Author: Peter Forgacs
+Date: 2014.03.14
+Description: Turns mRNA sequence into DNA.
+"""
+#Variable
+dna = "ATGGCCATGGCCCCCAGAACTGAGATCAATAGTACCCGTATTAACGGGTGA"
+protein = "MA"
+
+#Open list of codons
+f = open('codon.txt','r')
+f = f.read()
+l = ""
+
+for i in range (len(f)):
+    if f[i] == 'U':
+        l = l + 'T'
+    else:
+        l = l + f[i]
+
+
+print f
+print "****************"
+print l

@@ -1,0 +1,482 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ENVIRONMENT">ENVIRONMENT</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#cb-CPANPLUS::Backend-new-CONFIGURE_OBJ-">$cb = CPANPLUS::Backend-&gt;new( [CONFIGURE_OBJ] )</a></li>
+      <li><a href="#href-cb-module_tree-modules_names_list-">$href = $cb-&gt;module_tree( [@modules_names_list] )</a></li>
+      <li><a href="#href-cb-author_tree-author_names_list-">$href = $cb-&gt;author_tree( [@author_names_list] )</a></li>
+      <li><a href="#conf-cb-configure_object-">$conf = $cb-&gt;configure_object;</a></li>
+      <li><a href="#su-cb-selfupdate_object-">$su = $cb-&gt;selfupdate_object;</a></li>
+      <li><a href="#mods-cb-search-type-TYPE-allow-AREF-data-AREF-verbose-BOOL-">@mods = $cb-&gt;search( type =&gt; TYPE, allow =&gt; AREF, [data =&gt; AREF, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#backend_rv-cb-fetch-modules-mods-">$backend_rv = $cb-&gt;fetch( modules =&gt; \@mods )</a></li>
+      <li><a href="#backend_rv-cb-extract-modules-mods-">$backend_rv = $cb-&gt;extract( modules =&gt; \@mods )</a></li>
+      <li><a href="#backend_rv-cb-install-modules-mods-">$backend_rv = $cb-&gt;install( modules =&gt; \@mods )</a></li>
+      <li><a href="#backend_rv-cb-readme-modules-mods-">$backend_rv = $cb-&gt;readme( modules =&gt; \@mods )</a></li>
+      <li><a href="#backend_rv-cb-files-modules-mods-">$backend_rv = $cb-&gt;files( modules =&gt; \@mods )</a></li>
+      <li><a href="#backend_rv-cb-distributions-modules-mods-">$backend_rv = $cb-&gt;distributions( modules =&gt; \@mods )</a></li>
+      <li><a href="#mod_obj-cb-parse_module-module-modname-distname-modobj-URI-PATH-">$mod_obj = $cb-&gt;parse_module( module =&gt; $modname|$distname|$modobj|URI|PATH )</a></li>
+      <li><a href="#bool-cb-reload_indices-update_source-BOOL-verbose-BOOL-">$bool = $cb-&gt;reload_indices( [update_source =&gt; BOOL, verbose =&gt; BOOL] );</a></li>
+      <li><a href="#bool-cb-flush-CACHE_NAME-">$bool = $cb-&gt;flush(CACHE_NAME)</a></li>
+      <li><a href="#mods-cb-installed-">@mods = $cb-&gt;installed()</a></li>
+      <li><a href="#bool-cb-local_mirror-path-dir-to-save-to-index_files-BOOL-force-BOOL-verbose-BOOL-">$bool = $cb-&gt;local_mirror([path =&gt; &#39;/dir/to/save/to&#39;, index_files =&gt; BOOL, force =&gt; BOOL, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#file-cb-autobundle-path-OUTPUT_PATH-force-BOOL-verbose-BOOL-">$file = $cb-&gt;autobundle([path =&gt; OUTPUT_PATH, force =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#bool-cb-save_state">$bool = $cb-&gt;save_state</a></li>
+    </ul>
+  </li>
+  <li><a href="#CUSTOM-MODULE-SOURCES">CUSTOM MODULE SOURCES</a>
+    <ul>
+      <li><a href="#files-cb-list_custom_sources">%files = $cb-&gt;list_custom_sources</a></li>
+      <li><a href="#local_index-cb-add_custom_source-uri-URI-verbose-BOOL-">$local_index = $cb-&gt;add_custom_source( uri =&gt; URI, [verbose =&gt; BOOL] );</a></li>
+      <li><a href="#local_index-cb-remove_custom_source-uri-URI-verbose-BOOL-">$local_index = $cb-&gt;remove_custom_source( uri =&gt; URI, [verbose =&gt; BOOL] );</a></li>
+      <li><a href="#bool-cb-update_custom_source-remote-URI-">$bool = $cb-&gt;update_custom_source( [remote =&gt; URI] );</a></li>
+      <li><a href="#file-cb-write_custom_source_index-path-path-to-package-root-to-path-to-index-file-verbose-BOOL-">$file = $cb-&gt;write_custom_source_index( path =&gt; /path/to/package/root, [to =&gt; /path/to/index/file, verbose =&gt; BOOL] );</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUG-REPORTS">BUG REPORTS</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Backend - programmer&#39;s interface to CPANPLUS</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$cb</span>      <span class="operator">=</span> <span class="variable">CPANPLUS::Backend</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">;</span>
+    <span class="keyword">my</span> <span class="variable">$conf</span>    <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">configure_object</span><span class="operator">;</span>
+    
+    <span class="keyword">my</span> <span class="variable">$author</span>  <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">author_tree</span><span class="operator">(</span><span class="string">'KANE'</span><span class="operator">);</span>
+    <span class="keyword">my</span> <span class="variable">$mod</span>     <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">module_tree</span><span class="operator">(</span><span class="string">'Some::Module'</span><span class="operator">);</span>
+    <span class="keyword">my</span> <span class="variable">$mod</span>     <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">parse_module</span><span class="operator">(</span> <span class="string">module</span> <span class="operator">=&gt;</span> <span class="string">'Some::Module'</span> <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">@objs</span>    <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">search</span><span class="operator">(</span>  <span class="string">type</span>    <span class="operator">=&gt;</span> <span class="variable">TYPE</span><span class="operator">,</span>
+                                <span class="string">allow</span>   <span class="operator">=&gt;</span> <span class="operator">[</span><span class="operator">...</span><span class="operator">]</span> <span class="operator">);</span>
+    
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">flush</span><span class="operator">(</span><span class="string">'all'</span><span class="operator">);</span>
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">reload_indices</span><span class="operator">;</span>
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">local_mirror</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module provides the programmer&#39;s interface to the <code><code>CPANPLUS</code></code> libraries.</p>
+
+<h1 id="ENVIRONMENT">ENVIRONMENT</h1>
+
+<p>When <code><code>CPANPLUS::Backend</code></code> is loaded, which is necessary for just about every &lt;CPANPLUS&gt; operation, the environment variable <code><code>PERL5_CPANPLUS_IS_RUNNING</code></code> is set to the current process id.</p>
+
+<p>Additionally, the environment variable <code><code>PERL5_CPANPLUS_IS_VERSION</code></code> will be set to the version of <code><code>CPANPLUS::Backend</code></code>.</p>
+
+<p>This information might be useful somehow to spawned processes.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="cb-CPANPLUS::Backend-new-CONFIGURE_OBJ-">$cb = CPANPLUS::Backend-&gt;new( [CONFIGURE_OBJ] )</h2>
+
+<p>This method returns a new <code><code>CPANPLUS::Backend</code></code> object. This also initialises the config corresponding to this object. You have two choices in this:</p>
+
+<dl>
+
+<dt id="Provide-a-valid-CPANPLUS::Configure-object">Provide a valid <code><code>CPANPLUS::Configure</code></code> object</dt>
+<dd>
+
+<p>This will be used verbatim.</p>
+
+</dd>
+<dt id="No-arguments">No arguments</dt>
+<dd>
+
+<p>Your default config will be loaded and used.</p>
+
+</dd>
+</dl>
+
+<p>New will return a <code><code>CPANPLUS::Backend</code></code> object on success and die on failure.</p>
+
+<h2 id="href-cb-module_tree-modules_names_list-">$href = $cb-&gt;module_tree( [@modules_names_list] )</h2>
+
+<p>Returns a reference to the CPANPLUS module tree.</p>
+
+<p>If you give it any arguments, they will be treated as module names and <code><code>module_tree</code></code> will try to look up these module names and return the corresponding module objects instead.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Module.html">CPANPLUS::Module</a> for the operations you can perform on a module object.</p>
+
+<h2 id="href-cb-author_tree-author_names_list-">$href = $cb-&gt;author_tree( [@author_names_list] )</h2>
+
+<p>Returns a reference to the CPANPLUS author tree.</p>
+
+<p>If you give it any arguments, they will be treated as author names and <code><code>author_tree</code></code> will try to look up these author names and return the corresponding author objects instead.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Module/Author.html">CPANPLUS::Module::Author</a> for the operations you can perform on an author object.</p>
+
+<h2 id="conf-cb-configure_object-">$conf = $cb-&gt;configure_object;</h2>
+
+<p>Returns a copy of the <code><code>CPANPLUS::Configure</code></code> object.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Configure.html">CPANPLUS::Configure</a> for operations you can perform on a configure object.</p>
+
+<h2 id="su-cb-selfupdate_object-">$su = $cb-&gt;selfupdate_object;</h2>
+
+<p>Returns a copy of the <code><code>CPANPLUS::Selfupdate</code></code> object.</p>
+
+<p>See the <a href="../../lib/CPANPLUS/Selfupdate.html">CPANPLUS::Selfupdate</a> manpage for the operations you can perform on the selfupdate object.</p>
+
+<h2 id="mods-cb-search-type-TYPE-allow-AREF-data-AREF-verbose-BOOL-">@mods = $cb-&gt;search( type =&gt; TYPE, allow =&gt; AREF, [data =&gt; AREF, verbose =&gt; BOOL] )</h2>
+
+<p><code><code>search</code></code> enables you to search for either module or author objects, based on their data. The <code><code>type</code></code> you can specify is any of the accessors specified in <code><code>CPANPLUS::Module::Author</code></code> or <code><code>CPANPLUS::Module</code></code>. <code><code>search</code></code> will determine by the <code><code>type</code></code> you specified whether to search by author object or module object.</p>
+
+<p>You have to specify an array reference of regular expressions or strings to match against. The rules used for this array ref are the same as in <code><code>Params::Check</code></code>, so read that manpage for details.</p>
+
+<p>The search is an <code><code>or</code></code> search, meaning that if <code><code>any</code></code> of the criteria match, the search is considered to be successful.</p>
+
+<p>You can specify the result of a previous search as <code><code>data</code></code> to limit the new search to these module or author objects, rather than the entire module or author tree. This is how you do <code><code>and</code></code> searches.</p>
+
+<p>Returns a list of module or author objects on success and false on failure.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Module.html">CPANPLUS::Module</a> for the operations you can perform on a module object. See <a href="../../lib/CPANPLUS/Module/Author.html">CPANPLUS::Module::Author</a> for the operations you can perform on an author object.</p>
+
+<h2 id="backend_rv-cb-fetch-modules-mods-">$backend_rv = $cb-&gt;fetch( modules =&gt; \@mods )</h2>
+
+<p>Fetches a list of modules. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects--basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="backend_rv-cb-extract-modules-mods-">$backend_rv = $cb-&gt;extract( modules =&gt; \@mods )</h2>
+
+<p>Extracts a list of modules. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects--basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="backend_rv-cb-install-modules-mods-">$backend_rv = $cb-&gt;install( modules =&gt; \@mods )</h2>
+
+<p>Installs a list of modules. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects--basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="backend_rv-cb-readme-modules-mods-">$backend_rv = $cb-&gt;readme( modules =&gt; \@mods )</h2>
+
+<p>Fetches the readme for a list of modules. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects--basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="backend_rv-cb-files-modules-mods-">$backend_rv = $cb-&gt;files( modules =&gt; \@mods )</h2>
+
+<p>Returns a list of files used by these modules if they are installed. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects--basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="backend_rv-cb-distributions-modules-mods-">$backend_rv = $cb-&gt;distributions( modules =&gt; \@mods )</h2>
+
+<p>Returns a list of module objects representing all releases for this module on success. <code><code>@mods</code></code> can be a list of distribution names, module names or module objects, basically anything that <a>parse_module</a> can understand.</p>
+
+<p>See the equivalent method in <code><code>CPANPLUS::Module</code></code> for details on other options you can pass.</p>
+
+<p>Since this is a multi-module method call, the return value is implemented as a <code><code>CPANPLUS::Backend::RV</code></code> object. Please consult that module&#39;s documentation on how to interpret the return value.</p>
+
+<h2 id="mod_obj-cb-parse_module-module-modname-distname-modobj-URI-PATH-">$mod_obj = $cb-&gt;parse_module( module =&gt; $modname|$distname|$modobj|URI|PATH )</h2>
+
+<p><code><code>parse_module</code></code> tries to find a <code><code>CPANPLUS::Module</code></code> object that matches your query. Here&#39;s a list of examples you could give to <code><code>parse_module</code></code>;</p>
+
+<dl>
+
+<dt id="Text::Bastardize">Text::Bastardize</dt>
+<dd>
+
+</dd>
+<dt id="Text-Bastardize">Text-Bastardize</dt>
+<dd>
+
+</dd>
+<dt id="Text-Bastardize.pm">Text/Bastardize.pm</dt>
+<dd>
+
+</dd>
+<dt id="Text-Bastardize-1.06">Text-Bastardize-1.06</dt>
+<dd>
+
+</dd>
+<dt id="AYRNIEU-Text-Bastardize">AYRNIEU/Text-Bastardize</dt>
+<dd>
+
+</dd>
+<dt id="AYRNIEU-Text-Bastardize-1.06">AYRNIEU/Text-Bastardize-1.06</dt>
+<dd>
+
+</dd>
+<dt id="AYRNIEU-Text-Bastardize-1.06.tar.gz">AYRNIEU/Text-Bastardize-1.06.tar.gz</dt>
+<dd>
+
+</dd>
+<dt id="http:-example.com-Text-Bastardize-1.06.tar.gz">http://example.com/Text-Bastardize-1.06.tar.gz</dt>
+<dd>
+
+</dd>
+<dt id="file:-tmp-Text-Bastardize-1.06.tar.gz">file:///tmp/Text-Bastardize-1.06.tar.gz</dt>
+<dd>
+
+</dd>
+<dt id="tmp-Text-Bastardize-1.06">/tmp/Text-Bastardize-1.06</dt>
+<dd>
+
+</dd>
+<dt id="Text-Bastardize-1.061">./Text-Bastardize-1.06</dt>
+<dd>
+
+</dd>
+<dt id="pod.">.</dt>
+<dd>
+
+</dd>
+</dl>
+
+<p>These items would all come up with a <code><code>CPANPLUS::Module</code></code> object for <code><code>Text::Bastardize</code></code>. The ones marked explicitly as being version 1.06 would give back a <code><code>CPANPLUS::Module</code></code> object of that version. Even if the version on CPAN is currently higher.</p>
+
+<p>The last three are examples of PATH resolution. In the first, we supply an absolute path to the unwrapped distribution. In the second the distribution is relative to the current working directory. In the third, we will use the current working directory.</p>
+
+<p>If <code><code>parse_module</code></code> is unable to actually find the module you are looking for in its module tree, but you supplied it with an author, module and version part in a distribution name or URI, it will create a fake <code><code>CPANPLUS::Module</code></code> object for you, that you can use just like the real thing.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Module.html">CPANPLUS::Module</a> for the operations you can perform on a module object.</p>
+
+<p>If even this fancy guessing doesn&#39;t enable <code><code>parse_module</code></code> to create a fake module object for you to use, it will warn about an error and return false.</p>
+
+<h2 id="bool-cb-reload_indices-update_source-BOOL-verbose-BOOL-">$bool = $cb-&gt;reload_indices( [update_source =&gt; BOOL, verbose =&gt; BOOL] );</h2>
+
+<p>This method reloads the source files.</p>
+
+<p>If <code><code>update_source</code></code> is set to true, this will fetch new source files from your CPAN mirror. Otherwise, <code><code>reload_indices</code></code> will do its usual cache checking and only update them if they are out of date.</p>
+
+<p>By default, <code><code>update_source</code></code> will be false.</p>
+
+<p>The verbose setting defaults to what you have specified in your config file.</p>
+
+<p>Returns true on success and false on failure.</p>
+
+<h2 id="bool-cb-flush-CACHE_NAME-">$bool = $cb-&gt;flush(CACHE_NAME)</h2>
+
+<p>This method allows flushing of caches. There are several things which can be flushed:</p>
+
+<ul>
+
+<li><p><code><code>methods</code></code></p>
+
+<p>The return status of methods which have been attempted, such as different ways of fetching files. It is recommended that automatic flushing be used instead.</p>
+
+</li>
+<li><p><code><code>hosts</code></code></p>
+
+<p>The return status of URIs which have been attempted, such as different hosts of fetching files. It is recommended that automatic flushing be used instead.</p>
+
+</li>
+<li><p><code><code>modules</code></code></p>
+
+<p>Information about modules such as prerequisites and whether installation succeeded, failed, or was not attempted.</p>
+
+</li>
+<li><p><code><code>lib</code></code></p>
+
+<p>This resets PERL5LIB, which is changed to ensure that while installing modules they are in our @INC.</p>
+
+</li>
+<li><p><code><code>load</code></code></p>
+
+<p>This resets the cache of modules we&#39;ve attempted to load, but failed. This enables you to load them again after a failed load, if they somehow have become available.</p>
+
+</li>
+<li><p><code><code>all</code></code></p>
+
+<p>Flush all of the aforementioned caches.</p>
+
+</li>
+</ul>
+
+<p>Returns true on success and false on failure.</p>
+
+<h2 id="mods-cb-installed-">@mods = $cb-&gt;installed()</h2>
+
+<p>Returns a list of module objects of all your installed modules. If an error occurs, it will return false.</p>
+
+<p>See <a href="../../lib/CPANPLUS/Module.html">CPANPLUS::Module</a> for the operations you can perform on a module object.</p>
+
+<h2 id="bool-cb-local_mirror-path-dir-to-save-to-index_files-BOOL-force-BOOL-verbose-BOOL-">$bool = $cb-&gt;local_mirror([path =&gt; &#39;/dir/to/save/to&#39;, index_files =&gt; BOOL, force =&gt; BOOL, verbose =&gt; BOOL] )</h2>
+
+<p>Creates a local mirror of CPAN, of only the most recent sources in a location you specify. If you set this location equal to a custom host in your <code><code>CPANPLUS::Config</code></code> you can use your local mirror to install from.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="path">path</dt>
+<dd>
+
+<p>The location where to create the local mirror.</p>
+
+</dd>
+<dt id="index_files">index_files</dt>
+<dd>
+
+<p>Enable/disable fetching of index files. You can disable fetching of the index files if you don&#39;t plan to use the local mirror as your primary site, or if you&#39;d like up-to-date index files be fetched from elsewhere.</p>
+
+<p>Defaults to true.</p>
+
+</dd>
+<dt id="force">force</dt>
+<dd>
+
+<p>Forces refetching of packages, even if they are there already.</p>
+
+<p>Defaults to whatever setting you have in your <code><code>CPANPLUS::Config</code></code>.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<p>Prints more messages about what its doing.</p>
+
+<p>Defaults to whatever setting you have in your <code><code>CPANPLUS::Config</code></code>.</p>
+
+</dd>
+</dl>
+
+<p>Returns true on success and false on error.</p>
+
+<h2 id="file-cb-autobundle-path-OUTPUT_PATH-force-BOOL-verbose-BOOL-">$file = $cb-&gt;autobundle([path =&gt; OUTPUT_PATH, force =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p>Writes out a snapshot of your current installation in <code><code>CPAN</code></code> bundle style. This can then be used to install the same modules for a different or on a different machine by issuing the following commands:</p>
+
+<pre><code><code>    <span class="comment">### using the default shell:</span>
+    <span class="variable">CPAN</span> <span class="variable">Terminal</span><span class="operator">&gt;</span> <span class="variable">i</span> <span class="variable">file</span><span class="operator">:</span><span class="regex">//path</span><span class="operator">/</span><span class="variable">to</span><span class="operator">/</span><span class="variable">Snapshot_XXYY</span><span class="operator">.</span><span class="variable">pm</span>
+    
+    <span class="comment">### using the API</span>
+    <span class="variable">$modobj</span> <span class="operator">=</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">parse_module</span><span class="operator">(</span> <span class="string">module</span> <span class="operator">=&gt;</span> <span class="string">'file://path/to/Snapshot_XXYY.pm'</span> <span class="operator">);</span>
+    <span class="variable">$modobj</span><span class="operator">-&gt;</span><span class="variable">install</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>It will, by default, write to an &#39;autobundle&#39; directory under your cpanplus homedirectory, but you can override that by supplying a <code><code>path</code></code> argument.</p>
+
+<p>It will return the location of the output file on success and false on failure.</p>
+
+<h2 id="bool-cb-save_state">$bool = $cb-&gt;save_state</h2>
+
+<p>Explicit command to save memory state to disk. This can be used to save information to disk about where a module was extracted, the result of <code><code>make test</code></code>, etc. This will then be re-loaded into memory when a new session starts.</p>
+
+<p>The capability of saving state to disk depends on the source engine being used (See <code><code>CPANPLUS::Config</code></code> for the option to choose your source engine). The default storage engine supports this option.</p>
+
+<p>Most users will not need this command, but it can handy for automated systems like setting up CPAN smoke testers.</p>
+
+<p>The method will return true if it managed to save the state to disk, or false if it did not.</p>
+
+<h1 id="CUSTOM-MODULE-SOURCES">CUSTOM MODULE SOURCES</h1>
+
+<p>Besides the sources as provided by the general <code><code>CPAN</code></code> mirrors, it&#39;s possible to add your own sources list to your <code><code>CPANPLUS</code></code> index.</p>
+
+<p>The methodology behind this works much like <code><code>Debian&#39;s apt-sources</code></code>.</p>
+
+<p>The methods below show you how to make use of this functionality. Also note that most of these methods are available through the default shell plugin command <code><code>/cs</code></code>, making them available as shortcuts through the shell and via the commandline.</p>
+
+<h2 id="files-cb-list_custom_sources">%files = $cb-&gt;list_custom_sources</h2>
+
+<p>Returns a mapping of registered custom sources and their local indices as follows:</p>
+
+<pre><code><code>    /full/path/to/local/index =&gt; http://remote/source</code></code></pre>
+
+<p>Note that any file starting with an <code><code><span class="comment">#</span>
+</code></code> is being ignored.</p>
+
+<h2 id="local_index-cb-add_custom_source-uri-URI-verbose-BOOL-">$local_index = $cb-&gt;add_custom_source( uri =&gt; URI, [verbose =&gt; BOOL] );</h2>
+
+<p>Adds an <code><code>URI</code></code> to your own sources list and mirrors its index. See the documentation on <code><code>$cb-&gt;update_custom_source</code></code> on how this is done.</p>
+
+<p>Returns the full path to the local index on success, or false on failure.</p>
+
+<p>Note that when adding a new <code><code>URI</code></code>, the change to the in-memory tree is not saved until you rebuild or save the tree to disk again. You can do this using the <code><code>$cb-&gt;reload_indices</code></code> method.</p>
+
+<h2 id="local_index-cb-remove_custom_source-uri-URI-verbose-BOOL-">$local_index = $cb-&gt;remove_custom_source( uri =&gt; URI, [verbose =&gt; BOOL] );</h2>
+
+<p>Removes an <code><code>URI</code></code> from your own sources list and removes its index.</p>
+
+<p>To find out what <code><code>URI</code></code>s you have as part of your own sources list, use the <code><code>$cb-&gt;list_custom_sources</code></code> method.</p>
+
+<p>Returns the full path to the deleted local index file on success, or false on failure.</p>
+
+<h2 id="bool-cb-update_custom_source-remote-URI-">$bool = $cb-&gt;update_custom_source( [remote =&gt; URI] );</h2>
+
+<p>Updates the indexes for all your custom sources. It does this by fetching a file called <code><code>packages.txt</code></code> in the root of the custom sources&#39;s <code><code>URI</code></code>. If you provide the <code><code>remote</code></code> argument, it will only update the index for that specific <code><code>URI</code></code>.</p>
+
+<p>Here&#39;s an example of how custom sources would resolve into index files:</p>
+
+<pre><code><code>  file:///path/to/sources       =&gt;  file:///path/to/sources/packages.txt
+  http://example.com/sources    =&gt;  http://example.com/sources/packages.txt
+  ftp://example.com/sources     =&gt;  ftp://example.com/sources/packages.txt</code></code></pre>
+
+<p>The file <code><code>packages.txt</code></code> simply holds a list of packages that can be found under the root of the <code><code>URI</code></code>. This file can be automatically generated for you when the remote source is a <code><code>file:// URI</code></code>. For <code><code>http://</code></code>, <code><code>ftp://</code></code>, and similar, the administrator of that repository should run the method <code><code>$cb-&gt;write_custom_source_index</code></code> on the repository to allow remote users to index it.</p>
+
+<p>For details, see the <code><code>$cb-&gt;write_custom_source_index</code></code> method below.</p>
+
+<p>All packages that are added via this mechanism will be attributed to the author with <code><code>CPANID</code></code> <code><code>LOCAL</code></code>. You can use this id to search for all added packages.</p>
+
+<h2 id="file-cb-write_custom_source_index-path-path-to-package-root-to-path-to-index-file-verbose-BOOL-">$file = $cb-&gt;write_custom_source_index( path =&gt; /path/to/package/root, [to =&gt; /path/to/index/file, verbose =&gt; BOOL] );</h2>
+
+<p>Writes the index for a custom repository root. Most users will not have to worry about this, but administrators of a repository will need to make sure their indexes are up to date.</p>
+
+<p>The index will be written to a file called <code><code>packages.txt</code></code> in your repository root, which you can specify with the <code><code>path</code></code> argument. You can override this location by specifying the <code><code>to</code></code> argument, but in normal operation, that should not be required.</p>
+
+<p>Once the index file is written, users can then add the <code><code>URI</code></code> pointing to the repository to their custom list of sources and start using it right away. See the <code><code>$cb-&gt;add_custom_source</code></code> method for user details.</p>
+
+<h1 id="BUG-REPORTS">BUG REPORTS</h1>
+
+<p>Please report bugs or other issues to &lt;bug-cpanplus@rt.cpan.org&lt;gt&gt;.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>The CPAN++ interface (of which this module is a part of) is copyright (c) 2001 - 2007, Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../lib/CPANPLUS/Configure.html">CPANPLUS::Configure</a>, <a href="../../lib/CPANPLUS/Module.html">CPANPLUS::Module</a>, <a href="../../lib/CPANPLUS/Module/Author.html">CPANPLUS::Module::Author</a>, <a href="../../lib/CPANPLUS/Selfupdate.html">CPANPLUS::Selfupdate</a></p>
+
+
+</body>
+
+</html>
+
+

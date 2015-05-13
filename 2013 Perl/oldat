@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+
+use warnings;
+use strict;
+use lib '/perl';
+use biolib;
+
+#végtérfogat , elemk szama az oldatban , eredeti konc/elem kivant konc/elem , mol = 1 mmol=0.001
+
+print " Udv az oldat keszitoben";
+print "Hany oldatot akarsz osszemerni?"
+my $oldatokszama = <STDIN>;
+chomp $oldatokszama;
+
+unless ($oldatokszama > 0)
+	{print "Hiba"
+	exit;}
+
+	
+while ($oldatokszama > 0)
+	{
+	print "OLDAT \"$oldatokszama\" elemeinek szama:\n":
+	my $i= <STDIN>;
+	chomp $i;
+	mertekegyseg ($i);
+	
+	print "OLDAT \"$oldatokszama\" végtérfogata:\n";
+	my $V=<STDIN>;
+	chomp $V;
+	mertekegyseg ($V);
+		
+		if ($i > 1)
+			{ until ($i == 0)
+				{local $kezdetikoncentracio = <STDIN>;
+				chomp $kezdetikoncentracio;
+				mertekegyseg ($kezdetikoncentracio);
+				
+				local $vegkoncentracio = <STDIN>;
+				chomp $vegkoncentracio;
+				mertekegyseg ($vegkoncentracio);
+				--$i;}
+				}
+				}

@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+
+$DNA1 = 'AAAAACCCCCGGGGG';
+$DNA2 = 'GGGTTAACCTTTGGG';
+
+print "Ezek az eredeti DNS darabok:\n\n";
+
+print $DNA1, "\n";
+print $DNA2, "\n\n";
+
+$DNA3 = "$DNA1$DNA2";
+
+print "Ez az osszekapcsolt DNS (ver1):\n\n";
+print "$DNA3\n\n";
+
+#modszer 2
+
+$DNA3 = $DNA1 . $DNA2;
+print "Ez az osszekapcsolt DNS (ver2):\n\n";
+print "$DNA3\n\n";
+
+#modszer 3
+print "Ez az osszekapcsolt DNS (ver3):\n\n";
+print $DNA1,$DNA2,"\n";
+
+
+exit;

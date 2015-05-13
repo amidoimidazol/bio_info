@@ -1,0 +1,31 @@
+# String
+s = "When I find myself in times of trouble Mother Mary comes to me Speaking words of wisdom let it be And in my hour of darkness she is standing right in front of me Speaking words of wisdom let it be Let it be let it be let it be let it be Whisper words of wisdom let it be And when the broken hearted people living in the world agree There will be an answer let it be For though they may be parted there is still a chance that they will see There will be an answer let it be Let it be let it be let it be let it be There will be an answer let it be Let it be let it be let it be let it be Whisper words of wisdom let it be Let it be let it be let it be let it be Whisper words of wisdom let it be And when the night is cloudy there is still a light that shines on me Shine until tomorrow let it be I wake up to the sound of music Mother Mary comes to me Speaking words of wisdom let it be Let it be let it be let it be yeah let it be There will be an answer let it be Let it be let it be let it be yeah let it be Whisper words of wisdom let it be"
+# Variable declare Hol jarunk a listben
+hol_jarunk = 0
+#Variable declare Hany darab van az adott elembol
+hany_darab = 1
+#List amibe a stringbol teszem az elemeket
+l = []
+#Dictionary
+dic = {}
+# Split string to list
+for word in s.split(' '):
+    l.append(word)
+
+#Vegigmenni  a listen egy loopban
+while hol_jarunk <= len(l):
+    #Szerepel-e a szó többször
+    x = str (l[hol_jarunk])
+    for l[l[hol_jarunk]] in l:
+        dic [x] = hany_darab
+        hany_darab += 1
+        l.remove(x)
+        hol_jarunk += 1
+        
+        #Ha igen --> annyivel valtoztatni a hany darabot
+            #Dictionarybe menteni
+        #Ha nem --> Dictionary-be menteni
+    #Novelni a variablet ami azt szamolja hogy hol jarunk a listben
+for key, value in dict.dic():
+    print key
+    print value

@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+#DNS RNS transzkripció
+#DNA variable
+$DNA = 'ACGGGAGGACGGGAAAATTACTACGGCATTAGC';
+
+print "Ez a DNS szekvencia: \n\n";
+
+print "$DNA\n\n";
+
+$RNA = $DNA;
+#RNA variable ebben s=subsztitucioó T->U g= globalis
+$RNA =~ s/T/U/g;
+
+print "Ez az atalakitott RNS szekvencia:\n\n";
+print "$RNA\n";
+exit;
+

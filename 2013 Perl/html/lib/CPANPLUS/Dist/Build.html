@@ -1,0 +1,202 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ACCESSORS">ACCESSORS</a></li>
+  <li><a href="#STATUS-ACCESSORS">STATUS ACCESSORS</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#bool-CPANPLUS::Dist::Build-format_available-">$bool = CPANPLUS::Dist::Build-&gt;format_available();</a></li>
+      <li><a href="#bool-dist-init-">$bool = $dist-&gt;init();</a></li>
+      <li><a href="#bool-dist-prepare-perl-path-to-perl-buildflags-EXTRA-FLAGS-force-BOOL-verbose-BOOL-">$bool = $dist-&gt;prepare([perl =&gt; &#39;/path/to/perl&#39;, buildflags =&gt; &#39;EXTRA=FLAGS&#39;, force =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#dist-create-perl-path-to-perl-buildflags-EXTRA-FLAGS-prereq_target-TARGET-force-BOOL-verbose-BOOL-skiptest-BOOL-">$dist-&gt;create([perl =&gt; &#39;/path/to/perl&#39;, buildflags =&gt; &#39;EXTRA=FLAGS&#39;, prereq_target =&gt; TARGET, force =&gt; BOOL, verbose =&gt; BOOL, skiptest =&gt; BOOL])</a></li>
+      <li><a href="#dist-install-verbose-BOOL-perl-path-to-perl-">$dist-&gt;install([verbose =&gt; BOOL, perl =&gt; /path/to/perl])</a></li>
+    </ul>
+  </li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#LICENSE">LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Dist::Build - CPANPLUS plugin to install packages that use Build.PL</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$build</span> <span class="operator">=</span> <span class="variable">CPANPLUS::Dist</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>
+                                <span class="string">format</span>  <span class="operator">=&gt;</span> <span class="string">'CPANPLUS::Dist::Build'</span><span class="operator">,</span>
+                                <span class="string">module</span>  <span class="operator">=&gt;</span> <span class="variable">$modobj</span><span class="operator">,</span>
+                            <span class="operator">);</span>
+    
+    <span class="variable">$build</span><span class="operator">-&gt;</span><span class="variable">prepare</span><span class="operator">;</span>    <span class="comment"># runs Build.PL</span>
+    <span class="variable">$build</span><span class="operator">-&gt;</span><span class="variable">create</span><span class="operator">;</span>     <span class="comment"># runs build &amp;&amp; build test</span>
+    <span class="variable">$build</span><span class="operator">-&gt;</span><span class="variable">install</span><span class="operator">;</span>    <span class="comment"># runs build install</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>CPANPLUS::Dist::Build</code></code> is a distribution class for <code><code>Module::Build</code></code> related modules. Using this package, you can create, install and uninstall perl modules. It inherits from <code><code>CPANPLUS::Dist</code></code>.</p>
+
+<p>Normal users won&#39;t have to worry about the interface to this module, as it functions transparently as a plug-in to <code><code>CPANPLUS</code></code> and will just <code><code>Do The Right Thing</code></code> when it&#39;s loaded.</p>
+
+<h1 id="ACCESSORS">ACCESSORS</h1>
+
+<dl>
+
+<dt id="parent-"><code><code>parent()</code></code></dt>
+<dd>
+
+<p>Returns the <code><code>CPANPLUS::Module</code></code> object that parented this object.</p>
+
+</dd>
+<dt id="status-"><code><code>status()</code></code></dt>
+<dd>
+
+<p>Returns the <code><code>Object::Accessor</code></code> object that keeps the status for this module.</p>
+
+</dd>
+</dl>
+
+<h1 id="STATUS-ACCESSORS">STATUS ACCESSORS</h1>
+
+<p>All accessors can be accessed as follows: $build-&gt;status-&gt;ACCESSOR</p>
+
+<dl>
+
+<dt id="build_pl-"><code><code>build_pl ()</code></code></dt>
+<dd>
+
+<p>Location of the Build file. Set to 0 explicitly if something went wrong.</p>
+
+</dd>
+<dt id="build-"><code><code>build ()</code></code></dt>
+<dd>
+
+<p>BOOL indicating if the <code><code>Build</code></code> command was successful.</p>
+
+</dd>
+<dt id="test-"><code><code>test ()</code></code></dt>
+<dd>
+
+<p>BOOL indicating if the <code><code>Build test</code></code> command was successful.</p>
+
+</dd>
+<dt id="prepared-"><code><code>prepared ()</code></code></dt>
+<dd>
+
+<p>BOOL indicating if the <code><code>prepare</code></code> call exited successfully This gets set after <code><code>perl Build.PL</code></code></p>
+
+</dd>
+<dt id="distdir-"><code><code>distdir ()</code></code></dt>
+<dd>
+
+<p>Full path to the directory in which the <code><code>prepare</code></code> call took place, set after a call to <code><code>prepare</code></code>.</p>
+
+</dd>
+<dt id="created-"><code><code>created ()</code></code></dt>
+<dd>
+
+<p>BOOL indicating if the <code><code>create</code></code> call exited successfully. This gets set after <code><code>Build</code></code> and <code><code>Build test</code></code>.</p>
+
+</dd>
+<dt id="installed-"><code><code>installed ()</code></code></dt>
+<dd>
+
+<p>BOOL indicating if the module was installed. This gets set after <code><code>Build install</code></code> exits successfully.</p>
+
+</dd>
+<dt id="uninstalled-">uninstalled ()</dt>
+<dd>
+
+<p>BOOL indicating if the module was uninstalled properly.</p>
+
+</dd>
+<dt id="create_args-"><code><code>_create_args ()</code></code></dt>
+<dd>
+
+<p>Storage of the arguments passed to <code><code>create</code></code> for this object. Used for recursive calls when satisfying prerequisites.</p>
+
+</dd>
+<dt id="install_args-"><code><code>_install_args ()</code></code></dt>
+<dd>
+
+<p>Storage of the arguments passed to <code><code>install</code></code> for this object. Used for recursive calls when satisfying prerequisites.</p>
+
+</dd>
+</dl>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="bool-CPANPLUS::Dist::Build-format_available-">$bool = CPANPLUS::Dist::Build-&gt;format_available();</h2>
+
+<p>Returns a boolean indicating whether or not you can use this package to create and install modules in your environment.</p>
+
+<h2 id="bool-dist-init-">$bool = $dist-&gt;init();</h2>
+
+<p>Sets up the <code><code>CPANPLUS::Dist::Build</code></code> object for use. Effectively creates all the needed status accessors.</p>
+
+<p>Called automatically whenever you create a new <code><code>CPANPLUS::Dist</code></code> object.</p>
+
+<h2 id="bool-dist-prepare-perl-path-to-perl-buildflags-EXTRA-FLAGS-force-BOOL-verbose-BOOL-">$bool = $dist-&gt;prepare([perl =&gt; &#39;/path/to/perl&#39;, buildflags =&gt; &#39;EXTRA=FLAGS&#39;, force =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p><code><code>prepare</code></code> prepares a distribution, running <code><code>Build.PL</code></code> and establishing any prerequisites this distribution has.</p>
+
+<p>The variable <code><code>PERL5_CPANPLUS_IS_EXECUTING</code></code> will be set to the full path of the <code><code>Build.PL</code></code> that is being executed. This enables any code inside the <code><code>Build.PL</code></code> to know that it is being installed via CPANPLUS.</p>
+
+<p>After a successful <code><code>prepare</code></code> you may call <code><code>create</code></code> to create the distribution, followed by <code><code>install</code></code> to actually install it.</p>
+
+<p>Returns true on success and false on failure.</p>
+
+<h2 id="dist-create-perl-path-to-perl-buildflags-EXTRA-FLAGS-prereq_target-TARGET-force-BOOL-verbose-BOOL-skiptest-BOOL-">$dist-&gt;create([perl =&gt; &#39;/path/to/perl&#39;, buildflags =&gt; &#39;EXTRA=FLAGS&#39;, prereq_target =&gt; TARGET, force =&gt; BOOL, verbose =&gt; BOOL, skiptest =&gt; BOOL])</h2>
+
+<p><code><code>create</code></code> preps a distribution for installation. This means it will run <code><code>Build</code></code> and <code><code>Build test</code></code>. This will also satisfy any prerequisites the module may have.</p>
+
+<p>If you set <code><code>skiptest</code></code> to true, it will skip the <code><code>Build test</code></code> stage. If you set <code><code>force</code></code> to true, it will go over all the stages of the <code><code>Build</code></code> process again, ignoring any previously cached results. It will also ignore a bad return value from <code><code>Build test</code></code> and still allow the operation to return true.</p>
+
+<p>Returns true on success and false on failure.</p>
+
+<p>You may then call <code><code>$dist-&gt;install</code></code> on the object to actually install it.</p>
+
+<h2 id="dist-install-verbose-BOOL-perl-path-to-perl-">$dist-&gt;install([verbose =&gt; BOOL, perl =&gt; /path/to/perl])</h2>
+
+<p>Actually installs the created dist.</p>
+
+<p>Returns true on success and false on failure.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Originally by Jos Boumans &lt;kane@cpan.org&gt;. Brought to working condition by Ken Williams &lt;kwilliams@cpan.org&gt;.</p>
+
+<p>Other hackery and currently maintained by Chris <code><code>BinGOs</code></code> Williams ( no relation ). &lt;bingos@cpan.org&gt;.</p>
+
+<h1 id="LICENSE">LICENSE</h1>
+
+<p>The CPAN++ interface (of which this module is a part of) is copyright (c) 2001, 2002, 2003, 2004, 2005 Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,220 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#KNOWN-BUGS">KNOWN BUGS</a></li>
+  <li><a href="#SUGGESTED-ADDITIONS">SUGGESTED ADDITIONS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>List::Util - A selection of general-utility list subroutines</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">List::Util</span> <span class="string">qw(first max maxstr min minstr reduce shuffle sum)</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>List::Util</code></code> contains a selection of subroutines that people have expressed would be nice to have in the perl core, but the usage would not really be high enough to warrant the use of a keyword, and the size so small such that being individual extensions would be wasteful.</p>
+
+<p>By default <code><code>List::Util</code></code> does not export any subroutines. The subroutines defined are</p>
+
+<dl>
+
+<dt id="first-BLOCK-LIST">first BLOCK LIST</dt>
+<dd>
+
+<p>Similar to <code><code>grep</code></code> in that it evaluates BLOCK setting <code><code>$_</code></code> to each element of LIST in turn. <code><code>first</code></code> returns the first element where the result from BLOCK is a true value. If BLOCK never returns true or LIST was empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">first</span> <span class="operator">{</span> <span class="keyword">defined</span><span class="operator">(</span><span class="variable">$_</span><span class="operator">)</span> <span class="operator">}</span> <span class="variable">@list</span>    <span class="comment"># first defined value in @list</span>
+    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">first</span> <span class="operator">{</span> <span class="variable">$_</span> <span class="operator">&gt;</span> <span class="variable">$value</span> <span class="operator">}</span> <span class="variable">@list</span>    <span class="comment"># first value in @list which</span>
+                                          <span class="comment"># is greater than $value</span>
+</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="keyword">defined</span><span class="operator">(</span><span class="variable">$a</span><span class="operator">)</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">wanted</span><span class="operator">(</span><span class="variable">$b</span><span class="operator">)</span> <span class="operator">?</span> <span class="variable">$b</span> <span class="operator">:</span> <span class="keyword">undef</span> <span class="operator">}</span> <span class="keyword">undef</span><span class="operator">,</span> <span class="variable">@list</span>
+</code></code></pre>
+
+<p>for example wanted() could be defined() which would return the first defined value in @list</p>
+
+</dd>
+<dt id="max-LIST">max LIST</dt>
+<dd>
+
+<p>Returns the entry in the list with the highest numerical value. If the list is empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    $foo = max 1..10                # 10
+    $foo = max 3,9,12               # 12
+    $foo = max @bar, @baz           # whatever</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">&gt;</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">1</span><span class="operator">..</span><span class="number">10</span>
+</code></code></pre>
+
+</dd>
+<dt id="maxstr-LIST">maxstr LIST</dt>
+<dd>
+
+<p>Similar to <code><code>max</code></code>, but treats all the entries in the list as strings and returns the highest string as defined by the <code><code>gt</code></code> operator. If the list is empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    $foo = maxstr &#39;A&#39;..&#39;Z&#39;          # &#39;Z&#39;
+    $foo = maxstr &quot;hello&quot;,&quot;world&quot;   # &quot;world&quot;
+    $foo = maxstr @bar, @baz        # whatever</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="keyword">gt</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="string">'A'</span><span class="operator">..</span><span class="string">'Z'</span>
+</code></code></pre>
+
+</dd>
+<dt id="min-LIST">min LIST</dt>
+<dd>
+
+<p>Similar to <code><code>max</code></code> but returns the entry in the list with the lowest numerical value. If the list is empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    $foo = min 1..10                # 1
+    $foo = min 3,9,12               # 3
+    $foo = min @bar, @baz           # whatever</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">&lt;</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">1</span><span class="operator">..</span><span class="number">10</span>
+</code></code></pre>
+
+</dd>
+<dt id="minstr-LIST">minstr LIST</dt>
+<dd>
+
+<p>Similar to <code><code>min</code></code>, but treats all the entries in the list as strings and returns the lowest string as defined by the <code><code>lt</code></code> operator. If the list is empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    $foo = minstr &#39;A&#39;..&#39;Z&#39;          # &#39;A&#39;
+    $foo = minstr &quot;hello&quot;,&quot;world&quot;   # &quot;hello&quot;
+    $foo = minstr @bar, @baz        # whatever</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="keyword">lt</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="string">'A'</span><span class="operator">..</span><span class="string">'Z'</span>
+</code></code></pre>
+
+</dd>
+<dt id="reduce-BLOCK-LIST">reduce BLOCK LIST</dt>
+<dd>
+
+<p>Reduces LIST by calling BLOCK, in a scalar context, multiple times, setting <code><code>$a</code></code> and <code><code>$b</code></code> each time. The first call will be with <code><code>$a</code></code> and <code><code>$b</code></code> set to the first two elements of the list, subsequent calls will be done by setting <code><code>$a</code></code> to the result of the previous call and <code><code>$b</code></code> to the next element in the list.</p>
+
+<p>Returns the result of the last call to BLOCK. If LIST is empty then <code><code>undef</code></code> is returned. If LIST only contains one element then that element is returned and BLOCK is not executed.</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">&lt;</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">1</span><span class="operator">..</span><span class="number">10</span>       <span class="comment"># min</span>
+    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="keyword">lt</span> <span class="variable">$b</span> <span class="operator">?</span> <span class="variable">$a</span> <span class="operator">:</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="string">'aa'</span><span class="operator">..</span><span class="string">'zz'</span> <span class="comment"># minstr</span>
+    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">+</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">1</span> <span class="operator">..</span> <span class="number">10</span>               <span class="comment"># sum</span>
+    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">.</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="variable">@bar</span>                  <span class="comment"># concat</span>
+</code></code></pre>
+
+<p>If your algorithm requires that <code><code>reduce</code></code> produce an identity value, then make sure that you always pass that identity value as the first argument to prevent <code><code>undef</code></code> being returned</p>
+
+<pre><code><code>  <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">+</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">@values</span><span class="operator">;</span>             <span class="comment"># sum with 0 identity value</span>
+</code></code></pre>
+
+</dd>
+<dt id="shuffle-LIST">shuffle LIST</dt>
+<dd>
+
+<p>Returns the elements of LIST in a random order</p>
+
+<pre><code><code>    @cards = shuffle 0..51      # 0..51 in a random order</code></code></pre>
+
+</dd>
+<dt id="sum-LIST">sum LIST</dt>
+<dd>
+
+<p>Returns the sum of all the elements in LIST. If LIST is empty then <code><code>undef</code></code> is returned.</p>
+
+<pre><code><code>    $foo = sum 1..10                # 55
+    $foo = sum 3,9,12               # 24
+    $foo = sum @bar, @baz           # whatever</code></code></pre>
+
+<p>This function could be implemented using <code><code>reduce</code></code> like this</p>
+
+<pre><code><code>    <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">reduce</span> <span class="operator">{</span> <span class="variable">$a</span> <span class="operator">+</span> <span class="variable">$b</span> <span class="operator">}</span> <span class="number">1</span><span class="operator">..</span><span class="number">10</span>
+</code></code></pre>
+
+<p>If your algorithm requires that <code><code>sum</code></code> produce an identity of 0, then make sure that you always pass <code><code>0</code></code> as the first argument to prevent <code><code>undef</code></code> being returned</p>
+
+<pre><code><code>  <span class="variable">$foo</span> <span class="operator">=</span> <span class="variable">sum</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">@values</span><span class="operator">;</span>
+</code></code></pre>
+
+</dd>
+</dl>
+
+<h1 id="KNOWN-BUGS">KNOWN BUGS</h1>
+
+<p>With perl versions prior to 5.005 there are some cases where reduce will return an incorrect result. This will show up as test 7 of reduce.t failing.</p>
+
+<h1 id="SUGGESTED-ADDITIONS">SUGGESTED ADDITIONS</h1>
+
+<p>The following are additions that have been requested, but I have been reluctant to add due to them being very simple to implement in perl</p>
+
+<pre><code><code>  <span class="comment"># One argument is true</span>
+  
+  <span class="keyword">sub</span><span class="variable"> any </span><span class="operator">{</span> <span class="variable">$_</span> <span class="operator">&amp;&amp;</span> <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">for</span> <span class="variable">@_</span><span class="operator">;</span> <span class="number">0</span> <span class="operator">}</span>
+  
+  <span class="comment"># All arguments are true</span>
+  
+  <span class="keyword">sub</span><span class="variable"> all </span><span class="operator">{</span> <span class="variable">$_</span> <span class="operator">||</span> <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">for</span> <span class="variable">@_</span><span class="operator">;</span> <span class="number">1</span> <span class="operator">}</span>
+  
+  <span class="comment"># All arguments are false</span>
+  
+  <span class="keyword">sub</span><span class="variable"> none </span><span class="operator">{</span> <span class="variable">$_</span> <span class="operator">&amp;&amp;</span> <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">for</span> <span class="variable">@_</span><span class="operator">;</span> <span class="number">1</span> <span class="operator">}</span>
+  
+  <span class="comment"># One argument is false</span>
+  
+  <span class="keyword">sub</span><span class="variable"> notall </span><span class="operator">{</span> <span class="variable">$_</span> <span class="operator">||</span> <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">for</span> <span class="variable">@_</span><span class="operator">;</span> <span class="number">0</span> <span class="operator">}</span>
+  
+  <span class="comment"># How many elements are true</span>
+  
+  <span class="keyword">sub</span><span class="variable"> true </span><span class="operator">{</span> <span class="keyword">scalar</span> <span class="keyword">grep</span> <span class="operator">{</span> <span class="variable">$_</span> <span class="operator">}</span> <span class="variable">@_</span> <span class="operator">}</span>
+  
+  <span class="comment"># How many elements are false</span>
+  
+  <span class="keyword">sub</span><span class="variable"> false </span><span class="operator">{</span> <span class="keyword">scalar</span> <span class="keyword">grep</span> <span class="operator">{</span> <span class="operator">!</span><span class="variable">$_</span> <span class="operator">}</span> <span class="variable">@_</span> <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../lib/Scalar/Util.html">Scalar::Util</a>, <a href="../../lib/List/MoreUtils.html">List::MoreUtils</a></p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright (c) 1997-2007 Graham Barr &lt;gbarr@pobox.com&gt;. All rights reserved. This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

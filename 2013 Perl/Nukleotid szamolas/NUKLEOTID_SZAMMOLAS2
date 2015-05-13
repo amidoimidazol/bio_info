@@ -1,0 +1,87 @@
+#!/usr/bin/perl -w
+print "A DNS szekvenciat tartalmazo file neve (.dns):\n";
+	#Beolvasás
+	$dnafilename = <STDIN>;
+	#Whitespace eltuntetese
+	chomp $dnafilename;
+		# -e $scalar = ha a scalar letezik tehat csak akkor megy tovabb ha be tudta olvasni
+		unless ( -e $dnafilename) 
+		{
+		print " A \"$dnafilename\" nevu file nem letezik\n";
+		exit;
+		}
+		
+		#meg tudja e nyitni
+		unless (open ( DNAFILE, $dnafilename))
+		{
+		print "A \"$dnafilename\" nevu file nem nyithato meg\n";
+		exit;
+		}
+		
+		@DNA = <DNAFILE>;
+		close DNAFILE;
+		
+		#arraybe alakitas
+		$DNA = join ('', @DNA);
+		#szokozok kiszedese
+		$DNA =~ s/\s//g;
+		#nagybeture valtas
+		$DNA =~ tr/agtcAGTC/AGTCAGTC/;
+		#szamok kiszedese
+		@szamok = ( '1' ,'2','3','4','5','6','7','8','9','0');
+		$DNA =~ s/[@szamok]//g;
+		
+		
+		print "$DNA\n";
+		#szamolo variable-k 0-ra allitasa
+		$A = 0;
+		$T = 0;
+		$G = 0;
+		$C = 0;
+		$E = 0;
+
+				# $position variable 0-ra allitasa
+				for ( $position = 0; 
+					# addig megy mig a $position kisebb mint a $DNA hossza (elso karakter = 0, második = 1 stb. utolsó = $dna hossza -1 )
+					$position < length $DNA;
+						#ahogy halad a scalarban mindig hozzad egyet
+						++$position)
+				
+				#Here, you look at just one character, so you call substr on the string $DNA,
+				#ask it to look in position $position for one character, and save the result in scalar
+				#variable $base.
+				# substr = nyuljon bele ( ebbe , itt , egyesével)
+				{
+				$base = substr ($DNA, $position, 1);
+				#ha megeggyezik hozzaad
+				if ($base eq 'A')
+					{++$A;}
+				elsif ($base eq 'T')
+					{++$T;}
+				elsif ($base eq 'G')
+					{++$G;}
+				elsif ($base eq 'C')
+					{++$C;}
+				
+				else {print "!!!!HIBA!!!!Ismeretlen elem:$base\n"; 
+				++$E;}
+				}
+				
+				$osszes = $A + $T + $G + $C + $E;
+				
+									#print
+									print "Osszesen:$osszes elem\n\n";
+									print "Ebbol\n";
+									print "Adenin:$A\n";
+									print "Timin:$T\n";
+									print "Guanin:$G\n";
+									print "Citozin:$C\n";
+									print "Hiba:$E\n";
+									
+									$outputfile = "countbase";
+									unless (open ( COUNTBASE , ">$outputfile"))
+										{ print " Nem lehet elmenteni a \"$outputfile\"filet!\n\n"}
+									
+									print COUNTBASE "A=$A T=$T G=$G C=$C Error=$E\n";
+									close (COUNTBASE);
+									exit;

@@ -1,0 +1,54 @@
+#!/usr/bin/perl -w
+print "Adja meg a szekvenciat tartalmazo file nevet:";
+
+	$dnafilename = <STDIN>;
+	chomp $dnafilename;
+	
+	unless ( -e $dnafilename) 
+		{
+		print " A \"$dnafilename\" nevu file nem letezik\n";
+		exit;
+		}
+	
+	unless ( open (DNAFILE, $dnafilename))
+		{
+		print " A \"$dnafilename\" nevu file nem nyithato meg\n";
+		exit;
+		}
+		
+		@DNA = <DNAFILE>;
+		close DNAFILE;
+		print "\n\n";
+		#arraybõl stringbe alakitas
+		$DNA = join ('', @DNA);
+		#szokozok kiszedese
+		$DNA =~ s/\s//g;
+		#nagybeture valtas
+		$DNA =~ tr/agtcAGTC/AGTCAGTC/;
+		#szamok kiszedese
+		@szamok = ( '1' ,'2','3','4','5','6','7','8','9','0');
+		$DNA =~ s/[@szamok]//g;
+				
+				print "$DNA\n";
+		
+		$e = 0;
+		
+		
+		for ($position = 0;$position <= length $DNA; ++$position)
+			{
+			$complement = substr ($DNA, $position , 1);
+				if ($complement eq 'A')
+					{print 'T';}
+				elsif ($complement eq 'G')
+					{print 'C';}
+				elsif ($complement eq 'T')
+					{print 'A';}
+				elsif ($complement eq 'C')
+					{print 'G';}
+				else {++$e;}
+				
+				}	
+				print "\n\n";
+				print "HIBAK SZAMA:$e\n";
+				exit;
+				

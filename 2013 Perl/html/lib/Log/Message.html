@@ -1,0 +1,370 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#Hierarchy">Hierarchy</a></li>
+  <li><a href="#Options">Options</a></li>
+  <li><a href="#Methods">Methods</a>
+    <ul>
+      <li><a href="#new">new</a></li>
+      <li><a href="#store">store</a></li>
+      <li><a href="#retrieve">retrieve</a></li>
+      <li><a href="#first">first</a></li>
+      <li><a href="#last">last</a></li>
+      <li><a href="#flush">flush</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#Acknowledgements">Acknowledgements</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Log::Message - A generic message storing mechanism;</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Log::Message</span> <span class="string">private</span> <span class="operator">=&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="string">config</span> <span class="operator">=&gt;</span> <span class="string">'/our/cf_file'</span><span class="operator">;</span>
+    
+    <span class="keyword">my</span> <span class="variable">$log</span> <span class="operator">=</span> <span class="variable">Log::Message</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>    <span class="string">private</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+                                    <span class="string">level</span>   <span class="operator">=&gt;</span> <span class="string">'log'</span><span class="operator">,</span>
+                                    <span class="string">config</span>  <span class="operator">=&gt;</span> <span class="string">'/my/cf_file'</span><span class="operator">,</span>
+                               <span class="operator">);</span>
+    
+    <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">store</span><span class="operator">(</span><span class="string">'this is my first message'</span><span class="operator">);</span>
+    
+    <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">store</span><span class="operator">(</span>    <span class="string">message</span> <span class="operator">=&gt;</span> <span class="string">'message #2'</span><span class="operator">,</span>
+                    <span class="string">tag</span>     <span class="operator">=&gt;</span> <span class="string">'MY_TAG'</span><span class="operator">,</span>
+                    <span class="string">level</span>   <span class="operator">=&gt;</span> <span class="string">'carp'</span><span class="operator">,</span>
+                    <span class="string">extra</span>   <span class="operator">=&gt;</span> <span class="operator">[</span><span class="string">'this is an argument to the handler'</span><span class="operator">]</span><span class="operator">,</span>
+               <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">@last_five_items</span> <span class="operator">=</span> <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">retrieve</span><span class="operator">(</span><span class="number">5</span><span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">@items</span> <span class="operator">=</span> <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">retrieve</span><span class="operator">(</span> <span class="string">tag</span>     <span class="operator">=&gt;</span> <span class="string">qr/my_tag/i</span><span class="operator">,</span>
+                                <span class="string">message</span> <span class="operator">=&gt;</span> <span class="string">qr/\d/</span><span class="operator">,</span>
+                                <span class="string">remove</span>  <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+                              <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">@items</span> <span class="operator">=</span> <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">final</span><span class="operator">(</span> <span class="string">level</span> <span class="operator">=&gt;</span> <span class="string">qr/carp/</span><span class="operator">,</span> <span class="string">amount</span> <span class="operator">=&gt;</span> <span class="number">2</span> <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">$first_error</span> <span class="operator">=</span> <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">first</span><span class="operator">()</span>
+    
+    <span class="comment"># croak with the last error on the stack</span>
+    <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">final</span><span class="operator">-&gt;</span><span class="variable">croak</span><span class="operator">;</span>
+    
+    <span class="comment"># empty the stack</span>
+    <span class="variable">$log</span><span class="operator">-&gt;</span><span class="variable">flush</span><span class="operator">();</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Log::Message is a generic message storage mechanism. It allows you to store messages on a stack -- either shared or private -- and assign meta-data to it. Some meta-data will automatically be added for you, like a timestamp and a stack trace, but some can be filled in by the user, like a tag by which to identify it or group it, and a level at which to handle the message (for example, log it, or die with it)</p>
+
+<p>Log::Message also provides a powerful way of searching through items by regexes on messages, tags and level.</p>
+
+<h1 id="Hierarchy">Hierarchy</h1>
+
+<p>There are 4 modules of interest when dealing with the Log::Message::* modules:</p>
+
+<dl>
+
+<dt id="Log::Message">Log::Message</dt>
+<dd>
+
+<p>Log::Message provides a few methods to manipulate the stack it keeps. It has the option of keeping either a private or a public stack. More on this below.</p>
+
+</dd>
+<dt id="Log::Message::Item">Log::Message::Item</dt>
+<dd>
+
+<p>These are individual message items, which are objects that contain the user message as well as the meta-data described above. See the <a href="../../lib/Log/Message/Item.html">Log::Message::Item</a> manpage to see how to extract this meta-data and how to work with the Item objects. You should never need to create your own Item objects, but knowing about their methods and accessors is important if you want to write your own handlers. (See below)</p>
+
+</dd>
+<dt id="Log::Message::Handlers">Log::Message::Handlers</dt>
+<dd>
+
+<p>These are a collection of handlers that will be called for a level that is used on a <a href="../../lib/Log/Message/Item.html">Log::Message::Item</a> object. For example, if a message is logged with the &#39;carp&#39; level, the &#39;carp&#39; handler from <a href="../../lib/Log/Message/Handlers.html">Log::Message::Handlers</a> will be called. See the <a href="../../lib/Log/Message/Handlers.html">Log::Message::Handlers</a> manpage for more explanation about how handlers work, which one are available and how to create your own.</p>
+
+</dd>
+<dt id="Log::Message::Config">Log::Message::Config</dt>
+<dd>
+
+<p>Per Log::Message object, there is a configuration required that will fill in defaults if the user did not specify arguments to override them (like for example what tag will be set if none was provided), <a href="../../lib/Log/Message/Config.html">Log::Message::Config</a> handles the creation of these configurations.</p>
+
+<p>Configuration can be specified in 4 ways:</p>
+
+<ul>
+
+<li><p>As a configuration file when you <code><code>use Log::Message</code></code></p>
+
+</li>
+<li><p>As arguments when you <code><code>use Log::Message</code></code></p>
+
+</li>
+<li><p>As a configuration file when you create a new <a href="../../lib/Log/Message.html">Log::Message</a> object. (The config will then only apply to that object if you marked it as private)</p>
+
+</li>
+<li><p>As arguments when you create a new Log::Message object.</p>
+
+<p>You should never need to use the <a href="../../lib/Log/Message/Config.html">Log::Message::Config</a> module yourself, as this is transparently done by <a href="../../lib/Log/Message.html">Log::Message</a>, but its manpage does provide an explanation of how you can create a config file.</p>
+
+</li>
+</ul>
+
+</dd>
+</dl>
+
+<h1 id="Options">Options</h1>
+
+<p>When using Log::Message, or creating a new Log::Message object, you can supply various options to alter its behaviour. Of course, there are sensible defaults should you choose to omit these options.</p>
+
+<p>Below an explanation of all the options and how they work.</p>
+
+<dl>
+
+<dt id="config">config</dt>
+<dd>
+
+<p>The path to a configuration file to be read. See the manpage of <a href="../../lib/Log/Message/Config.html">Log::Message::Config</a> for the required format</p>
+
+<p>These options will be overridden by any explicit arguments passed.</p>
+
+</dd>
+<dt id="private">private</dt>
+<dd>
+
+<p>Whether to create, by default, private or shared objects. If you choose to create shared objects, all Log::Message objects will use the same stack.</p>
+
+<p>This means that even though every module may make its own $log object they will still be sharing the same error stack on which they are putting errors and from which they are retrieving.</p>
+
+<p>This can be useful in big projects.</p>
+
+<p>If you choose to create a private object, then the stack will of course be private to this object, but it will still fall back to the shared config should no private config or overriding arguments be provided.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<p>Log::Message makes use of another module to validate its arguments, which is called <a href="../../lib/Params/Check.html">Params::Check</a>, which is a lightweight, yet powerful input checker and parser. (See the <a href="../../lib/Params/Check.html">Params::Check</a> manpage for details).</p>
+
+<p>The verbose setting will control whether this module will generate warnings if something improper is passed as input, or merely silently returns undef, at which point Log::Message will generate a warning.</p>
+
+<p>It&#39;s best to just leave this at its default value, which is &#39;1&#39;</p>
+
+</dd>
+<dt id="tag">tag</dt>
+<dd>
+
+<p>The tag to add to messages if none was provided. If neither your config, nor any specific arguments supply a tag, then Log::Message will set it to &#39;NONE&#39;</p>
+
+<p>Tags are useful for searching on or grouping by. For example, you could tag all the messages you want to go to the user as &#39;USER ERROR&#39; and all those that are only debug information with &#39;DEBUG&#39;.</p>
+
+<p>At the end of your program, you could then print all the ones tagged &#39;USER ERROR&#39; to STDOUT, and those marked &#39;DEBUG&#39; to a log file.</p>
+
+</dd>
+<dt id="level">level</dt>
+<dd>
+
+<p><code><code>level</code></code> describes what action to take when a message is logged. Just like <code><code>tag</code></code>, Log::Message will provide a default (which is &#39;log&#39;) if neither your config file, nor any explicit arguments are given to override it.</p>
+
+<p>See the Log::Message::Handlers manpage to see what handlers are available by default and what they do, as well as to how to add your own handlers.</p>
+
+</dd>
+<dt id="remove">remove</dt>
+<dd>
+
+<p>This indicates whether or not to automatically remove the messages from the stack when you&#39;ve retrieved them. The default setting provided by Log::Message is &#39;0&#39;: do not remove.</p>
+
+</dd>
+<dt id="chrono">chrono</dt>
+<dd>
+
+<p>This indicates whether messages should always be fetched in chronological order or not. This simply means that you can choose whether, when retrieving items, the item most recently added should be returned first, or the one that had been added most long ago.</p>
+
+<p>The default is to return the newest ones first</p>
+
+</dd>
+</dl>
+
+<h1 id="Methods">Methods</h1>
+
+<h2 id="new">new</h2>
+
+<p>This creates a new Log::Message object; The parameters it takes are described in the <code><code>Options</code></code> section below and let it just be repeated that you can use these options like this:</p>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$log</span> <span class="operator">=</span> <span class="variable">Log::Message</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span> <span class="variable">%options</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>as well as during <code><code>use</code></code> time, like this:</p>
+
+<pre><code><code>    use Log::Message option1 =&gt; value, option2 =&gt; value</code></code></pre>
+
+<p>There are but 3 rules to keep in mind:</p>
+
+<ul>
+
+<li><p>Provided arguments take precedence over a configuration file.</p>
+
+</li>
+<li><p>Arguments to new take precedence over options provided at <code><code>use</code></code> time</p>
+
+</li>
+<li><p>An object marked private will always have an empty stack to begin with</p>
+
+</li>
+</ul>
+
+<h2 id="store">store</h2>
+
+<p>This will create a new Item object and store it on the stack.</p>
+
+<p>Possible arguments you can give to it are:</p>
+
+<dl>
+
+<dt id="message">message</dt>
+<dd>
+
+<p>This is the only argument that is required. If no other arguments are given, you may even leave off the <code><code>message</code></code> key. The argument will then automatically be assumed to be the message.</p>
+
+</dd>
+<dt id="tag1">tag</dt>
+<dd>
+
+<p>The tag to add to this message. If not provided, Log::Message will look in your configuration for one.</p>
+
+</dd>
+<dt id="level1">level</dt>
+<dd>
+
+<p>The level at which this message should be handled. If not provided, Log::Message will look in your configuration for one.</p>
+
+</dd>
+<dt id="extra">extra</dt>
+<dd>
+
+<p>This is an array ref with arguments passed to the handler for this message, when it is called from store();</p>
+
+<p>The handler will receive them as a normal list</p>
+
+</dd>
+</dl>
+
+<p>store() will return true upon success and undef upon failure, as well as issue a warning as to why it failed.</p>
+
+<h2 id="retrieve">retrieve</h2>
+
+<p>This will retrieve all message items matching the criteria specified from the stack.</p>
+
+<p>Here are the criteria you can discriminate on:</p>
+
+<dl>
+
+<dt id="tag2">tag</dt>
+<dd>
+
+<p>A regex to which the tag must adhere. For example <code><code>qr/\w/</code></code>.</p>
+
+</dd>
+<dt id="level2">level</dt>
+<dd>
+
+<p>A regex to which the level must adhere.</p>
+
+</dd>
+<dt id="message1">message</dt>
+<dd>
+
+<p>A regex to which the message must adhere.</p>
+
+</dd>
+<dt id="amount">amount</dt>
+<dd>
+
+<p>Maximum amount of errors to return</p>
+
+</dd>
+<dt id="chrono1">chrono</dt>
+<dd>
+
+<p>Return in chronological order, or not?</p>
+
+</dd>
+<dt id="remove1">remove</dt>
+<dd>
+
+<p>Remove items from the stack upon retrieval?</p>
+
+</dd>
+</dl>
+
+<p>In scalar context it will return the first item matching your criteria and in list context, it will return all of them.</p>
+
+<p>If an error occurs while retrieving, a warning will be issued and undef will be returned.</p>
+
+<h2 id="first">first</h2>
+
+<p>This is a shortcut for retrieving the first item(s) stored on the stack. It will default to only retrieving one if called with no arguments, and will always return results in chronological order.</p>
+
+<p>If you only supply one argument, it is assumed to be the amount you wish returned.</p>
+
+<p>Furthermore, it can take the same arguments as <code><code>retrieve</code></code> can.</p>
+
+<h2 id="last">last</h2>
+
+<p>This is a shortcut for retrieving the last item(s) stored on the stack. It will default to only retrieving one if called with no arguments, and will always return results in reverse chronological order.</p>
+
+<p>If you only supply one argument, it is assumed to be the amount you wish returned.</p>
+
+<p>Furthermore, it can take the same arguments as <code><code>retrieve</code></code> can.</p>
+
+<h2 id="flush">flush</h2>
+
+<p>This removes all items from the stack and returns them to the caller</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a href="../../lib/Log/Message/Item.html">Log::Message::Item</a>, <a href="../../lib/Log/Message/Handlers.html">Log::Message::Handlers</a>, <a href="../../lib/Log/Message/Config.html">Log::Message::Config</a></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="Acknowledgements">Acknowledgements</h1>
+
+<p>Thanks to Ann Barcomb for her suggestions.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This module is copyright (c) 2002 Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

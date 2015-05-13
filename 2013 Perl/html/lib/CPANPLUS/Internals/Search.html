@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#search_module_tree-type-TYPE-allow-regexes-data-previous_results-">_search_module_tree( type =&gt; TYPE, allow =&gt; \@regexes, [data =&gt; \@previous_results ] )</a></li>
+      <li><a href="#search_author_tree-type-TYPE-allow-regexex-data-previous_results-">_search_author_tree( type =&gt; TYPE, allow =&gt; \@regexex, [data =&gt; \@previous_results ] )</a></li>
+      <li><a href="#all_installed-">_all_installed()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Internals::Search - internals for searching for modules</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$aref</span> <span class="operator">=</span> <span class="variable">$cpan</span><span class="operator">-&gt;</span><span class="variable">_search_module_tree</span><span class="operator">(</span>
+                        <span class="string">type</span>    <span class="operator">=&gt;</span> <span class="string">'package'</span><span class="operator">,</span>
+                        <span class="string">allow</span>   <span class="operator">=&gt;</span> <span class="operator">[</span><span class="string">qr/DBI/</span><span class="operator">]</span><span class="operator">,</span>
+                    <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">$aref</span> <span class="operator">=</span> <span class="variable">$cpan</span><span class="operator">-&gt;</span><span class="variable">_search_author_tree</span><span class="operator">(</span>
+                        <span class="string">type</span>    <span class="operator">=&gt;</span> <span class="string">'cpanid'</span><span class="operator">,</span>
+                        <span class="string">data</span>    <span class="operator">=&gt;</span> <span class="operator">\</span><span class="variable">@old_results</span><span class="operator">,</span>
+                        <span class="string">verbose</span> <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+                        <span class="string">allow</span>   <span class="operator">=&gt;</span> <span class="operator">[</span><span class="string">qw|KANE AUTRIJUS|</span><span class="operator">]</span><span class="operator">,</span>
+                    <span class="operator">);</span>
+    
+    <span class="keyword">my</span> <span class="variable">$aref</span> <span class="operator">=</span> <span class="variable">$cpan</span><span class="operator">-&gt;</span><span class="variable">_all_installed</span><span class="operator">(</span> <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The functions in this module are designed to find module(objects) based on certain criteria and return them.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="search_module_tree-type-TYPE-allow-regexes-data-previous_results-">_search_module_tree( type =&gt; TYPE, allow =&gt; \@regexes, [data =&gt; \@previous_results ] )</h2>
+
+<p>Searches the moduletree for module objects matching the criteria you specify. Returns an array ref of module objects on success, and false on failure.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="type">type</dt>
+<dd>
+
+<p>This can be any of the accessors for the <code><code>CPANPLUS::Module</code></code> objects. This is a required argument.</p>
+
+</dd>
+<dt id="allow">allow</dt>
+<dd>
+
+<p>A set of rules, or more precisely, a list of regexes (via <code><code>qr//</code></code> or plain strings), that the <code><code>type</code></code> must adhere too. You can specify as many as you like, and it will be treated as an <code><code>OR</code></code> search. For an <code><code>AND</code></code> search, see the <code><code>data</code></code> argument.</p>
+
+<p>This is a required argument.</p>
+
+</dd>
+<dt id="data">data</dt>
+<dd>
+
+<p>An arrayref of previous search results. This is the way to do an <code><code>AND</code></code> search -- <code><code>_search_module_tree</code></code> will only search the module objects specified in <code><code>data</code></code> if provided, rather than the moduletree itself.</p>
+
+</dd>
+</dl>
+
+<h2 id="search_author_tree-type-TYPE-allow-regexex-data-previous_results-">_search_author_tree( type =&gt; TYPE, allow =&gt; \@regexex, [data =&gt; \@previous_results ] )</h2>
+
+<p>Searches the authortree for author objects matching the criteria you specify. Returns an array ref of author objects on success, and false on failure.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="type1">type</dt>
+<dd>
+
+<p>This can be any of the accessors for the <code><code>CPANPLUS::Module::Author</code></code> objects. This is a required argument.</p>
+
+</dd>
+<dt id="allow1">allow</dt>
+<dd>
+
+<p>A set of rules, or more precisely, a list of regexes (via <code><code>qr//</code></code> or plain strings), that the <code><code>type</code></code> must adhere too. You can specify as many as you like, and it will be treated as an <code><code>OR</code></code> search. For an <code><code>AND</code></code> search, see the <code><code>data</code></code> argument.</p>
+
+<p>This is a required argument.</p>
+
+</dd>
+<dt id="data1">data</dt>
+<dd>
+
+<p>An arrayref of previous search results. This is the way to do an <code><code>and</code></code> search -- <code><code>_search_author_tree</code></code> will only search the author objects specified in <code><code>data</code></code> if provided, rather than the authortree itself.</p>
+
+</dd>
+</dl>
+
+<h2 id="all_installed-">_all_installed()</h2>
+
+<p>This function returns an array ref of module objects of modules that are installed on this system.</p>
+
+
+</body>
+
+</html>
+
+

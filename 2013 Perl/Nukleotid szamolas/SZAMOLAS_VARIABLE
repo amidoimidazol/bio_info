@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+
+$szam = 1234;
+$string = "1234";
+#szam szóköz szám 7 1234 1234
+print $szam, " ", $string, "\n";
+
+
+#összeadas 1234+1234 = 2468
+$szam_or_string = $szam + $string;
+print "$szam_or_string\n";
+
+
+#egymás után kiirja 12341234
+$szam_or_string = $szam . $string;
+print "$szam_or_string\n";
+
+exit;

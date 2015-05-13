@@ -1,0 +1,6 @@
+#!/usr/bin/perl -w
+#The syntax is for($start_num, Range, $increment) { code to execute }
+
+for ($q = 0 ;$q <= 100; ++$q)
+			{print "$q\n";}
+

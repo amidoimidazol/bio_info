@@ -1,0 +1,39 @@
+#!/usr/bin/perl -w
+#megszamolja a program neve utan beirt szekvenciaban a G-ket
+
+# minden variable my -al
+use strict;
+
+# $0 program neve
+my($USAGE) = "$0 Ird be a program neve utan a szekvenciat\n\n";
+
+
+#ARGV az az array ami a command lineba  a program melle beirt adatot menti
+unless (@ARGV)
+	#ha nem irtak be semmit kiirja a hibauzenetet amit a $USAGE -ban szabtunk meg és kilép
+	{
+	print $USAGE;
+	exit;
+	}
+# $dna = argv array elsõ eleme ($ARGV [elemszam];
+my ($dna) = $ARGV[0];
+
+# subrutin lehivasa
+my ($num_of_G) = countG ($dna );
+
+# print 
+print "\nA $dna DNS -ben $num_of_G db Guanin van!\n\n";
+	
+exit;
+
+############SUBRUTINE##################
+
+sub countG 
+{
+	my ($dna) = @_;
+	my ($count) = 0;
+	#hany darab G van
+	$count = ($dna =~ tr/Gg//);
+	return $count;
+
+}

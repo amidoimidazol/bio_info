@@ -1,0 +1,203 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#WARNINGS">WARNINGS</a></li>
+  <li><a href="#EXPORTS">EXPORTS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>UNIVERSAL - base class for ALL classes (blessed references)</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="variable">$is_io</span>    <span class="operator">=</span> <span class="variable">$fd</span><span class="operator">-&gt;</span><span class="variable">isa</span><span class="operator">(</span><span class="string">"IO::Handle"</span><span class="operator">);</span>
+    <span class="variable">$is_io</span>    <span class="operator">=</span> <span class="variable">Class</span><span class="operator">-&gt;</span><span class="variable">isa</span><span class="operator">(</span><span class="string">"IO::Handle"</span><span class="operator">);</span>
+    
+    <span class="variable">$does_log</span> <span class="operator">=</span> <span class="variable">$obj</span><span class="operator">-&gt;</span><span class="variable">DOES</span><span class="operator">(</span><span class="string">"Logger"</span><span class="operator">);</span>
+    <span class="variable">$does_log</span> <span class="operator">=</span> <span class="variable">Class</span><span class="operator">-&gt;</span><span class="variable">DOES</span><span class="operator">(</span><span class="string">"Logger"</span><span class="operator">);</span>
+    
+    <span class="variable">$sub</span>      <span class="operator">=</span> <span class="variable">$obj</span><span class="operator">-&gt;</span><span class="variable">can</span><span class="operator">(</span><span class="string">"print"</span><span class="operator">);</span>
+    <span class="variable">$sub</span>      <span class="operator">=</span> <span class="variable">Class</span><span class="operator">-&gt;</span><span class="variable">can</span><span class="operator">(</span><span class="string">"print"</span><span class="operator">);</span>
+    
+    <span class="variable">$sub</span>      <span class="operator">=</span> <span class="keyword">eval</span> <span class="operator">{</span> <span class="variable">$ref</span><span class="operator">-&gt;</span><span class="variable">can</span><span class="operator">(</span><span class="string">"fandango"</span><span class="operator">)</span> <span class="operator">};</span>
+    <span class="variable">$ver</span>      <span class="operator">=</span> <span class="variable">$obj</span><span class="operator">-&gt;</span><span class="variable">VERSION</span><span class="operator">;</span>
+    
+    <span class="comment"># but never do this!</span>
+    <span class="variable">$is_io</span>    <span class="operator">=</span> <span class="variable">UNIVERSAL::isa</span><span class="operator">(</span><span class="variable">$fd</span><span class="operator">,</span> <span class="string">"IO::Handle"</span><span class="operator">);</span>
+    <span class="variable">$sub</span>      <span class="operator">=</span> <span class="variable">UNIVERSAL::can</span><span class="operator">(</span><span class="variable">$obj</span><span class="operator">,</span> <span class="string">"print"</span><span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>UNIVERSAL</code></code> is the base class from which all blessed references inherit. See <a href="../lib/pods/perlobj.html">perlobj</a>.</p>
+
+<p><code><code>UNIVERSAL</code></code> provides the following methods:</p>
+
+<dl>
+
+<dt id="obj-isa-TYPE-"><code><code>$obj-&gt;isa( TYPE )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="CLASS-isa-TYPE-"><code><code>CLASS-&gt;isa( TYPE )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="eval-VAL-isa-TYPE-"><code><code><span class="keyword">eval</span> <span class="operator">{</span> <span class="variable">VAL</span><span class="operator">-&gt;</span><span class="variable">isa</span><span class="operator">(</span> <span class="variable">TYPE</span> <span class="operator">)</span> <span class="operator">}</span>
+</code></code></dt>
+<dd>
+
+<p>Where</p>
+
+<dl>
+
+<dt id="TYPE"><code><code>TYPE</code></code></dt>
+<dd>
+
+<p>is a package name</p>
+
+</dd>
+<dt id="obj"><code><code>$obj</code></code></dt>
+<dd>
+
+<p>is a blessed reference or a package name</p>
+
+</dd>
+<dt id="CLASS"><code><code>CLASS</code></code></dt>
+<dd>
+
+<p>is a package name</p>
+
+</dd>
+<dt id="VAL"><code><code>VAL</code></code></dt>
+<dd>
+
+<p>is any of the above or an unblessed reference</p>
+
+</dd>
+</dl>
+
+<p>When used as an instance or class method (<code><code>$obj-&gt;isa( TYPE )</code></code>), <code><code>isa</code></code> returns <i>true</i> if $obj is blessed into package <code><code>TYPE</code></code> or inherits from package <code><code>TYPE</code></code>.</p>
+
+<p>When used as a class method (<code><code>CLASS-&gt;isa( TYPE )</code></code>, sometimes referred to as a static method), <code><code>isa</code></code> returns <i>true</i> if <code><code>CLASS</code></code> inherits from (or is itself) the name of the package <code><code>TYPE</code></code> or inherits from package <code><code>TYPE</code></code>.</p>
+
+<p>If you&#39;re not sure what you have (the <code><code>VAL</code></code> case), wrap the method call in an <code><code>eval</code></code> block to catch the exception if <code><code>VAL</code></code> is undefined.</p>
+
+<p>If you want to be sure that you&#39;re calling <code><code>isa</code></code> as a method, not a class, check the invocand with <code><code>blessed</code></code> from <a href="../lib/Scalar/Util.html">Scalar::Util</a> first:</p>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">Scalar::Util</span> <span class="string">'blessed'</span><span class="operator">;</span>
+  
+  <span class="keyword">if</span> <span class="operator">(</span> <span class="variable">blessed</span><span class="operator">(</span> <span class="variable">$obj</span> <span class="operator">)</span> <span class="operator">&amp;&amp;</span> <span class="variable">$obj</span><span class="operator">-&gt;</span><span class="variable">isa</span><span class="operator">(</span><span class="string">"Some::Class"</span><span class="operator">)</span> <span class="operator">)</span> <span class="operator">{</span>
+      <span class="operator">...</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+</dd>
+<dt id="obj-DOES-ROLE-"><code><code>$obj-&gt;DOES( ROLE )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="CLASS-DOES-ROLE-"><code><code>CLASS-&gt;DOES( ROLE )</code></code></dt>
+<dd>
+
+<p><code><code>DOES</code></code> checks if the object or class performs the role <code><code>ROLE</code></code>. A role is a named group of specific behavior (often methods of particular names and signatures), similar to a class, but not necessarily a complete class by itself. For example, logging or serialization may be roles.</p>
+
+<p><code><code>DOES</code></code> and <code><code>isa</code></code> are similar, in that if either is true, you know that the object or class on which you call the method can perform specific behavior. However, <code><code>DOES</code></code> is different from <code><code>isa</code></code> in that it does not care <i>how</i> the invocand performs the operations, merely that it does. (<code><code>isa</code></code> of course mandates an inheritance relationship. Other relationships include aggregation, delegation, and mocking.)</p>
+
+<p>By default, classes in Perl only perform the <code><code>UNIVERSAL</code></code> role, as well as the role of all classes in their inheritance. In other words, by default <code><code>DOES</code></code> responds identically to <code><code>isa</code></code>.</p>
+
+<p>There is a relationship between roles and classes, as each class implies the existence of a role of the same name. There is also a relationship between inheritance and roles, in that a subclass that inherits from an ancestor class implicitly performs any roles its parent performs. Thus you can use <code><code>DOES</code></code> in place of <code><code>isa</code></code> safely, as it will return true in all places where <code><code>isa</code></code> will return true (provided that any overridden <code><code>DOES</code></code> <i>and</i> <code><code>isa</code></code> methods behave appropriately).</p>
+
+</dd>
+<dt id="obj-can-METHOD-"><code><code>$obj-&gt;can( METHOD )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="CLASS-can-METHOD-"><code><code>CLASS-&gt;can( METHOD )</code></code></dt>
+<dd>
+
+</dd>
+<dt id="eval-VAL-can-METHOD-"><code><code><span class="keyword">eval</span> <span class="operator">{</span> <span class="variable">VAL</span><span class="operator">-&gt;</span><span class="variable">can</span><span class="operator">(</span> <span class="variable">METHOD</span> <span class="operator">)</span> <span class="operator">}</span>
+</code></code></dt>
+<dd>
+
+<p><code><code>can</code></code> checks if the object or class has a method called <code><code>METHOD</code></code>. If it does, then it returns a reference to the sub. If it does not, then it returns <i>undef</i>. This includes methods inherited or imported by <code><code>$obj</code></code>, <code><code>CLASS</code></code>, or <code><code>VAL</code></code>.</p>
+
+<p><code><code>can</code></code> cannot know whether an object will be able to provide a method through AUTOLOAD (unless the object&#39;s class has overridden <code><code>can</code></code> appropriately), so a return value of <i>undef</i> does not necessarily mean the object will not be able to handle the method call. To get around this some module authors use a forward declaration (see <a href="../lib/pods/perlsub.html">perlsub</a>) for methods they will handle via AUTOLOAD. For such &#39;dummy&#39; subs, <code><code>can</code></code> will still return a code reference, which, when called, will fall through to the AUTOLOAD. If no suitable AUTOLOAD is provided, calling the coderef will cause an error.</p>
+
+<p>You may call <code><code>can</code></code> as a class (static) method or an object method.</p>
+
+<p>Again, the same rule about having a valid invocand applies -- use an <code><code>eval</code></code> block or <code><code>blessed</code></code> if you need to be extra paranoid.</p>
+
+</dd>
+<dt id="VERSION-REQUIRE-"><code><code>VERSION ( [ REQUIRE ] )</code></code></dt>
+<dd>
+
+<p><code><code>VERSION</code></code> will return the value of the variable <code><code>$VERSION</code></code> in the package the object is blessed into. If <code><code>REQUIRE</code></code> is given then it will do a comparison and die if the package version is not greater than or equal to <code><code>REQUIRE</code></code>, or if either <code><code>$VERSION</code></code> or <code><code>REQUIRE</code></code> is not a &quot;lax&quot; version number (as defined by the <a href="../lib/version.html">version</a> module).</p>
+
+<p>The return from <code><code>VERSION</code></code> will actually be the stringified version object using the package <code><code>$VERSION</code></code> scalar, which is guaranteed to be equivalent but may not be precisely the contents of the <code><code>$VERSION</code></code> scalar. If you want the actual contents of <code><code>$VERSION</code></code>, use <code><code>$CLASS::VERSION</code></code> instead.</p>
+
+<p><code><code>VERSION</code></code> can be called as either a class (static) method or an object method.</p>
+
+</dd>
+</dl>
+
+<h1 id="WARNINGS">WARNINGS</h1>
+
+<p><b>NOTE:</b> <code><code>can</code></code> directly uses Perl&#39;s internal code for method lookup, and <code><code>isa</code></code> uses a very similar method and cache-ing strategy. This may cause strange effects if the Perl code dynamically changes @ISA in any package.</p>
+
+<p>You may add other methods to the UNIVERSAL class via Perl or XS code. You do not need to <code><code>use UNIVERSAL</code></code> to make these methods available to your program (and you should not do so).</p>
+
+<h1 id="EXPORTS">EXPORTS</h1>
+
+<p>None by default.</p>
+
+<p>You may request the import of three functions (<code><code>isa</code></code>, <code><code>can</code></code>, and <code><code>VERSION</code></code>), <b>but this feature is deprecated and will be removed</b>. Please don&#39;t do this in new code.</p>
+
+<p>For example, previous versions of this documentation suggested using <code><code>isa</code></code> as a function to determine the type of a reference:</p>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">UNIVERSAL</span> <span class="string">'isa'</span><span class="operator">;</span>
+  
+  <span class="variable">$yes</span> <span class="operator">=</span> <span class="variable">isa</span> <span class="variable">$h</span><span class="operator">,</span> <span class="string">"HASH"</span><span class="operator">;</span>
+  <span class="variable">$yes</span> <span class="operator">=</span> <span class="variable">isa</span> <span class="string">"Foo"</span><span class="operator">,</span> <span class="string">"Bar"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>The problem is that this code will <i>never</i> call an overridden <code><code>isa</code></code> method in any class. Instead, use <code><code>reftype</code></code> from <a href="../lib/Scalar/Util.html">Scalar::Util</a> for the first case:</p>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">Scalar::Util</span> <span class="string">'reftype'</span><span class="operator">;</span>
+  
+  <span class="variable">$yes</span> <span class="operator">=</span> <span class="variable">reftype</span><span class="operator">(</span> <span class="variable">$h</span> <span class="operator">)</span> <span class="keyword">eq</span> <span class="string">"HASH"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>and the method form of <code><code>isa</code></code> for the second:</p>
+
+<pre><code><code>  <span class="variable">$yes</span> <span class="operator">=</span> <span class="variable">Foo</span><span class="operator">-&gt;</span><span class="variable">isa</span><span class="operator">(</span><span class="string">"Bar"</span><span class="operator">);</span>
+</code></code></pre>
+
+
+</body>
+
+</html>
+
+

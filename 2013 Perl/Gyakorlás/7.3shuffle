@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+#prefix / lib
+
+use warnings;
+use strict;
+use lib '/perl';
+use biolib;
+
+#array meretet mer
+#keveres merete random
+
+# arrayt fog és szetszed elemeire egy masikban
+# kivalaszt egy random posiciot a mereten belul
+#az ott levo elemet kivagja
+#kivalasz egy masik random posiciot 
+#oda beilleszti 
+#az eredetin végigmegy egyesével
+
+my @array = ('A','B','C','D','E','F');
+
+
+my @shuffledarray = everydayimshufflin2 @array;
+
+print "Az eredeti array:\n @array\n";
+print "Az osszekevert array:\n @shuffledarray\n";
+
+exit;

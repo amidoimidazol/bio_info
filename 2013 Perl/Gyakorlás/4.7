@@ -1,0 +1,9 @@
+#!/usr/bin/perl -w
+	
+	$genefilename = 'gene1.dns';
+	open ( GENEFILE, $genefilename);
+	@gene = <GENEFILE>;
+@genereverse = reverse @gene;
+print "Eredeti gensorrend:\n@gene\n\n";
+print "Forditott gensorrend:\n@genereverse";
+exit;

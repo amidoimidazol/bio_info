@@ -1,0 +1,57 @@
+#!/usr/bin/perl -w
+print "Adja meg a DNS szekvenciat tartalmazo file nevet (.dns):\n";
+	$dnafilename = <STDIN>;
+	chomp $dnafilename;
+	
+	unless (-e $dnafilename)
+	{
+	print "A \"$dnafilename\" nem letezik!";
+	exit;
+	}
+	
+	unless ( open ( DNAFILE , $dnafilename))
+	{	
+		print " A \"$dnafilename\" nevu filet nem lehet megnyitni";
+		}
+		
+		@DNA = DNAFILE;
+		close DNAFILE;
+		
+		$DNA = join ('', @DNA);
+		$DNA =~ s/\s//g;
+		@szam = ('1','2','3','4','5','6','7','8','9','0');
+		$DNA =~ s/[@szam]//g;
+		$DNA =~ tr/AGTCagtc/AGTCAGTC/;
+		$A=0;
+		$T=0,
+		$G=0;
+		$C=0;
+		$error=0;
+		
+		for ( $position = 0; $position < length $DNA; ++$DNA)
+		{
+		$base = substr ( $DNA, $position, 1);
+		
+		if ($base eq 'A')
+			{++$A;}
+		elsif ($base eq 'T')
+			{++$T;}
+		elsif ($base eq 'G')
+			{++$G;}
+		elsif ($base eq 'C')
+			{++$C;}
+		else {print "!!!HIBA!!! Ismeretlen bazis:$base\n";
+			++$error;}
+			
+		}
+		$osszes = $A + $G + $C + $T + $error;
+		
+		print "Osszes:$osszes\n";
+		print "Adenin:$A\n";
+		print "Guanin:$G\n";
+		print "Citozin:$C\n";
+		print "Timin:$T\n";
+		print "Hiba:$error\n";
+		
+			
+		exit;

@@ -1,0 +1,804 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#Open-la-shell">Open &agrave; la shell</a>
+    <ul>
+      <li><a href="#Simple-Opens">Simple Opens</a></li>
+      <li><a href="#Indirect-Filehandles">Indirect Filehandles</a></li>
+      <li><a href="#Pipe-Opens">Pipe Opens</a></li>
+      <li><a href="#The-Minus-File">The Minus File</a></li>
+      <li><a href="#Mixing-Reads-and-Writes">Mixing Reads and Writes</a></li>
+      <li><a href="#Filters">Filters</a></li>
+    </ul>
+  </li>
+  <li><a href="#Open-la-C">Open &agrave; la C</a>
+    <ul>
+      <li><a href="#Permissions-la-mode">Permissions &agrave; la mode</a></li>
+    </ul>
+  </li>
+  <li><a href="#Obscure-Open-Tricks">Obscure Open Tricks</a>
+    <ul>
+      <li><a href="#Re-Opening-Files-dups-">Re-Opening Files (dups)</a></li>
+      <li><a href="#Dispelling-the-Dweomer">Dispelling the Dweomer</a></li>
+      <li><a href="#Paths-as-Opens">Paths as Opens</a></li>
+      <li><a href="#Single-Argument-Open">Single Argument Open</a></li>
+      <li><a href="#Playing-with-STDIN-and-STDOUT">Playing with STDIN and STDOUT</a></li>
+    </ul>
+  </li>
+  <li><a href="#Other-I-O-Issues">Other I/O Issues</a>
+    <ul>
+      <li><a href="#Opening-Non-File-Files">Opening Non-File Files</a></li>
+      <li><a href="#Opening-Named-Pipes">Opening Named Pipes</a></li>
+      <li><a href="#Opening-Sockets">Opening Sockets</a></li>
+      <li><a href="#Binary-Files">Binary Files</a></li>
+      <li><a href="#File-Locking">File Locking</a></li>
+      <li><a href="#IO-Layers">IO Layers</a></li>
+    </ul>
+  </li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR-and-COPYRIGHT">AUTHOR and COPYRIGHT</a></li>
+  <li><a href="#HISTORY">HISTORY</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>perlopentut - tutorial on opening things in Perl</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Perl has two simple, built-in ways to open files: the shell way for convenience, and the C way for precision. The shell way also has 2- and 3-argument forms, which have different semantics for handling the filename. The choice is yours.</p>
+
+<h1 id="Open-la-shell">Open &agrave; la shell</h1>
+
+<p>Perl&#39;s <code><code>open</code></code> function was designed to mimic the way command-line redirection in the shell works. Here are some basic examples from the shell:</p>
+
+<pre><code><code>    $ myprogram file1 file2 file3
+    $ myprogram    &lt;  inputfile
+    $ myprogram    &gt;  outputfile
+    $ myprogram    &gt;&gt; outputfile
+    $ myprogram    |  otherprogram 
+    $ otherprogram |  myprogram</code></code></pre>
+
+<p>And here are some more advanced examples:</p>
+
+<pre><code><code>    $ otherprogram      | myprogram f1 - f2
+    $ otherprogram 2&gt;&amp;1 | myprogram -
+    $ myprogram     &lt;&amp;3
+    $ myprogram     &gt;&amp;4</code></code></pre>
+
+<p>Programmers accustomed to constructs like those above can take comfort in learning that Perl directly supports these familiar constructs using virtually the same syntax as the shell.</p>
+
+<h2 id="Simple-Opens">Simple Opens</h2>
+
+<p>The <code><code>open</code></code> function takes two arguments: the first is a filehandle, and the second is a single string comprising both what to open and how to open it. <code><code>open</code></code> returns true when it works, and when it fails, returns a false value and sets the special variable <code><code>$!</code></code> to reflect the system error. If the filehandle was previously opened, it will be implicitly closed first.</p>
+
+<p>For example:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">INFO</span><span class="operator">,</span>      <span class="string">"datafile"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span><span class="operator">(</span><span class="string">"can't open datafile: $!"</span><span class="operator">);</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">INFO</span><span class="operator">,</span>   <span class="string">"&lt;  datafile"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span><span class="operator">(</span><span class="string">"can't open datafile: $!"</span><span class="operator">);</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">RESULTS</span><span class="operator">,</span><span class="string">"&gt;  runstats"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span><span class="operator">(</span><span class="string">"can't open runstats: $!"</span><span class="operator">);</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">LOG</span><span class="operator">,</span>    <span class="string">"&gt;&gt; logfile "</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span><span class="operator">(</span><span class="string">"can't open logfile:  $!"</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>If you prefer the low-punctuation version, you could write that this way:</p>
+
+<pre><code><code>    <span class="keyword">open</span> <span class="variable">INFO</span><span class="operator">,</span>   <span class="string">"&lt;  datafile"</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open datafile: $!"</span><span class="operator">;</span>
+    <span class="keyword">open</span> <span class="variable">RESULTS</span><span class="operator">,</span><span class="string">"&gt;  runstats"</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open runstats: $!"</span><span class="operator">;</span>
+    <span class="keyword">open</span> <span class="variable">LOG</span><span class="operator">,</span>    <span class="string">"&gt;&gt; logfile "</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open logfile:  $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>A few things to notice. First, the leading <code><code>&lt;</code></code> is optional. If omitted, Perl assumes that you want to open the file for reading.</p>
+
+<p>Note also that the first example uses the <code><code>||</code></code> logical operator, and the second uses <code><code>or</code></code>, which has lower precedence. Using <code><code>||</code></code> in the latter examples would effectively mean</p>
+
+<pre><code><code>    <span class="keyword">open</span> <span class="variable">INFO</span><span class="operator">,</span> <span class="operator">(</span> <span class="string">"&lt;  datafile"</span>  <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open datafile: $!"</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>which is definitely not what you want.</p>
+
+<p>The other important thing to notice is that, just as in the shell, any whitespace before or after the filename is ignored. This is good, because you wouldn&#39;t want these to do different things:</p>
+
+<pre><code><code>    open INFO,   &quot;&lt;datafile&quot;   
+    open INFO,   &quot;&lt; datafile&quot; 
+    open INFO,   &quot;&lt;  datafile&quot;</code></code></pre>
+
+<p>Ignoring surrounding whitespace also helps for when you read a filename in from a different file, and forget to trim it before opening:</p>
+
+<pre><code><code>    <span class="variable">$filename</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="variable">INFO</span><span class="operator">&gt;;</span>         <span class="comment"># oops, \n still there</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">EXTRA</span><span class="operator">,</span> <span class="string">"&lt; </span><span class="variable">$filename</span><span class="string">"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open </span><span class="variable">$filename</span><span class="string">: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This is not a bug, but a feature. Because <code><code>open</code></code> mimics the shell in its style of using redirection arrows to specify how to open the file, it also does so with respect to extra whitespace around the filename itself as well. For accessing files with naughty names, see <a href="#Dispelling-the-Dweomer">&quot;Dispelling the Dweomer&quot;</a>.</p>
+
+<p>There is also a 3-argument version of <code><code>open</code></code>, which lets you put the special redirection characters into their own argument:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span> <span class="variable">INFO</span><span class="operator">,</span> <span class="string">"&gt;"</span><span class="operator">,</span> <span class="variable">$datafile</span> <span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"Can't create </span><span class="variable">$datafile</span><span class="string">: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>In this case, the filename to open is the actual string in <code><code>$datafile</code></code>, so you don&#39;t have to worry about <code><code>$datafile</code></code> containing characters that might influence the open mode, or whitespace at the beginning of the filename that would be absorbed in the 2-argument version. Also, any reduction of unnecessary string interpolation is a good thing.</p>
+
+<h2 id="Indirect-Filehandles">Indirect Filehandles</h2>
+
+<p><code><code>open</code></code>&#39;s first argument can be a reference to a filehandle. As of perl 5.6.0, if the argument is uninitialized, Perl will automatically create a filehandle and put a reference to it in the first argument, like so:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span> <span class="keyword">my</span> <span class="variable">$in</span><span class="operator">,</span> <span class="variable">$infile</span> <span class="operator">)</span>   <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"Couldn't read </span><span class="variable">$infile</span><span class="string">: $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(</span> <span class="operator">&lt;</span><span class="variable">$in</span><span class="operator">&gt;</span> <span class="operator">)</span> <span class="operator">{</span>
+        <span class="comment"># do something with $_</span>
+    <span class="operator">}</span>
+    <span class="keyword">close</span> <span class="variable">$in</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>Indirect filehandles make namespace management easier. Since filehandles are global to the current package, two subroutines trying to open <code><code>INFILE</code></code> will clash. With two functions opening indirect filehandles like <code><code>my $infile</code></code>, there&#39;s no clash and no need to worry about future conflicts.</p>
+
+<p>Another convenient behavior is that an indirect filehandle automatically closes when there are no more references to it:</p>
+
+<pre><code><code>    <span class="keyword">sub</span><span class="variable"> firstline </span><span class="operator">{</span>
+        <span class="keyword">open</span><span class="operator">(</span> <span class="keyword">my</span> <span class="variable">$in</span><span class="operator">,</span> <span class="keyword">shift</span> <span class="operator">)</span> <span class="operator">&amp;&amp;</span> <span class="keyword">return</span> <span class="keyword">scalar</span> <span class="operator">&lt;</span><span class="variable">$in</span><span class="operator">&gt;;</span>
+        <span class="comment"># no close() required</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<p>Indirect filehandles also make it easy to pass filehandles to and return filehandles from subroutines:</p>
+
+<pre><code><code>    <span class="keyword">for</span> <span class="keyword">my</span> <span class="variable">$file</span> <span class="operator">(</span> <span class="string">qw(this.conf that.conf)</span> <span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">my</span> <span class="variable">$fin</span> <span class="operator">=</span> <span class="variable">open_or_throw</span><span class="operator">(</span><span class="string">'&lt;'</span><span class="operator">,</span> <span class="variable">$file</span><span class="operator">);</span>
+        <span class="variable">process_conf</span><span class="operator">(</span> <span class="variable">$fin</span> <span class="operator">);</span>
+        <span class="comment"># no close() needed</span>
+    <span class="operator">}</span>
+    
+    <span class="keyword">use</span> <span class="variable">Carp</span><span class="operator">;</span>
+    <span class="keyword">sub</span><span class="variable"> open_or_throw </span><span class="operator">{</span>
+        <span class="keyword">my</span> <span class="operator">(</span><span class="variable">$mode</span><span class="operator">,</span> <span class="variable">$filename</span><span class="operator">)</span> <span class="operator">=</span> <span class="variable">@_</span><span class="operator">;</span>
+        <span class="keyword">open</span> <span class="keyword">my</span> <span class="variable">$h</span><span class="operator">,</span> <span class="variable">$mode</span><span class="operator">,</span> <span class="variable">$filename</span>
+            <span class="keyword">or</span> <span class="variable">croak</span> <span class="string">"Could not open '</span><span class="variable">$filename</span><span class="string">': $!"</span><span class="operator">;</span>
+        <span class="keyword">return</span> <span class="variable">$h</span><span class="operator">;</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<h2 id="Pipe-Opens">Pipe Opens</h2>
+
+<p>In C, when you want to open a file using the standard I/O library, you use the <code><code>fopen</code></code> function, but when opening a pipe, you use the <code><code>popen</code></code> function. But in the shell, you just use a different redirection character. That&#39;s also the case for Perl. The <code><code>open</code></code> call remains the same--just its argument differs.</p>
+
+<p>If the leading character is a pipe symbol, <code><code>open</code></code> starts up a new command and opens a write-only filehandle leading into that command. This lets you write into that handle and have what you write show up on that command&#39;s standard input. For example:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">PRINTER</span><span class="operator">,</span> <span class="string">"| lpr -Plp1"</span><span class="operator">)</span>    <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't run lpr: $!"</span><span class="operator">;</span>
+    <span class="keyword">print</span> <span class="variable">PRINTER</span> <span class="string">"stuff\n"</span><span class="operator">;</span>
+    <span class="keyword">close</span><span class="operator">(</span><span class="variable">PRINTER</span><span class="operator">)</span>                  <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't close lpr: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>If the trailing character is a pipe, you start up a new command and open a read-only filehandle leading out of that command. This lets whatever that command writes to its standard output show up on your handle for reading. For example:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">NET</span><span class="operator">,</span> <span class="string">"netstat -i -n |"</span><span class="operator">)</span>    <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't fork netstat: $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">NET</span><span class="operator">&gt;)</span> <span class="operator">{</span> <span class="operator">}</span>               <span class="comment"># do something with input</span>
+    <span class="keyword">close</span><span class="operator">(</span><span class="variable">NET</span><span class="operator">)</span>                      <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't close netstat: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>What happens if you try to open a pipe to or from a non-existent command? If possible, Perl will detect the failure and set <code><code>$!</code></code> as usual. But if the command contains special shell characters, such as <code><code>&gt;</code></code> or <code><code>*</code></code>, called &#39;metacharacters&#39;, Perl does not execute the command directly. Instead, Perl runs the shell, which then tries to run the command. This means that it&#39;s the shell that gets the error indication. In such a case, the <code><code>open</code></code> call will only indicate failure if Perl can&#39;t even run the shell. See <a href="../../lib/pods/perlfaq8.html#How-can-I-capture-STDERR-from-an-external-command-">&quot;How can I capture STDERR from an external command?&quot; in perlfaq8</a> to see how to cope with this. There&#39;s also an explanation in <a href="../../lib/pods/perlipc.html">perlipc</a>.</p>
+
+<p>If you would like to open a bidirectional pipe, the IPC::Open2 library will handle this for you. Check out <a href="../../lib/pods/perlipc.html#Bidirectional-Communication-with-Another-Process">&quot;Bidirectional Communication with Another Process&quot; in perlipc</a></p>
+
+<p>perl-5.6.x introduced a version of piped open that executes a process based on its command line arguments without relying on the shell. (Similar to the <code><code>system(@LIST)</code></code> notation.) This is safer and faster than executing a single argument pipe-command, but does not allow special shell constructs. (It is also not supported on Microsoft Windows, Mac OS Classic or RISC OS.)</p>
+
+<p>Here&#39;s an example of <code><code>open &#39;-|&#39;</code></code>, which prints a random Unix fortune cookie as uppercase:</p>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$collection</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">(</span><span class="variable">@ARGV</span><span class="operator">);</span>
+    <span class="keyword">open</span> <span class="keyword">my</span> <span class="variable">$fortune</span><span class="operator">,</span> <span class="string">'-|'</span><span class="operator">,</span> <span class="string">'fortune'</span><span class="operator">,</span> <span class="variable">$collection</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"Could not find fortune - $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">$fortune</span><span class="operator">&gt;)</span>
+    <span class="operator">{</span>
+        <span class="keyword">print</span> <span class="keyword">uc</span><span class="operator">(</span><span class="variable">$_</span><span class="operator">);</span>
+    <span class="operator">}</span>
+    <span class="keyword">close</span><span class="operator">(</span><span class="variable">$fortune</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>And this <code><code>open &#39;|-&#39;</code></code> pipes into lpr:</p>
+
+<pre><code><code>    <span class="keyword">open</span> <span class="keyword">my</span> <span class="variable">$printer</span><span class="operator">,</span> <span class="string">'|-'</span><span class="operator">,</span> <span class="string">'lpr'</span><span class="operator">,</span> <span class="string">'-Plp1'</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't run lpr: $!"</span><span class="operator">;</span>
+    <span class="keyword">print</span> <span class="operator">{</span><span class="variable">$printer</span><span class="operator">}</span> <span class="string">"stuff\n"</span><span class="operator">;</span>
+    <span class="keyword">close</span><span class="operator">(</span><span class="variable">$printer</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't close lpr: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<h2 id="The-Minus-File">The Minus File</h2>
+
+<p>Again following the lead of the standard shell utilities, Perl&#39;s <code><code>open</code></code> function treats a file whose name is a single minus, &quot;-&quot;, in a special way. If you open minus for reading, it really means to access the standard input. If you open minus for writing, it really means to access the standard output.</p>
+
+<p>If minus can be used as the default input or default output, what happens if you open a pipe into or out of minus? What&#39;s the default command it would run? The same script as you&#39;re currently running! This is actually a stealth <code><code>fork</code></code> hidden inside an <code><code>open</code></code> call. See <a href="../../lib/pods/perlipc.html#Safe-Pipe-Opens">&quot;Safe Pipe Opens&quot; in perlipc</a> for details.</p>
+
+<h2 id="Mixing-Reads-and-Writes">Mixing Reads and Writes</h2>
+
+<p>It is possible to specify both read and write access. All you do is add a &quot;+&quot; symbol in front of the redirection. But as in the shell, using a less-than on a file never creates a new file; it only opens an existing one. On the other hand, using a greater-than always clobbers (truncates to zero length) an existing file, or creates a brand-new one if there isn&#39;t an old one. Adding a &quot;+&quot; for read-write doesn&#39;t affect whether it only works on existing files or always clobbers existing ones.</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">WTMP</span><span class="operator">,</span> <span class="string">"+&lt; /usr/adm/wtmp"</span><span class="operator">)</span> 
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open /usr/adm/wtmp: $!"</span><span class="operator">;</span>
+    
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">SCREEN</span><span class="operator">,</span> <span class="string">"+&gt; lkscreen"</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open lkscreen: $!"</span><span class="operator">;</span>
+    
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">LOGFILE</span><span class="operator">,</span> <span class="string">"+&gt;&gt; /var/log/applog"</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open /var/log/applog: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>The first one won&#39;t create a new file, and the second one will always clobber an old one. The third one will create a new file if necessary and not clobber an old one, and it will allow you to read at any point in the file, but all writes will always go to the end. In short, the first case is substantially more common than the second and third cases, which are almost always wrong. (If you know C, the plus in Perl&#39;s <code><code>open</code></code> is historically derived from the one in C&#39;s fopen(3S), which it ultimately calls.)</p>
+
+<p>In fact, when it comes to updating a file, unless you&#39;re working on a binary file as in the WTMP case above, you probably don&#39;t want to use this approach for updating. Instead, Perl&#39;s <b>-i</b> flag comes to the rescue. The following command takes all the C, C++, or yacc source or header files and changes all their foo&#39;s to bar&#39;s, leaving the old version in the original filename with a &quot;.orig&quot; tacked on the end:</p>
+
+<pre><code><code>    $ perl -i.orig -pe &#39;s/\bfoo\b/bar/g&#39; *.[Cchy]</code></code></pre>
+
+<p>This is a short cut for some renaming games that are really the best way to update textfiles. See the second question in <a href="../../lib/pods/perlfaq5.html">perlfaq5</a> for more details.</p>
+
+<h2 id="Filters">Filters</h2>
+
+<p>One of the most common uses for <code><code>open</code></code> is one you never even notice. When you process the ARGV filehandle using <code><code>&lt;ARGV&gt;</code></code>, Perl actually does an implicit open on each file in @ARGV. Thus a program called like this:</p>
+
+<pre><code><code>    $ myprogram file1 file2 file3</code></code></pre>
+
+<p>can have all its files opened and processed one at a time using a construct no more complex than:</p>
+
+<pre><code><code>    <span class="keyword">while</span> <span class="operator">(&lt;&gt;)</span> <span class="operator">{</span>
+        <span class="comment"># do something with $_</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>If @ARGV is empty when the loop first begins, Perl pretends you&#39;ve opened up minus, that is, the standard input. In fact, $ARGV, the currently open file during <code><code>&lt;ARGV&gt;</code></code> processing, is even set to &quot;-&quot; in these circumstances.</p>
+
+<p>You are welcome to pre-process your @ARGV before starting the loop to make sure it&#39;s to your liking. One reason to do this might be to remove command options beginning with a minus. While you can always roll the simple ones by hand, the Getopts modules are good for this:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Getopt::Std</span><span class="operator">;</span>
+    
+    <span class="comment"># -v, -D, -o ARG, sets $opt_v, $opt_D, $opt_o</span>
+    <span class="variable">getopts</span><span class="operator">(</span><span class="string">"vDo:"</span><span class="operator">);</span>            
+    
+    <span class="comment"># -v, -D, -o ARG, sets $args{v}, $args{D}, $args{o}</span>
+    <span class="variable">getopts</span><span class="operator">(</span><span class="string">"vDo:"</span><span class="operator">,</span> <span class="operator">\</span><span class="variable">%args</span><span class="operator">);</span>    
+</code></code></pre>
+
+<p>Or the standard Getopt::Long module to permit named arguments:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Getopt::Long</span><span class="operator">;</span>
+    <span class="variable">GetOptions</span><span class="operator">(</span> <span class="string">"verbose"</span>  <span class="operator">=&gt;</span> <span class="operator">\</span><span class="variable">$verbose</span><span class="operator">,</span>        <span class="comment"># --verbose</span>
+                <span class="string">"Debug"</span>    <span class="operator">=&gt;</span> <span class="operator">\</span><span class="variable">$debug</span><span class="operator">,</span>          <span class="comment"># --Debug</span>
+                <span class="string">"output=s"</span> <span class="operator">=&gt;</span> <span class="operator">\</span><span class="variable">$output</span> <span class="operator">);</span>       
+            <span class="comment"># --output=somestring or --output somestring</span>
+</code></code></pre>
+
+<p>Another reason for preprocessing arguments is to make an empty argument list default to all files:</p>
+
+<pre><code><code>    <span class="variable">@ARGV</span> <span class="operator">=</span> <span class="keyword">glob</span><span class="operator">(</span><span class="string">"*"</span><span class="operator">)</span> <span class="keyword">unless</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>You could even filter out all but plain, text files. This is a bit silent, of course, and you might prefer to mention them on the way.</p>
+
+<pre><code><code>    <span class="variable">@ARGV</span> <span class="operator">=</span> <span class="keyword">grep</span> <span class="operator">{</span> <span class="keyword">-f</span> <span class="operator">&amp;&amp;</span> <span class="keyword">-T</span> <span class="operator">}</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>If you&#39;re using the <b>-n</b> or <b>-p</b> command-line options, you should put changes to @ARGV in a <code><code><span class="keyword">BEGIN</span><span class="operator">{}</span>
+</code></code> block.</p>
+
+<p>Remember that a normal <code><code>open</code></code> has special properties, in that it might call fopen(3S) or it might called popen(3S), depending on what its argument looks like; that&#39;s why it&#39;s sometimes called &quot;magic open&quot;. Here&#39;s an example:</p>
+
+<pre><code><code>    <span class="variable">$pwdinfo</span> <span class="operator">=</span> <span class="string">`domainname`</span> <span class="operator">=~</span> <span class="regex">/^(\(none\))?$/</span>
+                    <span class="operator">?</span> <span class="string">'&lt; /etc/passwd'</span>
+                    <span class="operator">:</span> <span class="string">'ypcat passwd |'</span><span class="operator">;</span>
+    
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">PWD</span><span class="operator">,</span> <span class="variable">$pwdinfo</span><span class="operator">)</span>                 
+                <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open </span><span class="variable">$pwdinfo</span><span class="string">: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This sort of thing also comes into play in filter processing. Because <code><code>&lt;ARGV&gt;</code></code> processing employs the normal, shell-style Perl <code><code>open</code></code>, it respects all the special things we&#39;ve already seen:</p>
+
+<pre><code><code>    $ myprogram f1 &quot;cmd1|&quot; - f2 &quot;cmd2|&quot; f3 &lt; tmpfile</code></code></pre>
+
+<p>That program will read from the file <i>f1</i>, the process <i>cmd1</i>, standard input (<i>tmpfile</i> in this case), the <i>f2</i> file, the <i>cmd2</i> command, and finally the <i>f3</i> file.</p>
+
+<p>Yes, this also means that if you have files named &quot;-&quot; (and so on) in your directory, they won&#39;t be processed as literal files by <code><code>open</code></code>. You&#39;ll need to pass them as &quot;./-&quot;, much as you would for the <i>rm</i> program, or you could use <code><code>sysopen</code></code> as described below.</p>
+
+<p>One of the more interesting applications is to change files of a certain name into pipes. For example, to autoprocess gzipped or compressed files by decompressing them with <i>gzip</i>:</p>
+
+<pre><code><code>    <span class="variable">@ARGV</span> <span class="operator">=</span> <span class="keyword">map</span> <span class="operator">{</span> <span class="regex">/\.(gz|Z)$/</span> <span class="operator">?</span> <span class="string">"gzip -dc </span><span class="variable">$_</span><span class="string"> |"</span> <span class="operator">:</span> <span class="variable">$_</span>  <span class="operator">}</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>Or, if you have the <i>GET</i> program installed from LWP, you can fetch URLs before processing them:</p>
+
+<pre><code><code>    <span class="variable">@ARGV</span> <span class="operator">=</span> <span class="keyword">map</span> <span class="operator">{</span> <span class="regex">m#^\w+://#</span> <span class="operator">?</span> <span class="string">"GET </span><span class="variable">$_</span><span class="string"> |"</span> <span class="operator">:</span> <span class="variable">$_</span> <span class="operator">}</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>It&#39;s not for nothing that this is called magic <code><code>&lt;ARGV&gt;</code></code>. Pretty nifty, eh?</p>
+
+<h1 id="Open-la-C">Open &agrave; la C</h1>
+
+<p>If you want the convenience of the shell, then Perl&#39;s <code><code>open</code></code> is definitely the way to go. On the other hand, if you want finer precision than C&#39;s simplistic fopen(3S) provides you should look to Perl&#39;s <code><code>sysopen</code></code>, which is a direct hook into the open(2) system call. That does mean it&#39;s a bit more involved, but that&#39;s the price of precision.</p>
+
+<p><code><code>sysopen</code></code> takes 3 (or 4) arguments.</p>
+
+<pre><code><code>    sysopen HANDLE, PATH, FLAGS, [MASK]</code></code></pre>
+
+<p>The HANDLE argument is a filehandle just as with <code><code>open</code></code>. The PATH is a literal path, one that doesn&#39;t pay attention to any greater-thans or less-thans or pipes or minuses, nor ignore whitespace. If it&#39;s there, it&#39;s part of the path. The FLAGS argument contains one or more values derived from the Fcntl module that have been or&#39;d together using the bitwise &quot;|&quot; operator. The final argument, the MASK, is optional; if present, it is combined with the user&#39;s current umask for the creation mode of the file. You should usually omit this.</p>
+
+<p>Although the traditional values of read-only, write-only, and read-write are 0, 1, and 2 respectively, this is known not to hold true on some systems. Instead, it&#39;s best to load in the appropriate constants first from the Fcntl module, which supplies the following standard flags:</p>
+
+<pre><code><code>    O_RDONLY            Read only
+    O_WRONLY            Write only
+    O_RDWR              Read and write
+    O_CREAT             Create the file if it doesn&#39;t exist
+    O_EXCL              Fail if the file already exists
+    O_APPEND            Append to the file
+    O_TRUNC             Truncate the file
+    O_NONBLOCK          Non-blocking access</code></code></pre>
+
+<p>Less common flags that are sometimes available on some operating systems include <code><code>O_BINARY</code></code>, <code><code>O_TEXT</code></code>, <code><code>O_SHLOCK</code></code>, <code><code>O_EXLOCK</code></code>, <code><code>O_DEFER</code></code>, <code><code>O_SYNC</code></code>, <code><code>O_ASYNC</code></code>, <code><code>O_DSYNC</code></code>, <code><code>O_RSYNC</code></code>, <code><code>O_NOCTTY</code></code>, <code><code>O_NDELAY</code></code> and <code><code>O_LARGEFILE</code></code>. Consult your open(2) manpage or its local equivalent for details. (Note: starting from Perl release 5.6 the <code><code>O_LARGEFILE</code></code> flag, if available, is automatically added to the sysopen() flags because large files are the default.)</p>
+
+<p>Here&#39;s how to use <code><code>sysopen</code></code> to emulate the simple <code><code>open</code></code> calls we had before. We&#39;ll omit the <code><code>|| die $!</code></code> checks for clarity, but make sure you always check the return values in real code. These aren&#39;t quite the same, since <code><code>open</code></code> will trim leading and trailing whitespace, but you&#39;ll get the idea.</p>
+
+<p>To open a file for reading:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&lt; </span><span class="variable">$path</span><span class="string">"</span><span class="operator">);</span>
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_RDONLY</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for writing, creating a new file if needed or else truncating an old file:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&gt; </span><span class="variable">$path</span><span class="string">"</span><span class="operator">);</span>
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_TRUNC</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for appending, creating one if necessary:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&gt;&gt; </span><span class="variable">$path</span><span class="string">"</span><span class="operator">);</span>
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_APPEND</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for update, where the file must already exist:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"+&lt; </span><span class="variable">$path</span><span class="string">"</span><span class="operator">);</span>
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_RDWR</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>And here are things you can do with <code><code>sysopen</code></code> that you cannot do with a regular <code><code>open</code></code>. As you&#39;ll see, it&#39;s just a matter of controlling the flags in the third argument.</p>
+
+<p>To open a file for writing, creating a new file which must not previously exist:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_EXCL</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for appending, where that file must already exist:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_APPEND</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for update, creating a new file if necessary:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_RDWR</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file for update, where that file must not already exist:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_RDWR</span> <span class="operator">|</span> <span class="variable">O_EXCL</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>To open a file without blocking, creating one if necessary:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">$path</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_NONBLOCK</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">);</span>
+</code></code></pre>
+
+<h2 id="Permissions-la-mode">Permissions &agrave; la mode</h2>
+
+<p>If you omit the MASK argument to <code><code>sysopen</code></code>, Perl uses the octal value 0666. The normal MASK to use for executables and directories should be 0777, and for anything else, 0666.</p>
+
+<p>Why so permissive? Well, it isn&#39;t really. The MASK will be modified by your process&#39;s current <code><code>umask</code></code>. A umask is a number representing <i>disabled</i> permissions bits; that is, bits that will not be turned on in the created file&#39;s permissions field.</p>
+
+<p>For example, if your <code><code>umask</code></code> were 027, then the 020 part would disable the group from writing, and the 007 part would disable others from reading, writing, or executing. Under these conditions, passing <code><code>sysopen</code></code> 0666 would create a file with mode 0640, since <code><code>0666 &amp; ~027</code></code> is 0640.</p>
+
+<p>You should seldom use the MASK argument to <code><code>sysopen()</code></code>. That takes away the user&#39;s freedom to choose what permission new files will have. Denying choice is almost always a bad thing. One exception would be for cases where sensitive or private data is being stored, such as with mail folders, cookie files, and internal temporary files.</p>
+
+<h1 id="Obscure-Open-Tricks">Obscure Open Tricks</h1>
+
+<h2 id="Re-Opening-Files-dups-">Re-Opening Files (dups)</h2>
+
+<p>Sometimes you already have a filehandle open, and want to make another handle that&#39;s a duplicate of the first one. In the shell, we place an ampersand in front of a file descriptor number when doing redirections. For example, <code><code>2&gt;&amp;1</code></code> makes descriptor 2 (that&#39;s STDERR in Perl) be redirected into descriptor 1 (which is usually Perl&#39;s STDOUT). The same is essentially true in Perl: a filename that begins with an ampersand is treated instead as a file descriptor if a number, or as a filehandle if a string.</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">SAVEOUT</span><span class="operator">,</span> <span class="string">"&gt;&amp;SAVEERR"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"couldn't dup SAVEERR: $!"</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">MHCONTEXT</span><span class="operator">,</span> <span class="string">"&lt;&amp;4"</span><span class="operator">)</span>     <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"couldn't dup fd4: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>That means that if a function is expecting a filename, but you don&#39;t want to give it a filename because you already have the file open, you can just pass the filehandle with a leading ampersand. It&#39;s best to use a fully qualified handle though, just in case the function happens to be in a different package:</p>
+
+<pre><code><code>    <span class="variable">somefunction</span><span class="operator">(</span><span class="string">"&amp;main::LOGFILE"</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>This way if somefunction() is planning on opening its argument, it can just use the already opened handle. This differs from passing a handle, because with a handle, you don&#39;t open the file. Here you have something you can pass to open.</p>
+
+<p>If you have one of those tricky, newfangled I/O objects that the C++ folks are raving about, then this doesn&#39;t work because those aren&#39;t a proper filehandle in the native Perl sense. You&#39;ll have to use fileno() to pull out the proper descriptor number, assuming you can:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">IO::Socket</span><span class="operator">;</span>
+    <span class="variable">$handle</span> <span class="operator">=</span> <span class="variable">IO::Socket::INET</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span><span class="string">"www.perl.com:80"</span><span class="operator">);</span>
+    <span class="variable">$fd</span> <span class="operator">=</span> <span class="variable">$handle</span><span class="operator">-&gt;</span><span class="variable">fileno</span><span class="operator">;</span>
+    <span class="variable">somefunction</span><span class="operator">(</span><span class="string">"&amp;</span><span class="variable">$fd</span><span class="string">"</span><span class="operator">);</span>  <span class="comment"># not an indirect function call</span>
+</code></code></pre>
+
+<p>It can be easier (and certainly will be faster) just to use real filehandles though:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">IO::Socket</span><span class="operator">;</span>
+    <span class="keyword">local</span> <span class="variable">*REMOTE</span> <span class="operator">=</span> <span class="variable">IO::Socket::INET</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span><span class="string">"www.perl.com:80"</span><span class="operator">);</span>
+    <span class="keyword">die</span> <span class="string">"can't connect"</span> <span class="keyword">unless</span> <span class="keyword">defined</span><span class="operator">(</span><span class="keyword">fileno</span><span class="operator">(</span><span class="variable">REMOTE</span><span class="operator">));</span>
+    <span class="variable">somefunction</span><span class="operator">(</span><span class="string">"&amp;main::REMOTE"</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>If the filehandle or descriptor number is preceded not just with a simple &quot;&amp;&quot; but rather with a &quot;&amp;=&quot; combination, then Perl will not create a completely new descriptor opened to the same place using the dup(2) system call. Instead, it will just make something of an alias to the existing one using the fdopen(3S) library call. This is slightly more parsimonious of systems resources, although this is less a concern these days. Here&#39;s an example of that:</p>
+
+<pre><code><code>    <span class="variable">$fd</span> <span class="operator">=</span> <span class="variable">$ENV</span><span class="operator">{</span><span class="string">"MHCONTEXTFD"</span><span class="operator">}</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">MHCONTEXT</span><span class="operator">,</span> <span class="string">"&lt;&amp;=</span><span class="variable">$fd</span><span class="string">"</span><span class="operator">)</span>   <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"couldn't fdopen </span><span class="variable">$fd</span><span class="string">: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>If you&#39;re using magic <code><code>&lt;ARGV&gt;</code></code>, you could even pass in as a command line argument in @ARGV something like <code><code>&quot;&lt;&amp;=$MHCONTEXTFD&quot;</code></code>, but we&#39;ve never seen anyone actually do this.</p>
+
+<h2 id="Dispelling-the-Dweomer">Dispelling the Dweomer</h2>
+
+<p>Perl is more of a DWIMmer language than something like Java--where DWIM is an acronym for &quot;do what I mean&quot;. But this principle sometimes leads to more hidden magic than one knows what to do with. In this way, Perl is also filled with <i>dweomer</i>, an obscure word meaning an enchantment. Sometimes, Perl&#39;s DWIMmer is just too much like dweomer for comfort.</p>
+
+<p>If magic <code><code>open</code></code> is a bit too magical for you, you don&#39;t have to turn to <code><code>sysopen</code></code>. To open a file with arbitrary weird characters in it, it&#39;s necessary to protect any leading and trailing whitespace. Leading whitespace is protected by inserting a <code><code>&quot;./&quot;</code></code> in front of a filename that starts with whitespace. Trailing whitespace is protected by appending an ASCII NUL byte (<code><code>&quot;\0&quot;</code></code>) at the end of the string.</p>
+
+<pre><code><code>    <span class="variable">$file</span> <span class="operator">=~</span> <span class="regex">s#^(\s)#./$1#</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&lt; </span><span class="variable">$file</span><span class="string">\0"</span><span class="operator">)</span>   <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open </span><span class="variable">$file</span><span class="string">: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This assumes, of course, that your system considers dot the current working directory, slash the directory separator, and disallows ASCII NULs within a valid filename. Most systems follow these conventions, including all POSIX systems as well as proprietary Microsoft systems. The only vaguely popular system that doesn&#39;t work this way is the &quot;Classic&quot; Macintosh system, which uses a colon where the rest of us use a slash. Maybe <code><code>sysopen</code></code> isn&#39;t such a bad idea after all.</p>
+
+<p>If you want to use <code><code>&lt;ARGV&gt;</code></code> processing in a totally boring and non-magical way, you could do this first:</p>
+
+<pre><code><code>    <span class="comment">#   "Sam sat on the ground and put his head in his hands.  </span>
+    <span class="comment">#   'I wish I had never come here, and I don't want to see </span>
+    <span class="comment">#   no more magic,' he said, and fell silent."</span>
+    <span class="keyword">for</span> <span class="operator">(</span><span class="variable">@ARGV</span><span class="operator">)</span> <span class="operator">{</span> 
+        <span class="regex">s#^([^./])#./$1#</span><span class="operator">;</span>
+        <span class="variable">$_</span> <span class="operator">.=</span> <span class="string">"\0"</span><span class="operator">;</span>
+    <span class="operator">}</span> 
+    <span class="keyword">while</span> <span class="operator">(&lt;&gt;)</span> <span class="operator">{</span>  
+        <span class="comment"># now process $_</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>But be warned that users will not appreciate being unable to use &quot;-&quot; to mean standard input, per the standard convention.</p>
+
+<h2 id="Paths-as-Opens">Paths as Opens</h2>
+
+<p>You&#39;ve probably noticed how Perl&#39;s <code><code>warn</code></code> and <code><code>die</code></code> functions can produce messages like:</p>
+
+<pre><code><code>    Some warning at scriptname line 29, &lt;FH&gt; line 7.</code></code></pre>
+
+<p>That&#39;s because you opened a filehandle FH, and had read in seven records from it. But what was the name of the file, rather than the handle?</p>
+
+<p>If you aren&#39;t running with <code><code>strict refs</code></code>, or if you&#39;ve turned them off temporarily, then all you have to do is this:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">$path</span><span class="operator">,</span> <span class="string">"&lt; </span><span class="variable">$path</span><span class="string">"</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open </span><span class="variable">$path</span><span class="string">: $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">$path</span><span class="operator">&gt;)</span> <span class="operator">{</span>
+        <span class="comment"># whatever</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>Since you&#39;re using the pathname of the file as its handle, you&#39;ll get warnings more like</p>
+
+<pre><code><code>    Some warning at scriptname line 29, &lt;/etc/motd&gt; line 7.</code></code></pre>
+
+<h2 id="Single-Argument-Open">Single Argument Open</h2>
+
+<p>Remember how we said that Perl&#39;s open took two arguments? That was a passive prevarication. You see, it can also take just one argument. If and only if the variable is a global variable, not a lexical, you can pass <code><code>open</code></code> just one argument, the filehandle, and it will get the path from the global scalar variable of the same name.</p>
+
+<pre><code><code>    <span class="variable">$FILE</span> <span class="operator">=</span> <span class="string">"/etc/motd"</span><span class="operator">;</span>
+    <span class="keyword">open</span> <span class="variable">FILE</span> <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open </span><span class="variable">$FILE</span><span class="string">: $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">FILE</span><span class="operator">&gt;)</span> <span class="operator">{</span>
+        <span class="comment"># whatever</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>Why is this here? Someone has to cater to the hysterical porpoises. It&#39;s something that&#39;s been in Perl since the very beginning, if not before.</p>
+
+<h2 id="Playing-with-STDIN-and-STDOUT">Playing with STDIN and STDOUT</h2>
+
+<p>One clever move with STDOUT is to explicitly close it when you&#39;re done with the program.</p>
+
+<pre><code><code>    <span class="keyword">END</span> <span class="operator">{</span> <span class="keyword">close</span><span class="operator">(</span><span class="variable">STDOUT</span><span class="operator">)</span> <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't close stdout: $!"</span> <span class="operator">}</span>
+</code></code></pre>
+
+<p>If you don&#39;t do this, and your program fills up the disk partition due to a command line redirection, it won&#39;t report the error exit with a failure status.</p>
+
+<p>You don&#39;t have to accept the STDIN and STDOUT you were given. You are welcome to reopen them if you&#39;d like.</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="variable">STDIN</span><span class="operator">,</span> <span class="string">"&lt; datafile"</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open datafile: $!"</span><span class="operator">;</span>
+    
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">STDOUT</span><span class="operator">,</span> <span class="string">"&gt; output"</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open output: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>And then these can be accessed directly or passed on to subprocesses. This makes it look as though the program were initially invoked with those redirections from the command line.</p>
+
+<p>It&#39;s probably more interesting to connect these to pipes. For example:</p>
+
+<pre><code><code>    <span class="variable">$pager</span> <span class="operator">=</span> <span class="variable">$ENV</span><span class="operator">{</span><span class="string">PAGER</span><span class="operator">}</span> <span class="operator">||</span> <span class="string">"(less || more)"</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">STDOUT</span><span class="operator">,</span> <span class="string">"| </span><span class="variable">$pager</span><span class="string">"</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't fork a pager: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This makes it appear as though your program were called with its stdout already piped into your pager. You can also use this kind of thing in conjunction with an implicit fork to yourself. You might do this if you would rather handle the post processing in your own program, just in a different process:</p>
+
+<pre><code><code>    <span class="variable">head</span><span class="operator">(</span><span class="number">100</span><span class="operator">);</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;&gt;)</span> <span class="operator">{</span>
+        <span class="keyword">print</span><span class="operator">;</span>
+    <span class="operator">}</span> 
+    
+    <span class="keyword">sub</span><span class="variable"> head </span><span class="operator">{</span>
+        <span class="keyword">my</span> <span class="variable">$lines</span> <span class="operator">=</span> <span class="keyword">shift</span> <span class="operator">||</span> <span class="number">20</span><span class="operator">;</span>
+        <span class="keyword">return</span> <span class="keyword">if</span> <span class="variable">$pid</span> <span class="operator">=</span> <span class="keyword">open</span><span class="operator">(</span><span class="variable">STDOUT</span><span class="operator">,</span> <span class="string">"|-"</span><span class="operator">);</span>       <span class="comment"># return if parent</span>
+        <span class="keyword">die</span> <span class="string">"cannot fork: $!"</span> <span class="keyword">unless</span> <span class="keyword">defined</span> <span class="variable">$pid</span><span class="operator">;</span>
+        <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">STDIN</span><span class="operator">&gt;)</span> <span class="operator">{</span>
+            <span class="keyword">last</span> <span class="keyword">if</span> <span class="operator">--</span><span class="variable">$lines</span> <span class="operator">&lt;</span> <span class="number">0</span><span class="operator">;</span>
+            <span class="keyword">print</span><span class="operator">;</span>
+        <span class="operator">}</span> 
+        <span class="keyword">exit</span><span class="operator">;</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>This technique can be applied to repeatedly push as many filters on your output stream as you wish.</p>
+
+<h1 id="Other-I-O-Issues">Other I/O Issues</h1>
+
+<p>These topics aren&#39;t really arguments related to <code><code>open</code></code> or <code><code>sysopen</code></code>, but they do affect what you do with your open files.</p>
+
+<h2 id="Opening-Non-File-Files">Opening Non-File Files</h2>
+
+<p>When is a file not a file? Well, you could say when it exists but isn&#39;t a plain file. We&#39;ll check whether it&#39;s a symbolic link first, just in case.</p>
+
+<pre><code><code>    <span class="keyword">if</span> <span class="operator">(</span><span class="keyword">-l</span> <span class="variable">$file</span> <span class="operator">||</span> <span class="operator">!</span> <span class="keyword">-f</span> <span class="variable">_</span><span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">print</span> <span class="string">"</span><span class="variable">$file</span><span class="string"> is not a plain file\n"</span><span class="operator">;</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>What other kinds of files are there than, well, files? Directories, symbolic links, named pipes, Unix-domain sockets, and block and character devices. Those are all files, too--just not <i>plain</i> files. This isn&#39;t the same issue as being a text file. Not all text files are plain files. Not all plain files are text files. That&#39;s why there are separate <code><code>-f</code></code> and <code><code>-T</code></code> file tests.</p>
+
+<p>To open a directory, you should use the <code><code>opendir</code></code> function, then process it with <code><code>readdir</code></code>, carefully restoring the directory name if necessary:</p>
+
+<pre><code><code>    <span class="keyword">opendir</span><span class="operator">(</span><span class="variable">DIR</span><span class="operator">,</span> <span class="variable">$dirname</span><span class="operator">)</span> <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't opendir </span><span class="variable">$dirname</span><span class="string">: $!"</span><span class="operator">;</span>
+    <span class="keyword">while</span> <span class="operator">(</span><span class="keyword">defined</span><span class="operator">(</span><span class="variable">$file</span> <span class="operator">=</span> <span class="keyword">readdir</span><span class="operator">(</span><span class="variable">DIR</span><span class="operator">)))</span> <span class="operator">{</span>
+        <span class="comment"># do something with "$dirname/$file"</span>
+    <span class="operator">}</span>
+    <span class="keyword">closedir</span><span class="operator">(</span><span class="variable">DIR</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>If you want to process directories recursively, it&#39;s better to use the File::Find module. For example, this prints out all files recursively and adds a slash to their names if the file is a directory.</p>
+
+<pre><code><code>    <span class="variable">@ARGV</span> <span class="operator">=</span> <span class="string">qw(.)</span> <span class="keyword">unless</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+    <span class="keyword">use</span> <span class="variable">File::Find</span><span class="operator">;</span>
+    <span class="variable">find</span> <span class="keyword">sub</span><span class="variable"> </span><span class="operator">{</span> <span class="keyword">print</span> <span class="variable">$File::Find::name</span><span class="operator">,</span> <span class="keyword">-d</span> <span class="operator">&amp;&amp;</span> <span class="string">'/'</span><span class="operator">,</span> <span class="string">"\n"</span> <span class="operator">},</span> <span class="variable">@ARGV</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This finds all bogus symbolic links beneath a particular directory:</p>
+
+<pre><code><code>    <span class="variable">find</span> <span class="keyword">sub</span><span class="variable"> </span><span class="operator">{</span> <span class="keyword">print</span> <span class="string">"</span><span class="variable">$File</span><span class="string">::Find::name\n"</span> <span class="keyword">if</span> <span class="keyword">-l</span> <span class="operator">&amp;&amp;</span> <span class="operator">!</span><span class="keyword">-e</span> <span class="operator">},</span> <span class="variable">$dir</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>As you see, with symbolic links, you can just pretend that it is what it points to. Or, if you want to know <i>what</i> it points to, then <code><code>readlink</code></code> is called for:</p>
+
+<pre><code><code>    <span class="keyword">if</span> <span class="operator">(</span><span class="keyword">-l</span> <span class="variable">$file</span><span class="operator">)</span> <span class="operator">{</span>
+        <span class="keyword">if</span> <span class="operator">(</span><span class="keyword">defined</span><span class="operator">(</span><span class="variable">$whither</span> <span class="operator">=</span> <span class="keyword">readlink</span><span class="operator">(</span><span class="variable">$file</span><span class="operator">)))</span> <span class="operator">{</span>
+            <span class="keyword">print</span> <span class="string">"</span><span class="variable">$file</span><span class="string"> points to </span><span class="variable">$whither</span><span class="string">\n"</span><span class="operator">;</span>
+        <span class="operator">}</span> <span class="keyword">else</span> <span class="operator">{</span>
+            <span class="keyword">print</span> <span class="string">"</span><span class="variable">$file</span><span class="string"> points nowhere: $!\n"</span><span class="operator">;</span>
+        <span class="operator">}</span> 
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<h2 id="Opening-Named-Pipes">Opening Named Pipes</h2>
+
+<p>Named pipes are a different matter. You pretend they&#39;re regular files, but their opens will normally block until there is both a reader and a writer. You can read more about them in <a href="../../lib/pods/perlipc.html#Named-Pipes">&quot;Named Pipes&quot; in perlipc</a>. Unix-domain sockets are rather different beasts as well; they&#39;re described in <a href="../../lib/pods/perlipc.html#Unix-Domain-TCP-Clients-and-Servers">&quot;Unix-Domain TCP Clients and Servers&quot; in perlipc</a>.</p>
+
+<p>When it comes to opening devices, it can be easy and it can be tricky. We&#39;ll assume that if you&#39;re opening up a block device, you know what you&#39;re doing. The character devices are more interesting. These are typically used for modems, mice, and some kinds of printers. This is described in <a href="../../lib/pods/perlfaq8.html#How-do-I-read-and-write-the-serial-port-">&quot;How do I read and write the serial port?&quot; in perlfaq8</a> It&#39;s often enough to open them carefully:</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">TTYIN</span><span class="operator">,</span> <span class="string">"/dev/ttyS1"</span><span class="operator">,</span> <span class="variable">O_RDWR</span> <span class="operator">|</span> <span class="variable">O_NDELAY</span> <span class="operator">|</span> <span class="variable">O_NOCTTY</span><span class="operator">)</span>
+                <span class="comment"># (O_NOCTTY no longer needed on POSIX systems)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open /dev/ttyS1: $!"</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">TTYOUT</span><span class="operator">,</span> <span class="string">"+&gt;&amp;TTYIN"</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't dup TTYIN: $!"</span><span class="operator">;</span>
+    
+    <span class="variable">$ofh</span> <span class="operator">=</span> <span class="keyword">select</span><span class="operator">(</span><span class="variable">TTYOUT</span><span class="operator">);</span> <span class="variable">$|</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">;</span> <span class="keyword">select</span><span class="operator">(</span><span class="variable">$ofh</span><span class="operator">);</span>
+    
+    <span class="keyword">print</span> <span class="variable">TTYOUT</span> <span class="string">"+++at\015"</span><span class="operator">;</span>
+    <span class="variable">$answer</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="variable">TTYIN</span><span class="operator">&gt;;</span>
+</code></code></pre>
+
+<p>With descriptors that you haven&#39;t opened using <code><code>sysopen</code></code>, such as sockets, you can set them to be non-blocking using <code><code>fcntl</code></code>:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Fcntl</span><span class="operator">;</span>
+    <span class="keyword">my</span> <span class="variable">$old_flags</span> <span class="operator">=</span> <span class="keyword">fcntl</span><span class="operator">(</span><span class="variable">$handle</span><span class="operator">,</span> <span class="variable">F_GETFL</span><span class="operator">,</span> <span class="number">0</span><span class="operator">)</span> 
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't get flags: $!"</span><span class="operator">;</span>
+    <span class="keyword">fcntl</span><span class="operator">(</span><span class="variable">$handle</span><span class="operator">,</span> <span class="variable">F_SETFL</span><span class="operator">,</span> <span class="variable">$old_flags</span> <span class="operator">|</span> <span class="variable">O_NONBLOCK</span><span class="operator">)</span> 
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't set non blocking: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>Rather than losing yourself in a morass of twisting, turning <code><code>ioctl</code></code>s, all dissimilar, if you&#39;re going to manipulate ttys, it&#39;s best to make calls out to the stty(1) program if you have it, or else use the portable POSIX interface. To figure this all out, you&#39;ll need to read the termios(3) manpage, which describes the POSIX interface to tty devices, and then <a href="../../lib/POSIX.html">POSIX</a>, which describes Perl&#39;s interface to POSIX. There are also some high-level modules on CPAN that can help you with these games. Check out Term::ReadKey and Term::ReadLine.</p>
+
+<h2 id="Opening-Sockets">Opening Sockets</h2>
+
+<p>What else can you open? To open a connection using sockets, you won&#39;t use one of Perl&#39;s two open functions. See <a href="../../lib/pods/perlipc.html#Sockets:-Client-Server-Communication">&quot;Sockets: Client/Server Communication&quot; in perlipc</a> for that. Here&#39;s an example. Once you have it, you can use FH as a bidirectional filehandle.</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">IO::Socket</span><span class="operator">;</span>
+    <span class="keyword">local</span> <span class="variable">*FH</span> <span class="operator">=</span> <span class="variable">IO::Socket::INET</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span><span class="string">"www.perl.com:80"</span><span class="operator">);</span>
+</code></code></pre>
+
+<p>For opening up a URL, the LWP modules from CPAN are just what the doctor ordered. There&#39;s no filehandle interface, but it&#39;s still easy to get the contents of a document:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">LWP::Simple</span><span class="operator">;</span>
+    <span class="variable">$doc</span> <span class="operator">=</span> <span class="variable">get</span><span class="operator">(</span><span class="string">'http://www.cpan.org/'</span><span class="operator">);</span>
+</code></code></pre>
+
+<h2 id="Binary-Files">Binary Files</h2>
+
+<p>On certain legacy systems with what could charitably be called terminally convoluted (some would say broken) I/O models, a file isn&#39;t a file--at least, not with respect to the C standard I/O library. On these old systems whose libraries (but not kernels) distinguish between text and binary streams, to get files to behave properly you&#39;ll have to bend over backwards to avoid nasty problems. On such infelicitous systems, sockets and pipes are already opened in binary mode, and there is currently no way to turn that off. With files, you have more options.</p>
+
+<p>Another option is to use the <code><code>binmode</code></code> function on the appropriate handles before doing regular I/O on them:</p>
+
+<pre><code><code>    <span class="keyword">binmode</span><span class="operator">(</span><span class="variable">STDIN</span><span class="operator">);</span>
+    <span class="keyword">binmode</span><span class="operator">(</span><span class="variable">STDOUT</span><span class="operator">);</span>
+    <span class="keyword">while</span> <span class="operator">(&lt;</span><span class="variable">STDIN</span><span class="operator">&gt;)</span> <span class="operator">{</span> <span class="keyword">print</span> <span class="operator">}</span> 
+</code></code></pre>
+
+<p>Passing <code><code>sysopen</code></code> a non-standard flag option will also open the file in binary mode on those systems that support it. This is the equivalent of opening the file normally, then calling <code><code>binmode</code></code> on the handle.</p>
+
+<pre><code><code>    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">BINDAT</span><span class="operator">,</span> <span class="string">"records.data"</span><span class="operator">,</span> <span class="variable">O_RDWR</span> <span class="operator">|</span> <span class="variable">O_BINARY</span><span class="operator">)</span>
+        <span class="operator">||</span> <span class="keyword">die</span> <span class="string">"can't open records.data: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>Now you can use <code><code>read</code></code> and <code><code>print</code></code> on that handle without worrying about the non-standard system I/O library breaking your data. It&#39;s not a pretty picture, but then, legacy systems seldom are. CP/M will be with us until the end of days, and after.</p>
+
+<p>On systems with exotic I/O systems, it turns out that, astonishingly enough, even unbuffered I/O using <code><code>sysread</code></code> and <code><code>syswrite</code></code> might do sneaky data mutilation behind your back.</p>
+
+<pre><code><code>    <span class="keyword">while</span> <span class="operator">(</span><span class="keyword">sysread</span><span class="operator">(</span><span class="variable">WHENCE</span><span class="operator">,</span> <span class="variable">$buf</span><span class="operator">,</span> <span class="number">1024</span><span class="operator">))</span> <span class="operator">{</span>
+        <span class="keyword">syswrite</span><span class="operator">(</span><span class="variable">WHITHER</span><span class="operator">,</span> <span class="variable">$buf</span><span class="operator">,</span> <span class="keyword">length</span><span class="operator">(</span><span class="variable">$buf</span><span class="operator">));</span>
+    <span class="operator">}</span> 
+</code></code></pre>
+
+<p>Depending on the vicissitudes of your runtime system, even these calls may need <code><code>binmode</code></code> or <code><code>O_BINARY</code></code> first. Systems known to be free of such difficulties include Unix, the Mac OS, Plan 9, and Inferno.</p>
+
+<h2 id="File-Locking">File Locking</h2>
+
+<p>In a multitasking environment, you may need to be careful not to collide with other processes who want to do I/O on the same files as you are working on. You&#39;ll often need shared or exclusive locks on files for reading and writing respectively. You might just pretend that only exclusive locks exist.</p>
+
+<p>Never use the existence of a file <code><code>-e $file</code></code> as a locking indication, because there is a race condition between the test for the existence of the file and its creation. It&#39;s possible for another process to create a file in the slice of time between your existence check and your attempt to create the file. Atomicity is critical.</p>
+
+<p>Perl&#39;s most portable locking interface is via the <code><code>flock</code></code> function, whose simplicity is emulated on systems that don&#39;t directly support it such as SysV or Windows. The underlying semantics may affect how it all works, so you should learn how <code><code>flock</code></code> is implemented on your system&#39;s port of Perl.</p>
+
+<p>File locking <i>does not</i> lock out another process that would like to do I/O. A file lock only locks out others trying to get a lock, not processes trying to do I/O. Because locks are advisory, if one process uses locking and another doesn&#39;t, all bets are off.</p>
+
+<p>By default, the <code><code>flock</code></code> call will block until a lock is granted. A request for a shared lock will be granted as soon as there is no exclusive locker. A request for an exclusive lock will be granted as soon as there is no locker of any kind. Locks are on file descriptors, not file names. You can&#39;t lock a file until you open it, and you can&#39;t hold on to a lock once the file has been closed.</p>
+
+<p>Here&#39;s how to get a blocking shared lock on a file, typically used for reading:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="number">5.004</span><span class="operator">;</span>
+    <span class="keyword">use</span> <span class="variable">Fcntl</span> <span class="string">qw(:DEFAULT :flock)</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&lt; filename"</span><span class="operator">)</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open filename: $!"</span><span class="operator">;</span>
+    <span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_SH</span><span class="operator">)</span>      <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't lock filename: $!"</span><span class="operator">;</span>
+    <span class="comment"># now read from FH</span>
+</code></code></pre>
+
+<p>You can get a non-blocking lock by using <code><code>LOCK_NB</code></code>.</p>
+
+<pre><code><code>    <span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_SH</span> <span class="operator">|</span> <span class="variable">LOCK_NB</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't lock filename: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>This can be useful for producing more user-friendly behaviour by warning if you&#39;re going to be blocking:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="number">5.004</span><span class="operator">;</span>
+    <span class="keyword">use</span> <span class="variable">Fcntl</span> <span class="string">qw(:DEFAULT :flock)</span><span class="operator">;</span>
+    <span class="keyword">open</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"&lt; filename"</span><span class="operator">)</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open filename: $!"</span><span class="operator">;</span>
+    <span class="keyword">unless</span> <span class="operator">(</span><span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_SH</span> <span class="operator">|</span> <span class="variable">LOCK_NB</span><span class="operator">))</span> <span class="operator">{</span>
+        <span class="variable">$|</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">;</span>
+        <span class="keyword">print</span> <span class="string">"Waiting for lock..."</span><span class="operator">;</span>
+        <span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_SH</span><span class="operator">)</span>  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't lock filename: $!"</span><span class="operator">;</span>
+        <span class="keyword">print</span> <span class="string">"got it.\n"</span>
+    <span class="operator">}</span> 
+    <span class="comment"># now read from FH</span>
+</code></code></pre>
+
+<p>To get an exclusive lock, typically used for writing, you have to be careful. We <code><code>sysopen</code></code> the file so it can be locked before it gets emptied. You can get a nonblocking version using <code><code>LOCK_EX | LOCK_NB</code></code>.</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="number">5.004</span><span class="operator">;</span>
+    <span class="keyword">use</span> <span class="variable">Fcntl</span> <span class="string">qw(:DEFAULT :flock)</span><span class="operator">;</span>
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"filename"</span><span class="operator">,</span> <span class="variable">O_WRONLY</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open filename: $!"</span><span class="operator">;</span>
+    <span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_EX</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't lock filename: $!"</span><span class="operator">;</span>
+    <span class="keyword">truncate</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="number">0</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't truncate filename: $!"</span><span class="operator">;</span>
+    <span class="comment"># now write to FH</span>
+</code></code></pre>
+
+<p>Finally, due to the uncounted millions who cannot be dissuaded from wasting cycles on useless vanity devices called hit counters, here&#39;s how to increment a number in a file safely:</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Fcntl</span> <span class="string">qw(:DEFAULT :flock)</span><span class="operator">;</span>
+    
+    <span class="keyword">sysopen</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="string">"numfile"</span><span class="operator">,</span> <span class="variable">O_RDWR</span> <span class="operator">|</span> <span class="variable">O_CREAT</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't open numfile: $!"</span><span class="operator">;</span>
+    <span class="comment"># autoflush FH</span>
+    <span class="variable">$ofh</span> <span class="operator">=</span> <span class="keyword">select</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">);</span> <span class="variable">$|</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">;</span> <span class="keyword">select</span> <span class="operator">(</span><span class="variable">$ofh</span><span class="operator">);</span>
+    <span class="keyword">flock</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="variable">LOCK_EX</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't write-lock numfile: $!"</span><span class="operator">;</span>
+    
+    <span class="variable">$num</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="variable">FH</span><span class="operator">&gt;</span> <span class="operator">||</span> <span class="number">0</span><span class="operator">;</span>
+    <span class="keyword">seek</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't rewind numfile : $!"</span><span class="operator">;</span>
+    <span class="keyword">print</span> <span class="variable">FH</span> <span class="variable">$num</span><span class="operator">+</span><span class="number">1</span><span class="operator">,</span> <span class="string">"\n"</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't write numfile: $!"</span><span class="operator">;</span>
+    
+    <span class="keyword">truncate</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">,</span> <span class="keyword">tell</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">))</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't truncate numfile: $!"</span><span class="operator">;</span>
+    <span class="keyword">close</span><span class="operator">(</span><span class="variable">FH</span><span class="operator">)</span>
+        <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"can't close numfile: $!"</span><span class="operator">;</span>
+</code></code></pre>
+
+<h2 id="IO-Layers">IO Layers</h2>
+
+<p>In Perl 5.8.0 a new I/O framework called &quot;PerlIO&quot; was introduced. This is a new &quot;plumbing&quot; for all the I/O happening in Perl; for the most part everything will work just as it did, but PerlIO also brought in some new features such as the ability to think of I/O as &quot;layers&quot;. One I/O layer may in addition to just moving the data also do transformations on the data. Such transformations may include compression and decompression, encryption and decryption, and transforming between various character encodings.</p>
+
+<p>Full discussion about the features of PerlIO is out of scope for this tutorial, but here is how to recognize the layers being used:</p>
+
+<ul>
+
+<li><p>The three-(or more)-argument form of <code><code>open</code></code> is being used and the second argument contains something else in addition to the usual <code><code>&#39;&lt;&#39;</code></code>, <code><code>&#39;&gt;&#39;</code></code>, <code><code>&#39;&gt;&gt;&#39;</code></code>, <code><code>&#39;|&#39;</code></code> and their variants, for example:</p>
+
+<pre><code><code>    <span class="keyword">open</span><span class="operator">(</span><span class="keyword">my</span> <span class="variable">$fh</span><span class="operator">,</span> <span class="string">"&lt;:crlf"</span><span class="operator">,</span> <span class="variable">$fn</span><span class="operator">);</span>
+</code></code></pre>
+
+</li>
+<li><p>The two-argument form of <code><code>binmode</code></code> is being used, for example</p>
+
+<pre><code><code>    <span class="keyword">binmode</span><span class="operator">(</span><span class="variable">$fh</span><span class="operator">,</span> <span class="string">":encoding(utf16)"</span><span class="operator">);</span>
+</code></code></pre>
+
+</li>
+</ul>
+
+<p>For more detailed discussion about PerlIO see <a href="../../lib/PerlIO.html">PerlIO</a>; for more detailed discussion about Unicode and I/O see <a href="../../lib/pods/perluniintro.html">perluniintro</a>.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>The <code><code>open</code></code> and <code><code>sysopen</code></code> functions in perlfunc(1); the system open(2), dup(2), fopen(3), and fdopen(3) manpages; the POSIX documentation.</p>
+
+<h1 id="AUTHOR-and-COPYRIGHT">AUTHOR and COPYRIGHT</h1>
+
+<p>Copyright 1998 Tom Christiansen.</p>
+
+<p>This documentation is free; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+<p>Irrespective of its distribution, all code examples in these files are hereby placed into the public domain. You are permitted and encouraged to use this code in your own programs for fun or for profit as you see fit. A simple comment in the code giving credit would be courteous but is not required.</p>
+
+<h1 id="HISTORY">HISTORY</h1>
+
+<p>First release: Sat Jan 9 08:09:11 MST 1999</p>
+
+
+</body>
+
+</html>
+
+

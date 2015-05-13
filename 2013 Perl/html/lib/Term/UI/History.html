@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a>
+    <ul>
+      <li><a href="#history-message-string-VERBOSE-">history(&quot;message string&quot; [,VERBOSE])</a></li>
+    </ul>
+  </li>
+  <li><a href="#GLOBAL-VARIABLES">GLOBAL VARIABLES</a></li>
+  <li><a href="#See-Also">See Also</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Term::UI::History - history function</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">Term::UI::History</span> <span class="string">qw[history]</span><span class="operator">;</span>
+    
+    <span class="variable">history</span><span class="operator">(</span><span class="string">"Some message"</span><span class="operator">);</span>
+    
+    <span class="comment">### retrieve the history in printable form</span>
+    <span class="variable">$hist</span>  <span class="operator">=</span> <span class="variable">Term::UI::History</span><span class="operator">-&gt;</span><span class="variable">history_as_string</span><span class="operator">;</span>
+    
+    <span class="comment">### redirect output</span>
+    <span class="keyword">local</span> <span class="variable">$Term::UI::History::HISTORY_FH</span> <span class="operator">=</span> <span class="operator">\</span><span class="variable">*STDERR</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module provides the <code><code>history</code></code> function for <code><code>Term::UI</code></code>, printing and saving all the <code><code>UI</code></code> interaction.</p>
+
+<p>Refer to the <code><code>Term::UI</code></code> manpage for details on usage from <code><code>Term::UI</code></code>.</p>
+
+<p>This module subclasses <code><code>Log::Message::Simple</code></code>. Refer to its manpage for additional functionality available via this package.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<h2 id="history-message-string-VERBOSE-">history(&quot;message string&quot; [,VERBOSE])</h2>
+
+<p>Records a message on the stack, and prints it to <code><code>STDOUT</code></code> (or actually <code><code>$HISTORY_FH</code></code>, see the <code><code>GLOBAL VARIABLES</code></code> section below), if the <code><code>VERBOSE</code></code> option is true.</p>
+
+<p>The <code><code>VERBOSE</code></code> option defaults to true.</p>
+
+<h1 id="GLOBAL-VARIABLES">GLOBAL VARIABLES</h1>
+
+<dl>
+
+<dt id="HISTORY_FH">$HISTORY_FH</dt>
+<dd>
+
+<p>This is the filehandle all the messages sent to <code><code>history()</code></code> are being printed. This defaults to <code><code>*STDOUT</code></code>.</p>
+
+</dd>
+</dl>
+
+<h1 id="See-Also">See Also</h1>
+
+<p><code><code>Log::Message::Simple</code></code>, <code><code>Term::UI</code></code></p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>This module by Jos Boumans &lt;kane@cpan.org&gt;.</p>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>This module is copyright (c) 2005 Jos Boumans &lt;kane@cpan.org&gt;. All rights reserved.</p>
+
+<p>This library is free software; you may redistribute and/or modify it under the same terms as Perl itself.</p>
+
+
+</body>
+
+</html>
+
+

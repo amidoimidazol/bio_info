@@ -1,0 +1,11 @@
+#!/usr/bin/perl -w
+$proteinfilename = 'BRAF.pep';
+#unless ha NEM tudja megcsinalni az elso feladatot ( file megnyitasa) akkor kivitelezi a masodik reszt
+unless ( open ( PROTEINFILE, $proteinfilename) ) 
+	{print "A $proteinfilename file nem nyithato meg!\n"; 
+		exit; }
+# soronkent halad amig van adat = True amint elfogy tovabblep
+while ( $protein = <PROTEINFILE> )
+	{print "A feherjeszekvencia:\n$protein";}
+close PROTEINFILE;
+exit; 

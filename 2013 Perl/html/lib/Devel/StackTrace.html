@@ -1,0 +1,207 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#VERSION">VERSION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#TOP-AND-BOTTOM-OF-THE-STACK">&#39;TOP&#39; AND &#39;BOTTOM&#39; OF THE STACK</a></li>
+  <li><a href="#Devel::StackTrace-METHODS">Devel::StackTrace METHODS</a></li>
+  <li><a href="#SUPPORT">SUPPORT</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Devel::StackTrace - An object representing a stack trace</p>
+
+<h1 id="VERSION">VERSION</h1>
+
+<p>version 1.27</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>  <span class="keyword">use</span> <span class="variable">Devel::StackTrace</span><span class="operator">;</span>
+  
+  <span class="keyword">my</span> <span class="variable">$trace</span> <span class="operator">=</span> <span class="variable">Devel::StackTrace</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">;</span>
+  
+  <span class="keyword">print</span> <span class="variable">$trace</span><span class="operator">-&gt;</span><span class="variable">as_string</span><span class="operator">;</span> <span class="comment"># like carp</span>
+  
+  <span class="comment"># from top (most recent) of stack to bottom.</span>
+  <span class="keyword">while</span> <span class="operator">(</span><span class="keyword">my</span> <span class="variable">$frame</span> <span class="operator">=</span> <span class="variable">$trace</span><span class="operator">-&gt;</span><span class="variable">next_frame</span><span class="operator">)</span> <span class="operator">{</span>
+      <span class="keyword">print</span> <span class="string">"Has args\n"</span> <span class="keyword">if</span> <span class="variable">$frame</span><span class="operator">-&gt;</span><span class="variable">hasargs</span><span class="operator">;</span>
+  <span class="operator">}</span>
+  
+  <span class="comment"># from bottom (least recent) of stack to top.</span>
+  <span class="keyword">while</span> <span class="operator">(</span><span class="keyword">my</span> <span class="variable">$frame</span> <span class="operator">=</span> <span class="variable">$trace</span><span class="operator">-&gt;</span><span class="variable">prev_frame</span><span class="operator">)</span> <span class="operator">{</span>
+      <span class="keyword">print</span> <span class="string">"Sub: "</span><span class="operator">,</span> <span class="variable">$frame</span><span class="operator">-&gt;</span><span class="variable">subroutine</span><span class="operator">,</span> <span class="string">"\n"</span><span class="operator">;</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The Devel::StackTrace module contains two classes, Devel::StackTrace and Devel::StackTrace::Frame. The goal of this object is to encapsulate the information that can found through using the caller() function, as well as providing a simple interface to this data.</p>
+
+<p>The Devel::StackTrace object contains a set of Devel::StackTrace::Frame objects, one for each level of the stack. The frames contain all the data available from <code><code>caller()</code></code>.</p>
+
+<p>This code was created to support my <a href="../../lib/Exception/Class/Base.html">Exception::Class::Base</a> class (part of Exception::Class) but may be useful in other contexts.</p>
+
+<h1 id="TOP-AND-BOTTOM-OF-THE-STACK">&#39;TOP&#39; AND &#39;BOTTOM&#39; OF THE STACK</h1>
+
+<p>When describing the methods of the trace object, I use the words &#39;top&#39; and &#39;bottom&#39;. In this context, the &#39;top&#39; frame on the stack is the most recent frame and the &#39;bottom&#39; is the least recent.</p>
+
+<p>Here&#39;s an example:</p>
+
+<pre><code><code>  <span class="variable">foo</span><span class="operator">();</span>  <span class="comment"># bottom frame is here</span>
+  
+  <span class="keyword">sub</span><span class="variable"> foo </span><span class="operator">{</span>
+     <span class="variable">bar</span><span class="operator">();</span>
+  <span class="operator">}</span>
+  
+  <span class="keyword">sub</span><span class="variable"> bar </span><span class="operator">{</span>
+     <span class="variable">Devel::StackTrace</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">;</span>  <span class="comment"># top frame is here.</span>
+  <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="Devel::StackTrace-METHODS">Devel::StackTrace METHODS</h1>
+
+<ul>
+
+<li><p>Devel::StackTrace-&gt;new(%named_params)</p>
+
+<p>Returns a new Devel::StackTrace object.</p>
+
+<p>Takes the following parameters:</p>
+
+<ul>
+
+<li><p>frame_filter =&gt; $sub</p>
+
+<p>By default, Devel::StackTrace will include all stack frames before the call to its its constructor.</p>
+
+<p>However, you may want to filter out some frames with more granularity than &#39;ignore_package&#39; or &#39;ignore_class&#39; allow.</p>
+
+<p>You can provide a subroutine which is called with the raw frame data for each frame. This is a hash reference with two keys, &quot;caller&quot;, and &quot;args&quot;, both of which are array references. The &quot;caller&quot; key is the raw data as returned by Perl&#39;s <code><code>caller()</code></code> function, and the &quot;args&quot; key are the subroutine arguments found in <code><code>@DB::args</code></code>.</p>
+
+<p>The filter should return true if the frame should be included, or false if it should be skipped.</p>
+
+</li>
+<li><p>ignore_package =&gt; $package_name OR \@package_names</p>
+
+<p>Any frames where the package is one of these packages will not be on the stack.</p>
+
+</li>
+<li><p>ignore_class =&gt; $package_name OR \@package_names</p>
+
+<p>Any frames where the package is a subclass of one of these packages (or is the same package) will not be on the stack.</p>
+
+<p>Devel::StackTrace internally adds itself to the &#39;ignore_package&#39; parameter, meaning that the Devel::StackTrace package is <b>ALWAYS</b> ignored. However, if you create a subclass of Devel::StackTrace it will not be ignored.</p>
+
+</li>
+<li><p>no_refs =&gt; $boolean</p>
+
+<p>If this parameter is true, then Devel::StackTrace will not store references internally when generating stacktrace frames. This lets your objects go out of scope.</p>
+
+<p>Devel::StackTrace replaces any references with their stringified representation.</p>
+
+</li>
+<li><p>respect_overload =&gt; $boolean</p>
+
+<p>By default, Devel::StackTrace will call <code><code>overload::AddrRef()</code></code> to get the underlying string representation of an object, instead of respecting the object&#39;s stringification overloading. If you would prefer to see the overloaded representation of objects in stack traces, then set this parameter to true.</p>
+
+</li>
+<li><p>max_arg_length =&gt; $integer</p>
+
+<p>By default, Devel::StackTrace will display the entire argument for each subroutine call. Setting this parameter causes it to truncate the argument&#39;s string representation if it is longer than this number of characters.</p>
+
+</li>
+<li><p>message =&gt; $string</p>
+
+<p>By default, Devel::StackTrace will use &#39;Trace begun&#39; as the message for the first stack frame when you call <code><code>as_string</code></code>. You can supply an alternative message using this option.</p>
+
+</li>
+<li><p>indent =&gt; $boolean</p>
+
+<p>If this parameter is true, each stack frame after the first will start with a tab character, just like <code><code>Carp::confess()</code></code>.</p>
+
+</li>
+</ul>
+
+</li>
+<li><p>$trace-&gt;next_frame</p>
+
+<p>Returns the next Devel::StackTrace::Frame object down on the stack. If it hasn&#39;t been called before it returns the first frame. It returns undef when it reaches the bottom of the stack and then resets its pointer so the next call to <code><code>next_frame</code></code> or <code><code>prev_frame</code></code> will work properly.</p>
+
+</li>
+<li><p>$trace-&gt;prev_frame</p>
+
+<p>Returns the next Devel::StackTrace::Frame object up on the stack. If it hasn&#39;t been called before it returns the last frame. It returns undef when it reaches the top of the stack and then resets its pointer so pointer so the next call to <code><code>next_frame</code></code> or <code><code>prev_frame</code></code> will work properly.</p>
+
+</li>
+<li><p>$trace-&gt;reset_pointer</p>
+
+<p>Resets the pointer so that the next call <code><code>next_frame</code></code> or <code><code>prev_frame</code></code> will start at the top or bottom of the stack, as appropriate.</p>
+
+</li>
+<li><p>$trace-&gt;frames</p>
+
+<p>Returns a list of Devel::StackTrace::Frame objects. The order they are returned is from top (most recent) to bottom.</p>
+
+</li>
+<li><p>$trace-&gt;frame ($index)</p>
+
+<p>Given an index, returns the relevant frame or undef if there is not frame at that index. The index is exactly like a Perl array. The first frame is 0 and negative indexes are allowed.</p>
+
+</li>
+<li><p>$trace-&gt;frame_count</p>
+
+<p>Returns the number of frames in the trace object.</p>
+
+</li>
+<li><p>$trace-&gt;as_string</p>
+
+<p>Calls as_string on each frame from top to bottom, producing output quite similar to the Carp module&#39;s cluck/confess methods.</p>
+
+</li>
+</ul>
+
+<h1 id="SUPPORT">SUPPORT</h1>
+
+<p>Please submit bugs to the CPAN RT system at http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Devel%3A%3AStackTrace or via email at bug-devel-stacktrace@rt.cpan.org.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Dave Rolsky &lt;autarch@urth.org&gt;</p>
+
+<h1 id="COPYRIGHT-AND-LICENSE">COPYRIGHT AND LICENSE</h1>
+
+<p>This software is Copyright (c) 2011 by Dave Rolsky.</p>
+
+<p>This is free software, licensed under:</p>
+
+<pre><code><code>  The Artistic License 2.0 (GPL Compatible)</code></code></pre>
+
+
+</body>
+
+</html>
+
+

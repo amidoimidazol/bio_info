@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+use strict;
+use warnings;
+use lib '/perl';
+use biolib;
+
+my ($help);
+if (@ARGV)
+	{print help @ARGV};
+
+
+exit;

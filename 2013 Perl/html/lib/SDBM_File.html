@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#DIAGNOSTICS">DIAGNOSTICS</a>
+    <ul>
+      <li><a href="#"></a></li>
+    </ul>
+  </li>
+  <li><a href="#BUGS-AND-WARNINGS">BUGS AND WARNINGS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>SDBM_File - Tied access to sdbm files</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code> <span class="keyword">use</span> <span class="variable">Fcntl</span><span class="operator">;</span>   <span class="comment"># For O_RDWR, O_CREAT, etc.</span>
+ <span class="keyword">use</span> <span class="variable">SDBM_File</span><span class="operator">;</span>
+ 
+ <span class="keyword">tie</span><span class="operator">(</span><span class="variable">%h</span><span class="operator">,</span> <span class="string">'SDBM_File'</span><span class="operator">,</span> <span class="string">'filename'</span><span class="operator">,</span> <span class="variable">O_RDWR</span><span class="operator">|</span><span class="variable">O_CREAT</span><span class="operator">,</span> <span class="number">0666</span><span class="operator">)</span>
+   <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"Couldn't tie SDBM file 'filename': $!; aborting"</span><span class="operator">;</span>
+ 
+ <span class="comment"># Now read and change the hash</span>
+ <span class="variable">$h</span><span class="operator">{</span><span class="string">newkey</span><span class="operator">}</span> <span class="operator">=</span> <span class="variable">newvalue</span><span class="operator">;</span>
+ <span class="keyword">print</span> <span class="variable">$h</span><span class="operator">{</span><span class="string">oldkey</span><span class="operator">}</span><span class="operator">;</span> 
+ <span class="operator">...</span>
+ 
+ <span class="keyword">untie</span> <span class="variable">%h</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><code><code>SDBM_File</code></code> establishes a connection between a Perl hash variable and a file in SDBM_File format;. You can manipulate the data in the file just as if it were in a Perl hash, but when your program exits, the data will remain in the file, to be used the next time your program runs.</p>
+
+<p>Use <code><code>SDBM_File</code></code> with the Perl built-in <code><code>tie</code></code> function to establish the connection between the variable and the file. The arguments to <code><code>tie</code></code> should be:</p>
+
+<ol>
+
+<li><p>The hash variable you want to tie.</p>
+
+</li>
+<li><p>The string <code><code>&quot;SDBM_File&quot;</code></code>. (Ths tells Perl to use the <code><code>SDBM_File</code></code> package to perform the functions of the hash.)</p>
+
+</li>
+<li><p>The name of the file you want to tie to the hash.</p>
+
+</li>
+<li><p>Flags. Use one of:</p>
+
+<dl>
+
+<dt id="O_RDONLY"><code><code>O_RDONLY</code></code></dt>
+<dd>
+
+<p>Read-only access to the data in the file.</p>
+
+</dd>
+<dt id="O_WRONLY"><code><code>O_WRONLY</code></code></dt>
+<dd>
+
+<p>Write-only access to the data in the file.</p>
+
+</dd>
+<dt id="O_RDWR"><code><code>O_RDWR</code></code></dt>
+<dd>
+
+<p>Both read and write access.</p>
+
+</dd>
+</dl>
+
+<p>If you want to create the file if it does not exist, add <code><code>O_CREAT</code></code> to any of these, as in the example. If you omit <code><code>O_CREAT</code></code> and the file does not already exist, the <code><code>tie</code></code> call will fail.</p>
+
+</li>
+<li><p>The default permissions to use if a new file is created. The actual permissions will be modified by the user&#39;s umask, so you should probably use 0666 here. (See <a href="../lib/pods/perlfunc.html#umask">&quot;umask&quot; in perlfunc</a>.)</p>
+
+</li>
+</ol>
+
+<h1 id="DIAGNOSTICS">DIAGNOSTICS</h1>
+
+<p>On failure, the <code><code>tie</code></code> call returns an undefined value and probably sets <code><code>$!</code></code> to contain the reason the file could not be tied.</p>
+
+<h2 id=""><code><code>sdbm store returned -1, errno 22, key &quot;...&quot; at ...</code></code></h2>
+
+<p>This warning is emitted when you try to store a key or a value that is too long. It means that the change was not recorded in the database. See BUGS AND WARNINGS below.</p>
+
+<h1 id="BUGS-AND-WARNINGS">BUGS AND WARNINGS</h1>
+
+<p>There are a number of limits on the size of the data that you can store in the SDBM file. The most important is that the length of a key, plus the length of its associated value, may not exceed 1008 bytes.</p>
+
+<p>See <a href="../lib/pods/perlfunc.html#tie">&quot;tie&quot; in perlfunc</a>, <a href="../lib/pods/perldbmfilter.html">perldbmfilter</a>, <a href="../lib/Fcntl.html">Fcntl</a></p>
+
+
+</body>
+
+</html>
+
+

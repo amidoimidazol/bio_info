@@ -1,0 +1,82 @@
+#!/usr/bin/perl -w
+#array meghatarozas @array = ( , ) egyes elemek elohivasa $array[1]; stb
+	@bases = ( 'A','C','G','T');
+print "Elso Feladat\n\n";
+print "Az elso eleme az arraynek:";
+print "$bases[0]\n";
+print "A masodik eleme az arraynek:";
+print "$bases[1]\n";
+print "A harmadik eleme az arraynek:";
+print "$bases[2]\n";
+print "A negyedik eleme az arraynek:";
+print "$bases[3]\n\n";
+
+
+print "A teljes array:";
+print "@bases\n\n";
+
+#pop levagja az arraybol az utolso elemet
+print "Masodik Feladat\n\n";
+$base1 = pop @bases;
+print "Ez a pop parancsal levagott elem:";
+print "$base1\n";
+print "Ez az arrayben a maradek:";
+print "@bases\n\n";
+
+#shift kiszedi az arraybol az elso elemet
+print "Harmadik Feladat\n\n";	
+@bases = ( 'A','C','G','T');
+$base2 = shift @bases;
+print "Ez a shift parancsal levagott elem az array elejerol:";
+print "$base2\n";
+print "Ez az arrayben a maradek:";
+print "@bases\n\n";
+
+#unshift ( @array , $popvariable) kicsereli az elso tag (array) elso elemet a masodik tag-ra
+print "Negyedik feladat\n\n";
+	@bases = ( 'A','C','G','T');
+print "Az eredeti szekvencia:";
+print "@bases\n";
+		$base3 = pop @bases;
+			unshift ( @bases, $base3 );
+print "Az elso es utolso elem elore rakasa unshiftel\n\n";
+print "A felcserélt szekvencia:";
+print "@bases\n\n";
+
+# pop parancs benyomja az elemet az array vegere
+print "Otodik feladat\n";
+print "	Az array vegere rakhato egy elem a push parancsal\n";
+		@bases = ( 'A','C','G','T');
+		$base4 = shift @bases;
+			push ( @bases , $base4);
+print "Az elso elem benyomva a vegere:";
+print "$base4\n\n";
+print "A felcserelt szekvencia:";
+print "@bases\n\n";
+		
+# megforditas
+print "Hatodik feladat\n\n";
+print "A szekvencia megfordithato a reverse parancsal\n";
+		@bases = ('A','C','G','T');
+			$reverse = reverse @bases;
+print "Eredeti szekvencia:";
+print "@bases\n";
+print "Forditott szekvencia:";
+print "$reverse\n\n";
+
+#Az array hossza a scalar @array parancsal
+print "Hetedik feladat\n\n";
+print "A scalar parancs megadja egy array hosszat!\n";
+		@bases = ('A','C','G','T');
+print "Az array hossza:";
+			print scalar @bases;
+
+#Beillesztes az arraybe a splice parancsal
+print "Nyolcadik feladat\n\n";
+print "A splice parancsal elemek illeszthetoek az arraybe!\n";
+		@bases = ('A','C','G','T');
+			splice (@bases,2,0,'X');
+print "A szekvencia a beillesztest kovetoen:";
+print "@bases\n\n";
+
+exit;

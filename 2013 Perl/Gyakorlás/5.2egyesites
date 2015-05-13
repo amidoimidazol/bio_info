@@ -1,0 +1,25 @@
+#!/usr/bin/perl -w
+#open, input
+print "Irja be az elso szekvenciat:\n";
+	$DNA1 = <STDIN>;
+	#chomp nelkul kulon kulon printeli ki a vegen
+	chomp $DNA1;
+
+print "Irja be a masodik szekvenciat:\n";
+
+	$DNA2 = <STDIN>;
+	chomp $DNA2;
+	
+	#ket string összekapcsolasa
+	$DNA3 .= "$DNA1$DNA2";
+
+print "Egyesitett szekvencia:\n\n";
+print "$DNA3\n";
+	
+	#ha az egyyesitett szekvenciaban van egyeezes az elso inputtal akkor az elso input elemeit szóközre csereli :)
+	
+	if ( $DNA3 =~ /$DNA1/)
+		{$DNA3 =~ s/[$DNA1]/ /g;}
+print "$DNA3";
+
+exit;

@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+# Read a fasta file and extract the DNA sequence data
+# Translate it to protein and print it out in 25-characterlong
+
+use strict;
+use warnings;
+use biolib; # see Chapter 6 about this module
+# Initialize variables
+my @file_data = ( );
+my $dna = '';
+my $protein = '';
+
+# Read in the contents of the file "sample.dna"
+@file_data = get_file_data("fasta.dns");
+# Extract the sequence data from the contents of the file
+
+$dna = get_sequence(@file_data);
+# Translate the DNA to protein
+$protein = dna2peptide($dna);
+# Print the sequence in lines 25 characters long
+print_sequence($protein, 25);
+exit;

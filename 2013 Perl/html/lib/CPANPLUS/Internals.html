@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../displayToc.js"></script>
+<script language="JavaScript" src="../../tocParas.js"></script>
+<script language="JavaScript" src="../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#ACCESSORS">ACCESSORS</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#internals-CPANPLUS::Internals-_init-_conf-CONFIG_OBJ-">$internals = CPANPLUS::Internals-&gt;_init( _conf =&gt; CONFIG_OBJ )</a></li>
+      <li><a href="#bool-internals-_flush-list-caches-">$bool = $internals-&gt;_flush( list =&gt; \@caches )</a></li>
+      <li><a href="#bool-internals-_register_callback-name-CALLBACK_NAME-code-CODEREF-">$bool = $internals-&gt;_register_callback( name =&gt; CALLBACK_NAME, code =&gt; CODEREF );</a></li>
+      <li><a href="#bool-internals-_add_to_includepath-directories-dirs-">$bool = $internals-&gt;_add_to_includepath( directories =&gt; \@dirs )</a></li>
+      <li><a href="#bool-internals-_add_to_path-directories-dirs-">$bool = $internals-&gt;_add_to_path( directories =&gt; \@dirs )</a></li>
+      <li><a href="#id-CPANPLUS::Internals-_last_id">$id = CPANPLUS::Internals-&gt;_last_id</a></li>
+      <li><a href="#id-CPANPLUS::Internals-_store_id-internals-">$id = CPANPLUS::Internals-&gt;_store_id( $internals )</a></li>
+      <li><a href="#obj-CPANPLUS::Internals-_retrieve_id-ID-">$obj = CPANPLUS::Internals-&gt;_retrieve_id( $ID )</a></li>
+      <li><a href="#CPANPLUS::Internals-_remove_id-ID-">CPANPLUS::Internals-&gt;_remove_id( $ID )</a></li>
+      <li><a href="#objs-CPANPLUS::Internals-_return_all_objects">@objs = CPANPLUS::Internals-&gt;_return_all_objects</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Internals - CPANPLUS internals</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">my</span> <span class="variable">$internals</span>   <span class="operator">=</span> <span class="variable">CPANPLUS::Internals</span><span class="operator">-&gt;</span><span class="variable">_init</span><span class="operator">(</span> <span class="string">_conf</span> <span class="operator">=&gt;</span> <span class="variable">$conf</span> <span class="operator">);</span>
+    <span class="keyword">my</span> <span class="variable">$backend</span>     <span class="operator">=</span> <span class="variable">CPANPLUS::Internals</span><span class="operator">-&gt;</span><span class="variable">_retrieve_id</span><span class="operator">(</span> <span class="variable">$ID</span> <span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module is the guts of CPANPLUS -- it inherits from all other modules in the CPANPLUS::Internals::* namespace, thus defying normal rules of OO programming -- but if you&#39;re reading this, you already know what&#39;s going on ;)</p>
+
+<p>Please read the <code><code>CPANPLUS::Backend</code></code> documentation for the normal API.</p>
+
+<h1 id="ACCESSORS">ACCESSORS</h1>
+
+<dl>
+
+<dt id="conf">_conf</dt>
+<dd>
+
+<p>Get/set the configure object</p>
+
+</dd>
+<dt id="id">_id</dt>
+<dd>
+
+<p>Get/set the id</p>
+
+</dd>
+</dl>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="internals-CPANPLUS::Internals-_init-_conf-CONFIG_OBJ-">$internals = CPANPLUS::Internals-&gt;_init( _conf =&gt; CONFIG_OBJ )</h2>
+
+<p><code><code>_init</code></code> creates a new CPANPLUS::Internals object.</p>
+
+<p>You have to pass it a valid <code><code>CPANPLUS::Configure</code></code> object.</p>
+
+<p>Returns the object on success, or dies on failure.</p>
+
+<h2 id="bool-internals-_flush-list-caches-">$bool = $internals-&gt;_flush( list =&gt; \@caches )</h2>
+
+<p>Flushes the designated caches from the <code><code>CPANPLUS</code></code> object.</p>
+
+<p>Returns true on success, false if one or more caches could not be be flushed.</p>
+
+<h2 id="bool-internals-_register_callback-name-CALLBACK_NAME-code-CODEREF-">$bool = $internals-&gt;_register_callback( name =&gt; CALLBACK_NAME, code =&gt; CODEREF );</h2>
+
+<p>Registers a callback for later use by the internal libraries.</p>
+
+<p>Here is a list of the currently used callbacks:</p>
+
+<dl>
+
+<dt id="install_prerequisite">install_prerequisite</dt>
+<dd>
+
+<p>Is called when the user wants to be <code><code>asked</code></code> about what to do with prerequisites. Should return a boolean indicating true to install the prerequisite and false to skip it.</p>
+
+</dd>
+<dt id="send_test_report">send_test_report</dt>
+<dd>
+
+<p>Is called when the user should be prompted if he wishes to send the test report. Should return a boolean indicating true to send the test report and false to skip it.</p>
+
+</dd>
+<dt id="munge_test_report">munge_test_report</dt>
+<dd>
+
+<p>Is called when the test report message has been composed, giving the user a chance to programatically alter it. Should return the (munged) message to be sent.</p>
+
+</dd>
+<dt id="edit_test_report">edit_test_report</dt>
+<dd>
+
+<p>Is called when the user should be prompted to edit test reports about to be sent out by Test::Reporter. Should return a boolean indicating true to edit the test report in an editor and false to skip it.</p>
+
+</dd>
+<dt id="proceed_on_test_failure">proceed_on_test_failure</dt>
+<dd>
+
+<p>Is called when &#39;make test&#39; or &#39;Build test&#39; fails. Should return a boolean indicating whether the install should continue even if the test failed.</p>
+
+</dd>
+<dt id="munge_dist_metafile">munge_dist_metafile</dt>
+<dd>
+
+<p>Is called when the <code><code>CPANPLUS::Dist::*</code></code> metafile is created, like <code><code>control</code></code> for <code><code>CPANPLUS::Dist::Deb</code></code>, giving the user a chance to programatically alter it. Should return the (munged) text to be written to the metafile.</p>
+
+</dd>
+</dl>
+
+<h2 id="bool-internals-_add_to_includepath-directories-dirs-">$bool = $internals-&gt;_add_to_includepath( directories =&gt; \@dirs )</h2>
+
+<p>Adds a list of directories to the include path. This means they get added to <code><code>@INC</code></code> as well as <code><code><span class="variable">$ENV</span><span class="operator">{</span><span class="string">PERL5LIB</span><span class="operator">}</span>
+</code></code>.</p>
+
+<p>Returns true on success, false on failure.</p>
+
+<h2 id="bool-internals-_add_to_path-directories-dirs-">$bool = $internals-&gt;_add_to_path( directories =&gt; \@dirs )</h2>
+
+<p>Adds a list of directories to the PATH, but only if they actually contain anything.</p>
+
+<p>Returns true on success, false on failure.</p>
+
+<h2 id="id-CPANPLUS::Internals-_last_id">$id = CPANPLUS::Internals-&gt;_last_id</h2>
+
+<p>Return the id of the last object stored.</p>
+
+<h2 id="id-CPANPLUS::Internals-_store_id-internals-">$id = CPANPLUS::Internals-&gt;_store_id( $internals )</h2>
+
+<p>Store this object; return its id.</p>
+
+<h2 id="obj-CPANPLUS::Internals-_retrieve_id-ID-">$obj = CPANPLUS::Internals-&gt;_retrieve_id( $ID )</h2>
+
+<p>Retrieve an object based on its ID -- return false on error.</p>
+
+<h2 id="CPANPLUS::Internals-_remove_id-ID-">CPANPLUS::Internals-&gt;_remove_id( $ID )</h2>
+
+<p>Remove the object marked by $ID from storage.</p>
+
+<h2 id="objs-CPANPLUS::Internals-_return_all_objects">@objs = CPANPLUS::Internals-&gt;_return_all_objects</h2>
+
+<p>Return all stored objects.</p>
+
+
+</body>
+
+</html>
+
+

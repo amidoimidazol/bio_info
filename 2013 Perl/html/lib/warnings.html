@@ -1,0 +1,187 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>warnings - Perl pragma to control optional warnings</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">warnings</span><span class="operator">;</span>
+    <span class="keyword">no</span> <span class="variable">warnings</span><span class="operator">;</span>
+    
+    <span class="keyword">use</span> <span class="variable">warnings</span> <span class="string">"all"</span><span class="operator">;</span>
+    <span class="keyword">no</span> <span class="variable">warnings</span> <span class="string">"all"</span><span class="operator">;</span>
+    
+    <span class="keyword">use</span> <span class="variable">warnings::register</span><span class="operator">;</span>
+    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">())</span> <span class="operator">{</span>
+        <span class="variable">warnings::warn</span><span class="operator">(</span><span class="string">"some warning"</span><span class="operator">);</span>
+    <span class="operator">}</span>
+    
+    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">(</span><span class="string">"void"</span><span class="operator">))</span> <span class="operator">{</span>
+        <span class="variable">warnings::warn</span><span class="operator">(</span><span class="string">"void"</span><span class="operator">,</span> <span class="string">"some warning"</span><span class="operator">);</span>
+    <span class="operator">}</span>
+    
+    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">(</span><span class="variable">$object</span><span class="operator">))</span> <span class="operator">{</span>
+        <span class="variable">warnings::warn</span><span class="operator">(</span><span class="variable">$object</span><span class="operator">,</span> <span class="string">"some warning"</span><span class="operator">);</span>
+    <span class="operator">}</span>
+    
+    <span class="variable">warnings::warnif</span><span class="operator">(</span><span class="string">"some warning"</span><span class="operator">);</span>
+    <span class="variable">warnings::warnif</span><span class="operator">(</span><span class="string">"void"</span><span class="operator">,</span> <span class="string">"some warning"</span><span class="operator">);</span>
+    <span class="variable">warnings::warnif</span><span class="operator">(</span><span class="variable">$object</span><span class="operator">,</span> <span class="string">"some warning"</span><span class="operator">);</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>The <code><code>warnings</code></code> pragma is a replacement for the command line flag <code><code>-w</code></code>, but the pragma is limited to the enclosing block, while the flag is global. See <a href="../lib/pods/perllexwarn.html">perllexwarn</a> for more information and the list of built-in warning categories.</p>
+
+<p>If no import list is supplied, all possible warnings are either enabled or disabled.</p>
+
+<p>A number of functions are provided to assist module authors.</p>
+
+<dl>
+
+<dt id="use-warnings::register">use warnings::register</dt>
+<dd>
+
+<p>Creates a new warnings category with the same name as the package where the call to the pragma is used.</p>
+
+</dd>
+<dt id="warnings::enabled-">warnings::enabled()</dt>
+<dd>
+
+<p>Use the warnings category with the same name as the current package.</p>
+
+<p>Return TRUE if that warnings category is enabled in the calling module. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::enabled-category-">warnings::enabled($category)</dt>
+<dd>
+
+<p>Return TRUE if the warnings category, <code><code>$category</code></code>, is enabled in the calling module. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::enabled-object-">warnings::enabled($object)</dt>
+<dd>
+
+<p>Use the name of the class for the object reference, <code><code>$object</code></code>, as the warnings category.</p>
+
+<p>Return TRUE if that warnings category is enabled in the first scope where the object is used. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::fatal_enabled-">warnings::fatal_enabled()</dt>
+<dd>
+
+<p>Return TRUE if the warnings category with the same name as the current package has been set to FATAL in the calling module. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::fatal_enabled-category-">warnings::fatal_enabled($category)</dt>
+<dd>
+
+<p>Return TRUE if the warnings category <code><code>$category</code></code> has been set to FATAL in the calling module. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::fatal_enabled-object-">warnings::fatal_enabled($object)</dt>
+<dd>
+
+<p>Use the name of the class for the object reference, <code><code>$object</code></code>, as the warnings category.</p>
+
+<p>Return TRUE if that warnings category has been set to FATAL in the first scope where the object is used. Otherwise returns FALSE.</p>
+
+</dd>
+<dt id="warnings::warn-message-">warnings::warn($message)</dt>
+<dd>
+
+<p>Print <code><code>$message</code></code> to STDERR.</p>
+
+<p>Use the warnings category with the same name as the current package.</p>
+
+<p>If that warnings category has been set to &quot;FATAL&quot; in the calling module then die. Otherwise return.</p>
+
+</dd>
+<dt id="warnings::warn-category-message-">warnings::warn($category, $message)</dt>
+<dd>
+
+<p>Print <code><code>$message</code></code> to STDERR.</p>
+
+<p>If the warnings category, <code><code>$category</code></code>, has been set to &quot;FATAL&quot; in the calling module then die. Otherwise return.</p>
+
+</dd>
+<dt id="warnings::warn-object-message-">warnings::warn($object, $message)</dt>
+<dd>
+
+<p>Print <code><code>$message</code></code> to STDERR.</p>
+
+<p>Use the name of the class for the object reference, <code><code>$object</code></code>, as the warnings category.</p>
+
+<p>If that warnings category has been set to &quot;FATAL&quot; in the scope where <code><code>$object</code></code> is first used then die. Otherwise return.</p>
+
+</dd>
+<dt id="warnings::warnif-message-">warnings::warnif($message)</dt>
+<dd>
+
+<p>Equivalent to:</p>
+
+<pre><code><code>    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">())</span>
+      <span class="operator">{</span> <span class="variable">warnings::warn</span><span class="operator">(</span><span class="variable">$message</span><span class="operator">)</span> <span class="operator">}</span>
+</code></code></pre>
+
+</dd>
+<dt id="warnings::warnif-category-message-">warnings::warnif($category, $message)</dt>
+<dd>
+
+<p>Equivalent to:</p>
+
+<pre><code><code>    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">(</span><span class="variable">$category</span><span class="operator">))</span>
+      <span class="operator">{</span> <span class="variable">warnings::warn</span><span class="operator">(</span><span class="variable">$category</span><span class="operator">,</span> <span class="variable">$message</span><span class="operator">)</span> <span class="operator">}</span>
+</code></code></pre>
+
+</dd>
+<dt id="warnings::warnif-object-message-">warnings::warnif($object, $message)</dt>
+<dd>
+
+<p>Equivalent to:</p>
+
+<pre><code><code>    <span class="keyword">if</span> <span class="operator">(</span><span class="variable">warnings::enabled</span><span class="operator">(</span><span class="variable">$object</span><span class="operator">))</span>
+      <span class="operator">{</span> <span class="variable">warnings::warn</span><span class="operator">(</span><span class="variable">$object</span><span class="operator">,</span> <span class="variable">$message</span><span class="operator">)</span> <span class="operator">}</span>
+</code></code></pre>
+
+</dd>
+<dt id="warnings::register_categories-names-">warnings::register_categories(@names)</dt>
+<dd>
+
+<p>This registers warning categories for the given names and is primarily for use by the warnings::register pragma, for which see <a href="../lib/pods/perllexwarn.html">perllexwarn</a>.</p>
+
+</dd>
+</dl>
+
+<p>See <a href="../lib/pods/perlmodlib.html#Pragmatic-Modules">&quot;Pragmatic Modules&quot; in perlmodlib</a> and <a href="../lib/pods/perllexwarn.html">perllexwarn</a>.</p>
+
+
+</body>
+
+</html>
+
+

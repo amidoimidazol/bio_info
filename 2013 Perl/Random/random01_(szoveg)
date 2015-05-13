@@ -1,0 +1,71 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+#scalarok 
+my $count;
+my $input;
+my $number;
+my $sentence;
+my $story;
+
+#arrayek
+my @nouns = ( 'Apa',
+'Anya',
+'Feri',
+'Gabi',
+'Peti');
+
+my @verbs = ( 'jatszott',
+'nevetett',
+'evett',
+'dugott',
+'bambult');
+
+my @prepositions = ( 'a tengerparton',
+'a jatszoteren',
+'a holdon');
+
+#random numberhez az idot és a process id-t összekapcsolja
+(time|$$);
+
+# Do- until loop addig ismetli  a {}-ban levo reszt amig az until statement nem teljesül
+do {
+	#A story variable-t minden alkalommal kiuriti amikor a loop újraindul
+	$story= '';
+		
+		# 6 szor ismetli meg	
+		for ($count = 0;$count < 6; ++$count)
+			
+			#$mondat variable = alany ige targy hely variablek
+			#scalar @array megadja az array elemeinek szamat
+			#rand = general egy random szamot ami nagyobb mint 0 és kisebb mint az aray elemeinek szama
+			#int = a random generalt szam-ot egész szamma alakitja 
+			# tehát kiválaszt egy elemet az arraybol és az lesz pl az alany
+			# az igy kivalsztott elemeket "."-al összekapcsolja
+			# a [(())] -t belülrõl kifelé kell olvasni
+			# $verbs[int rand scalar @verbs] -nek is lehet röviditeni
+			{
+			$sentence = $nouns[int(rand(scalar @nouns))]
+			." "
+			.$verbs[int(rand(scalar @verbs))]
+			." "
+			.$nouns[int(rand(scalar @nouns))]
+			." "
+			.$prepositions[int(rand(scalar @prepositions))]
+			. '. ';
+			
+			#Az egészet egy scalarba menti
+			$story .= $sentence;
+			}
+			
+				#print
+				print "\n",$story,"\n";
+				
+			#kilepes
+			print "\nType \"quit\" to quit vagy Enter a tovabblepeshez";
+			
+			$input = <STDIN>;
+			}
+	
+	until ($input =~/^\s*q/i);

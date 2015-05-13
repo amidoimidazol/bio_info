@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../displayToc.js"></script>
+<script language="JavaScript" src="../tocParas.js"></script>
+<script language="JavaScript" src="../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>locale - Perl pragma to use or avoid POSIX locales for built-in operations</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="variable">@x</span> <span class="operator">=</span> <span class="keyword">sort</span> <span class="variable">@y</span><span class="operator">;</span>       <span class="comment"># Unicode sorting order</span>
+    <span class="operator">{</span>
+        <span class="keyword">use</span> <span class="variable">locale</span><span class="operator">;</span>
+        <span class="variable">@x</span> <span class="operator">=</span> <span class="keyword">sort</span> <span class="variable">@y</span><span class="operator">;</span>   <span class="comment"># Locale-defined sorting order</span>
+    <span class="operator">}</span>
+    <span class="variable">@x</span> <span class="operator">=</span> <span class="keyword">sort</span> <span class="variable">@y</span><span class="operator">;</span>       <span class="comment"># Unicode sorting order again</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This pragma tells the compiler to enable (or disable) the use of POSIX locales for built-in operations (for example, LC_CTYPE for regular expressions, LC_COLLATE for string comparison, and LC_NUMERIC for number formatting). Each &quot;use locale&quot; or &quot;no locale&quot; affects statements to the end of the enclosing BLOCK.</p>
+
+<p>Starting in Perl 5.16, a hybrid mode for this pragma is available,</p>
+
+<pre><code><code>    <span class="keyword">use</span> <span class="variable">locale</span> <span class="string">':not_characters'</span><span class="operator">;</span>
+</code></code></pre>
+
+<p>which enables only the portions of locales that don&#39;t affect the character set (that is, all except LC_COLLATE and LC_CTYPE). This is useful when mixing Unicode and locales, including UTF-8 locales.</p>
+
+<pre><code><code>    use locale &#39;:not_characters&#39;;
+    use open &quot;:locale&quot;;           # Convert I/O to/from Unicode
+    use POSIX qw(locale_h);       # Import the LC_ALL constant
+    setlocale(LC_ALL, &quot;&quot;);        # Required for the next statement
+                                  # to take effect
+    printf &quot;%.2f\n&quot;, 12345.67&#39;    # Locale-defined formatting
+    @x = sort @y;                 # Unicode-defined sorting order.
+                                  # (Note that you will get better
+                                  # results using Unicode::Collate.)</code></code></pre>
+
+<p>See <a href="../lib/pods/perllocale.html">perllocale</a> for more detailed information on how Perl supports locales.</p>
+
+
+</body>
+
+</html>
+
+

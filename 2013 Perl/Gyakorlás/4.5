@@ -1,0 +1,11 @@
+#!/usr/bin/perl -w
+	$RNAfilename = 'rns1.rns';
+		open ( RNAFILE , $RNAfilename);
+		$RNA = <RNAFILE>;
+print "Eredeti RNS szekvencia:$RNA\n\n";
+
+
+			$RNA =~ s/U/T/g;
+
+print "A visszaalakitott DNS szekvencia:$RNA";
+exit;

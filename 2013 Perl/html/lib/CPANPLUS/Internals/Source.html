@@ -1,0 +1,381 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#cb-_build_trees-uptodate-BOOL-use_stored-BOOL-path-path-verbose-BOOL-">$cb-&gt;_build_trees( uptodate =&gt; BOOL, [use_stored =&gt; BOOL, path =&gt; $path, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#cb-_check_trees-update_source-BOOL-path-PATH-verbose-BOOL-">$cb-&gt;_check_trees( [update_source =&gt; BOOL, path =&gt; PATH, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#cb-__check_uptodate-file-file-name-name-update_source-BOOL-verbose-BOOL-">$cb-&gt;__check_uptodate( file =&gt; $file, name =&gt; $name, [update_source =&gt; BOOL, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#cb-_update_source-name-name-path-path-verbose-BOOL-">$cb-&gt;_update_source( name =&gt; $name, [path =&gt; $path, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#cb-__create_author_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__create_author_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#cb-_create_mod_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;_create_mod_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#cb-__create_dslip_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__create_dslip_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</a></li>
+      <li><a href="#cb-_dslip_defs-">$cb-&gt;_dslip_defs ()</a></li>
+      <li><a href="#file-cb-_add_custom_module_source-uri-URI-verbose-BOOL-">$file = $cb-&gt;_add_custom_module_source( uri =&gt; URI, [verbose =&gt; BOOL] );</a></li>
+      <li><a href="#index-cb-__custom_module_source_index_file-uri-uri-">$index = $cb-&gt;__custom_module_source_index_file( uri =&gt; $uri );</a></li>
+      <li><a href="#file-cb-_remove_custom_module_source-uri-URI-verbose-BOOL-">$file = $cb-&gt;_remove_custom_module_source( uri =&gt; URI, [verbose =&gt; BOOL] );</a></li>
+      <li><a href="#files-cb-__list_custom_module_sources">%files = $cb-&gt;__list_custom_module_sources</a></li>
+      <li><a href="#bool-cb-__update_custom_module_sources-verbose-BOOL-">$bool = $cb-&gt;__update_custom_module_sources( [verbose =&gt; BOOL] );</a></li>
+      <li><a href="#ok-cb-__update_custom_module_source">$ok = $cb-&gt;__update_custom_module_source</a></li>
+      <li><a href="#bool-cb-__write_custom_module_index-path-path-to-packages-to-path-to-index-file-verbose-BOOL-">$bool = $cb-&gt;__write_custom_module_index( path =&gt; /path/to/packages, [to =&gt; /path/to/index/file, verbose =&gt; BOOL] )</a></li>
+      <li><a href="#bool-cb-__create_custom_module_entries-verbose-BOOL-">$bool = $cb-&gt;__create_custom_module_entries( [verbose =&gt; BOOL] )</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Internals::Source - internals for updating source files</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="comment">### lazy load author/module trees ###</span>
+    
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_author_tree</span><span class="operator">;</span>
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_module_tree</span><span class="operator">;</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>CPANPLUS::Internals::Source controls the updating of source files and the parsing of them into usable module/author trees to be used by <code><code>CPANPLUS</code></code>.</p>
+
+<p>Functions exist to check if source files are still <code><code>good to use</code></code> as well as update them, and then parse them.</p>
+
+<p>The flow looks like this:</p>
+
+<pre><code><code>    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_author_tree</span> <span class="operator">||</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_module_tree</span>
+        <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_check_trees</span>
+            <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__check_uptodate</span>
+                <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_update_source</span>
+            <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__update_custom_module_sources</span>
+                <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__update_custom_module_source</span>
+        <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_build_trees</span>
+            <span class="comment">### engine methods</span>
+            <span class="operator">{</span>   <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_init_trees</span><span class="operator">;</span>
+                <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_standard_trees_completed</span>
+                <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_custom_trees_completed</span>
+            <span class="operator">}</span>
+            <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__create_author_tree</span>
+                <span class="comment">### engine methods</span>
+                <span class="operator">{</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_add_author_object</span> <span class="operator">}</span>
+            <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__create_module_tree</span>
+                <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__create_dslip_tree</span>
+                <span class="comment">### engine methods</span>
+                <span class="operator">{</span> <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_add_module_object</span> <span class="operator">}</span>
+            <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">__create_custom_module_entries</span>
+    
+    <span class="variable">$cb</span><span class="operator">-&gt;</span><span class="variable">_dslip_defs</span>
+</code></code></pre>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="cb-_build_trees-uptodate-BOOL-use_stored-BOOL-path-path-verbose-BOOL-">$cb-&gt;_build_trees( uptodate =&gt; BOOL, [use_stored =&gt; BOOL, path =&gt; $path, verbose =&gt; BOOL] )</h2>
+
+<p>This method rebuilds the author- and module-trees from source.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="uptodate">uptodate</dt>
+<dd>
+
+<p>Indicates whether any on disk caches are still ok to use.</p>
+
+</dd>
+<dt id="path">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+<dt id="use_stored">use_stored</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not it is ok to use previously stored trees. Defaults to true.</p>
+
+</dd>
+</dl>
+
+<p>Returns a boolean indicating success.</p>
+
+<h2 id="cb-_check_trees-update_source-BOOL-path-PATH-verbose-BOOL-">$cb-&gt;_check_trees( [update_source =&gt; BOOL, path =&gt; PATH, verbose =&gt; BOOL] )</h2>
+
+<p>Retrieve source files and return a boolean indicating whether or not the source files are up to date.</p>
+
+<p>Takes several arguments:</p>
+
+<dl>
+
+<dt id="update_source">update_source</dt>
+<dd>
+
+<p>A flag to force re-fetching of the source files, even if they are still up to date.</p>
+
+</dd>
+<dt id="path1">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose1">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<h2 id="cb-__check_uptodate-file-file-name-name-update_source-BOOL-verbose-BOOL-">$cb-&gt;__check_uptodate( file =&gt; $file, name =&gt; $name, [update_source =&gt; BOOL, verbose =&gt; BOOL] )</h2>
+
+<p><code><code>__check_uptodate</code></code> checks if a given source file is still up-to-date and if not, or when <code><code>update_source</code></code> is true, will re-fetch the source file.</p>
+
+<p>Takes the following arguments:</p>
+
+<dl>
+
+<dt id="file">file</dt>
+<dd>
+
+<p>The source file to check.</p>
+
+</dd>
+<dt id="name">name</dt>
+<dd>
+
+<p>The internal shortcut name for the source file (used for config lookups).</p>
+
+</dd>
+<dt id="update_source1">update_source</dt>
+<dd>
+
+<p>Flag to force updating of sourcefiles regardless.</p>
+
+</dd>
+<dt id="verbose2">verbose</dt>
+<dd>
+
+<p>Boolean to indicate whether to be verbose or not.</p>
+
+</dd>
+</dl>
+
+<p>Returns a boolean value indicating whether the current files are up to date or not.</p>
+
+<h2 id="cb-_update_source-name-name-path-path-verbose-BOOL-">$cb-&gt;_update_source( name =&gt; $name, [path =&gt; $path, verbose =&gt; BOOL] )</h2>
+
+<p>This method does the actual fetching of source files.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="name1">name</dt>
+<dd>
+
+<p>The internal shortcut name for the source file (used for config lookups).</p>
+
+</dd>
+<dt id="path2">path</dt>
+<dd>
+
+<p>The full path where to write the files.</p>
+
+</dd>
+<dt id="verbose3">verbose</dt>
+<dd>
+
+<p>Boolean to indicate whether to be verbose or not.</p>
+
+</dd>
+</dl>
+
+<p>Returns a boolean to indicate success.</p>
+
+<h2 id="cb-__create_author_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__create_author_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p>This method opens a source files and parses its contents into a searchable author-tree or restores a file-cached version of a previous parse, if the sources are uptodate and the file-cache exists.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="uptodate1">uptodate</dt>
+<dd>
+
+<p>A flag indicating whether the file-cache is uptodate or not.</p>
+
+</dd>
+<dt id="path3">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose4">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<p>Returns a tree on success, false on failure.</p>
+
+<h2 id="cb-_create_mod_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;_create_mod_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p>This method opens a source files and parses its contents into a searchable module-tree or restores a file-cached version of a previous parse, if the sources are uptodate and the file-cache exists.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="uptodate2">uptodate</dt>
+<dd>
+
+<p>A flag indicating whether the file-cache is up-to-date or not.</p>
+
+</dd>
+<dt id="path4">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose5">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<p>Returns a tree on success, false on failure.</p>
+
+<h2 id="cb-__create_dslip_tree-path-path-uptodate-BOOL-verbose-BOOL-">$cb-&gt;__create_dslip_tree([path =&gt; $path, uptodate =&gt; BOOL, verbose =&gt; BOOL])</h2>
+
+<p>This method opens a source files and parses its contents into a searchable dslip-tree or restores a file-cached version of a previous parse, if the sources are uptodate and the file-cache exists.</p>
+
+<p>It takes the following arguments:</p>
+
+<dl>
+
+<dt id="uptodate3">uptodate</dt>
+<dd>
+
+<p>A flag indicating whether the file-cache is uptodate or not.</p>
+
+</dd>
+<dt id="path5">path</dt>
+<dd>
+
+<p>The absolute path to the directory holding the source files.</p>
+
+</dd>
+<dt id="verbose6">verbose</dt>
+<dd>
+
+<p>A boolean flag indicating whether or not to be verbose.</p>
+
+</dd>
+</dl>
+
+<p>Will get information from the config file by default.</p>
+
+<p>Returns a tree on success, false on failure.</p>
+
+<h2 id="cb-_dslip_defs-">$cb-&gt;_dslip_defs ()</h2>
+
+<p>This function returns the definition structure (ARRAYREF) of the dslip tree.</p>
+
+<h2 id="file-cb-_add_custom_module_source-uri-URI-verbose-BOOL-">$file = $cb-&gt;_add_custom_module_source( uri =&gt; URI, [verbose =&gt; BOOL] );</h2>
+
+<p>Adds a custom source index and updates it based on the provided URI.</p>
+
+<p>Returns the full path to the index file on success or false on failure.</p>
+
+<h2 id="index-cb-__custom_module_source_index_file-uri-uri-">$index = $cb-&gt;__custom_module_source_index_file( uri =&gt; $uri );</h2>
+
+<p>Returns the full path to the encoded index file for <code><code>$uri</code></code>, as used by all <code><code>custom module source</code></code> routines.</p>
+
+<h2 id="file-cb-_remove_custom_module_source-uri-URI-verbose-BOOL-">$file = $cb-&gt;_remove_custom_module_source( uri =&gt; URI, [verbose =&gt; BOOL] );</h2>
+
+<p>Removes a custom index file based on the URI provided.</p>
+
+<p>Returns the full path to the index file on success or false on failure.</p>
+
+<h2 id="files-cb-__list_custom_module_sources">%files = $cb-&gt;__list_custom_module_sources</h2>
+
+<p>This method scans the &#39;custom-sources&#39; directory in your base directory for additional sources to include in your module tree.</p>
+
+<p>Returns a list of key value pairs as follows:</p>
+
+<pre><code><code>  /full/path/to/source/file%3Fencoded =&gt; http://decoded/mirror/path</code></code></pre>
+
+<h2 id="bool-cb-__update_custom_module_sources-verbose-BOOL-">$bool = $cb-&gt;__update_custom_module_sources( [verbose =&gt; BOOL] );</h2>
+
+<p>Attempts to update all the index files to your custom module sources.</p>
+
+<p>If the index is missing, and it&#39;s a <code><code>file://</code></code> uri, it will generate a new local index for you.</p>
+
+<p>Return true on success, false on failure.</p>
+
+<h2 id="ok-cb-__update_custom_module_source">$ok = $cb-&gt;__update_custom_module_source</h2>
+
+<p>Attempts to update all the index files to your custom module sources.</p>
+
+<p>If the index is missing, and it&#39;s a <code><code>file://</code></code> uri, it will generate a new local index for you.</p>
+
+<p>Return true on success, false on failure.</p>
+
+<h2 id="bool-cb-__write_custom_module_index-path-path-to-packages-to-path-to-index-file-verbose-BOOL-">$bool = $cb-&gt;__write_custom_module_index( path =&gt; /path/to/packages, [to =&gt; /path/to/index/file, verbose =&gt; BOOL] )</h2>
+
+<p>Scans the <code><code>path</code></code> you provided for packages and writes an index with all the available packages to <code><code>$path/packages.txt</code></code>. If you&#39;d like the index to be written to a different file, provide the <code><code>to</code></code> argument.</p>
+
+<p>Returns true on success and false on failure.</p>
+
+<h2 id="bool-cb-__create_custom_module_entries-verbose-BOOL-">$bool = $cb-&gt;__create_custom_module_entries( [verbose =&gt; BOOL] )</h2>
+
+<p>Creates entries in the module tree based upon the files as returned by <code><code>__list_custom_module_sources</code></code>.</p>
+
+<p>Returns true on success, false on failure.</p>
+
+
+</body>
+
+</html>
+
+

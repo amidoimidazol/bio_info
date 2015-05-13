@@ -1,0 +1,7 @@
+#!/usr/bin/perl -w
+if (1 == 0)
+{
+print "1 egyenlo 1-el"
+}
+else {
+print "1 NEM egyenlo 0-val"};

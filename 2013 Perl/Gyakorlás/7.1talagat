@@ -1,0 +1,26 @@
+#!/usr/bin/perl -w
+#prefix / lib
+
+use warnings;
+use strict;
+use lib '/perl';
+use biolib;
+
+print "Gondolj egy aminosavra:\n";
+
+my $gondolt = <STDIN>;
+chomp $gondolt;
+
+my @as = ('A','B','C','D','E');
+my $i;
+
+do
+	{print "Ez az?\n";
+	my $n =join ('', randomelem (@as));
+	$i = $n;
+	print "$i\n";
+	}
+ while ($i ne $gondolt);
+
+print "Megvan!";
+exit;

@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title></title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#FLOW">FLOW</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#subs-Class-methods">@subs = $Class-&gt;methods</a></li>
+      <li><a href="#bool-Class-format_available">$bool = $Class-&gt;format_available</a></li>
+      <li><a href="#bool-dist-init">$bool = $dist-&gt;init</a></li>
+      <li><a href="#bool-dist-prepare">$bool = $dist-&gt;prepare</a></li>
+      <li><a href="#bool-dist-create">$bool = $dist-&gt;create</a></li>
+      <li><a href="#bool-dist-install">$bool = $dist-&gt;install</a></li>
+      <li><a href="#bool-dist-uninstall">$bool = $dist-&gt;uninstall</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>CPANPLUS::Dist::Base - Base class for custom distribution classes</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code><code>    <span class="keyword">package</span> <span class="variable">CPANPLUS::Dist::MY_IMPLEMENTATION</span>
+    
+    <span class="keyword">use</span> <span class="variable">base</span> <span class="string">'CPANPLUS::Dist::Base'</span><span class="operator">;</span>
+    
+    <span class="keyword">sub</span><span class="variable"> prepare </span><span class="operator">{</span>
+        <span class="keyword">my</span> <span class="variable">$dist</span> <span class="operator">=</span> <span class="keyword">shift</span><span class="operator">;</span>
+    
+        <span class="comment">### do the 'standard' things</span>
+        <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">SUPER::prepare</span><span class="operator">(</span> <span class="variable">@_</span> <span class="operator">)</span> <span class="keyword">or</span> <span class="keyword">return</span><span class="operator">;</span>
+    
+        <span class="comment">### do MY_IMPLEMENTATION specific things</span>
+        <span class="operator">...</span>
+    
+        <span class="comment">### don't forget to set the status!</span>
+        <span class="keyword">return</span> <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">status</span><span class="operator">-&gt;</span><span class="variable">prepared</span><span class="operator">(</span> <span class="variable">$SUCCESS</span> <span class="operator">?</span> <span class="number">1</span> <span class="operator">:</span> <span class="number">0</span> <span class="operator">);</span>
+    <span class="operator">}</span>
+</code></code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>CPANPLUS::Dist::Base functions as a base class for all custom distribution implementations. It does all the mundane work CPANPLUS would have done without a custom distribution, so you can override just the parts you need to make your own implementation work.</p>
+
+<h1 id="FLOW">FLOW</h1>
+
+<p>Below is a brief outline when and in which order methods in this class are called:</p>
+
+<pre><code><code>    <span class="variable">$Class</span><span class="operator">-&gt;</span><span class="variable">format_available</span><span class="operator">;</span>   <span class="comment"># can we use this class on this system?</span>
+    
+    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">init</span><span class="operator">;</span>                <span class="comment"># set up custom accessors, etc</span>
+    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">prepare</span><span class="operator">;</span>             <span class="comment"># find/write meta information</span>
+    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">create</span><span class="operator">;</span>              <span class="comment"># write the distribution file</span>
+    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">install</span><span class="operator">;</span>             <span class="comment"># install the distribution file</span>
+    
+    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">uninstall</span><span class="operator">;</span>           <span class="comment"># remove the distribution (OPTIONAL)</span>
+</code></code></pre>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="subs-Class-methods">@subs = $Class-&gt;methods</h2>
+
+<p>Returns a list of methods that this class implements that you can override.</p>
+
+<h2 id="bool-Class-format_available">$bool = $Class-&gt;format_available</h2>
+
+<p>This method is called when someone requests a module to be installed via the superclass. This gives you the opportunity to check if all the needed requirements to build and install this distribution have been met.</p>
+
+<p>For example, you might need a command line program, or a certain perl module installed to do your job. Now is the time to check.</p>
+
+<p>Simply return true if the request can proceed and false if it can not.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation always returns true.</p>
+
+<h2 id="bool-dist-init">$bool = $dist-&gt;init</h2>
+
+<p>This method is called just after the new dist object is set up and before the <code><code>prepare</code></code> method is called. This is the time to set up the object so it can be used with your class.</p>
+
+<p>For example, you might want to add extra accessors to the <code><code>status</code></code> object, which you might do as follows:</p>
+
+<pre><code><code>    <span class="variable">$dist</span><span class="operator">-&gt;</span><span class="variable">status</span><span class="operator">-&gt;</span><span class="variable">mk_accessors</span><span class="operator">(</span> <span class="string">qw[my_implementation_accessor]</span> <span class="operator">);</span>
+</code></code></pre>
+
+<p>The <code><code>status</code></code> object is implemented as an instance of the <code><code>Object::Accessor</code></code> class. Please refer to its documentation for details.</p>
+
+<p>Return true if the initialization was successful, and false if it was not.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation does not alter your object and always returns true.</p>
+
+<h2 id="bool-dist-prepare">$bool = $dist-&gt;prepare</h2>
+
+<p>This runs the preparation step of your distribution. This step is meant to set up the environment so the <code><code>create</code></code> step can create the actual distribution(file). A <code><code>prepare</code></code> call in the standard <code><code>ExtUtils::MakeMaker</code></code> distribution would, for example, run <code><code>perl Makefile.PL</code></code> to find the dependencies for a distribution. For a <code><code>debian</code></code> distribution, this is where you would write all the metafiles required for the <code><code>dpkg-*</code></code> tools.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation simply calls the underlying distribution class (Typically <code><code>CPANPLUS::Dist::MM</code></code> or <code><code>CPANPLUS::Dist::Build</code></code>).</p>
+
+<p>Sets <code><code>$dist-&gt;status-&gt;prepared</code></code> to the return value of this function. If you override this method, you should make sure to set this value.</p>
+
+<h2 id="bool-dist-create">$bool = $dist-&gt;create</h2>
+
+<p>This runs the creation step of your distribution. This step is meant to follow up on the <code><code>prepare</code></code> call, that set up your environment so the <code><code>create</code></code> step can create the actual distribution(file). A <code><code>create</code></code> call in the standard <code><code>ExtUtils::MakeMaker</code></code> distribution would, for example, run <code><code>make</code></code> and <code><code>make test</code></code> to build and test a distribution. For a <code><code>debian</code></code> distribution, this is where you would create the actual <code><code>.deb</code></code> file using <code><code>dpkg</code></code>.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation simply calls the underlying distribution class (Typically <code><code>CPANPLUS::Dist::MM</code></code> or <code><code>CPANPLUS::Dist::Build</code></code>).</p>
+
+<p>Sets <code><code>$dist-&gt;status-&gt;dist</code></code> to the location of the created distribution. If you override this method, you should make sure to set this value.</p>
+
+<p>Sets <code><code>$dist-&gt;status-&gt;created</code></code> to the return value of this function. If you override this method, you should make sure to set this value.</p>
+
+<h2 id="bool-dist-install">$bool = $dist-&gt;install</h2>
+
+<p>This runs the install step of your distribution. This step is meant to follow up on the <code><code>create</code></code> call, which prepared a distribution(file) to install. A <code><code>create</code></code> call in the standard <code><code>ExtUtils::MakeMaker</code></code> distribution would, for example, run <code><code>make install</code></code> to copy the distribution files to their final destination. For a <code><code>debian</code></code> distribution, this is where you would run <code><code>dpkg --install</code></code> on the created <code><code>.deb</code></code> file.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation simply calls the underlying distribution class (Typically <code><code>CPANPLUS::Dist::MM</code></code> or <code><code>CPANPLUS::Dist::Build</code></code>).</p>
+
+<p>Sets <code><code>$dist-&gt;status-&gt;installed</code></code> to the return value of this function. If you override this method, you should make sure to set this value.</p>
+
+<h2 id="bool-dist-uninstall">$bool = $dist-&gt;uninstall</h2>
+
+<p>This runs the uninstall step of your distribution. This step is meant to remove the distribution from the file system. A <code><code>uninstall</code></code> call in the standard <code><code>ExtUtils::MakeMaker</code></code> distribution would, for example, run <code><code>make uninstall</code></code> to remove the distribution files the file system. For a <code><code>debian</code></code> distribution, this is where you would run <code><code>dpkg --uninstall PACKAGE</code></code>.</p>
+
+<p>The <code><code>CPANPLUS::Dist::Base</code></code> implementation simply calls the underlying distribution class (Typically <code><code>CPANPLUS::Dist::MM</code></code> or <code><code>CPANPLUS::Dist::Build</code></code>).</p>
+
+<p>Sets <code><code>$dist-&gt;status-&gt;uninstalled</code></code> to the return value of this function. If you override this method, you should make sure to set this value.</p>
+
+
+</body>
+
+</html>
+
+

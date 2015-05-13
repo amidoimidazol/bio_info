@@ -1,0 +1,63 @@
+#!/usr/bin/perl -w
+print "Irja be a DNS szekvenciat tartalmazo file nevet (.dns):";
+	$dnafilename = <STDIN>;
+	chomp $dnafilename;
+	unless (open ( DNAFILE, $dnafilename) )
+		{ print "Ervenytelen file nev!:\"$dnafilename\"\n";
+		exit;
+		}
+		@dna = <DNAFILE>;
+close DNAFILE;
+	
+	#arraybol string
+						$dna = join ('', @dna);
+	
+	#whitespace eltuntetese
+						$dna =~ s/\s//g;
+	#kisbetubol nagybetube valtas
+						$dna =~ tr/agtc/AGTC/;
+	
+	#szamok eltuntetese					
+						@szamok = ('1','2','3','4','5','6','7','8','9','0'); 	
+						$dna =~ s/[@szamok]//g;
+	#a string minden karakter tipusa egy sor lesz az arrayben
+						@dna = split ( '', $dna);
+	
+	#szamolo stringek 0-ra allaitasa
+		$count_of_A = 0;
+		$count_of_T = 0;
+		$count_of_G = 0;
+		$count_of_C = 0;
+		$error = 0;
+		
+
+	
+			# egyesével végigmegy az arrayen aminek minden sora egy-egy tipusu elem lett és ha megegyezik akkor +1-et ad a megfelelo variable-hez ha nem stimmel hibat dob
+			# foreach= egyesével megy végig az array elemein
+			#$base a variable ami az adott elemet tarolja
+			#++$variable = a variable ertekehez hozzaad egyet, a string vegen is lehet $variable++ vagy $variable= $ variable +1
+			
+			foreach $base ( @dna) {
+			if 	( $base eq 'A') 
+				{++$count_of_A;}
+			elsif ( $base eq 'T')
+				{++$count_of_T;}
+			elsif ($base eq 'G')
+				{++$count_of_G;}
+			elsif ($base eq 'C')
+				{++$count_of_C;}
+			else { print " !!!!HIBA!!!Ismeretlen bazis:$base\n";
+				++$error;}
+				}
+				
+	$osszes = $count_of_A + $count_of_T + $count_of_G + $count_of_C;
+	
+	#osszesitett szamok kiprintelese
+	print "Osszes:$osszes\n";
+	print "Adenin:$count_of_A\n";
+	print "Timin:$count_of_T\n";
+	print "Guanin:$count_of_G\n";
+	print "Citozin:$count_of_C\n";
+	print "Hibak szama:$error\n";
+	
+exit;

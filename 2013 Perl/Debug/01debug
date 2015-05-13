@@ -1,0 +1,85 @@
+#!/usr/bin/perl -w
+
+#DEBUGGER INDITASA CMD line-ból !!!perl -d programnev
+	# h -val kiirja a cmd listat q-val kilép 
+	# h parancsnév pl h v kiirja hogy mit csinal és milyen valtozatai vannak
+	# annál a sornál áll meg ahol leakadt (nem azt irja ki amit mar megcsinalt hanem amit meg fog csinálni)
+	#  lekérhetjük az egyes variablek értékét p $var
+	# n == nagy lépés loopokon átugrik/ s == lépésenként megy tovabb loopokban is
+	# v megmutatja hol jar a kodban
+	
+
+
+
+
+# A program with a bug or two
+#
+# An optional argument, for where to start printing the
+#sequence,
+# is a two-base subsequence.
+#
+# Print everything from the subsequence ( or TA if no
+#subsequence
+# is given as an argument) to the end of the DNA.
+
+
+# declare and initialize variables
+	my $dna = 'CGACGTCTTCTAAGGCGA';
+	my @dna;
+	my $receivingcommitment;
+	my $previousbase = '';
+	my$subsequence = '';
+
+# ha nem irunk a program neve moge szekvenciat akkor a $subseqgence TA lesz
+		if (@ARGV) {$subsequence = $ARGV[0];}
+		else{$subsequence = 'TA';}
+
+#base 1 a $subsequence elso karaktere $base2 a subsequence masodik karaktere
+my $base1 = substr($subsequence, 0, 1);
+my $base2 = substr($subsequence, 1, 1);
+
+# explode DNA
+@dna = split ( '', $dna );
+
+######### Pseudocode of the following loop:
+#
+# If you've received a committment, print the base and
+#continue. Otherwise:
+#
+# If the previous base was $base1, and this base is $base2,
+#print them.
+# You have now received a committment to print the rest
+#of the string.
+#
+# At each loop, save the previous base.
+foreach (@dna) {
+if ($receivingcommitment) {
+print;
+next;
+} elsif ($previousbase eq $base1) {
+if ( /$base2/ ) {
+print $base1, $base2;
+$receivingcommitment = 1;
+}
+}
+$previousbase = $_;
+}
+print "\n";
+
+exit;
+
+#main::(example6-4:39): foreach (@dna) {
+#DB<9> p @dna
+#CGACGTCTTCTAAGGCGA
+#DB<10> p "@dna"
+#C G A C G T C T T C T A A G G C G A
+
+#This shows a trick with Perl and printing arrays: normally they are printed without any
+#spacing between the elements, but enclosing an array in double quotes in a print
+#statement causes it to be displayed with spaces between the elements.
+
+#####################BREAKPOINT
+### p sorszam [enter] 
+###	c (contine command a program folytatja a megadott sorig)
+### üresen a p kiprinteli hogy az üres "mindenes" variable milyen értéken áll $_
+### W -vel figyelhetjük egy adott variable/array értékét
