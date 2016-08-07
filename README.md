@@ -6,6 +6,7 @@ Collection of bioinformatical scripts
 Beginning Perl for Bioinformatics
 ---------------------------------
 Solutions to exercises
+http://shop.oreilly.com/product/9780596000806.do
 
 Rosalind
 --------
