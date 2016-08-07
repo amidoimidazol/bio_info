@@ -3,6 +3,10 @@ Bioinformatics scripts
 
 Collection of bioinformatical scripts
 
+Beginning Perl for Bioinformatics
+---------------------------------
+Solutions to exercises
+
 Rosalind
 --------
 Solutions to problems found on http://rosalind.info/.
